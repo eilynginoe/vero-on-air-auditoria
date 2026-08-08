@@ -691,41 +691,6 @@
   }
   .pc-thumb svg{width:18px; height:18px; stroke:#B7BDD0; stroke-width:1.6;}
 
-  /* ============ FX ROWS: 3D TILT + SLIDE REVEAL (desktop hover only) ============ */
-  @media (hover:hover) and (pointer:fine){
-    .fx-row{
-      transition:transform .18s ease-out, background-color .18s ease;
-      transform-style:preserve-3d;
-      will-change:transform;
-      border-radius:10px;
-      cursor:default;
-    }
-    .fx-row:hover{
-      background-color:#FAFAFF;
-    }
-    .pc-thumb-fx{ overflow:hidden; position:relative; }
-    .pc-thumb-fx .pc-thumb-icon{
-      display:flex; align-items:center; justify-content:center;
-      width:100%; height:100%;
-      transition:transform .38s cubic-bezier(.4,0,.2,1);
-    }
-    .pc-thumb-fx .pc-thumb-example{
-      position:absolute; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      padding:5px 7px;
-      font-size:9px;
-      line-height:1.25;
-      font-style:italic;
-      text-align:center;
-      color:#4B4570;
-      background:#F5F3FF;
-      transform:translateX(102%);
-      transition:transform .38s cubic-bezier(.4,0,.2,1);
-    }
-    .fx-row:hover .pc-thumb-icon{ transform:translateX(-102%); }
-    .fx-row:hover .pc-thumb-example{ transform:translateX(0); }
-  }
-
 
   .pattern-card.univ .pc-title{color:#5C4DF6;}
   .pattern-card.univ .pc-icon{background:rgba(92,77,246,.10);}
@@ -1410,29 +1375,29 @@
         <div class="pc-divider"></div>
         <div class="pc-col-headers"><span>Patrón</span><span>¿Qué decisión representa?</span><span>Ejemplo</span></div>
         <div class="pc-rows">
-          <div class="pc-row fx-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-gift"/></svg></span>
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-gift"/></svg></span>
             <div><div class="pc-name">Promesa inicial</div><div class="pc-desc">Dar una razón para comenzar.</div></div>
-            <div class="pc-thumb pc-thumb-fx" title="&ldquo;Leí los 10 libros más recomendados del año para descubrir si realmente valen la pena.&rdquo;"><span class="pc-thumb-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span><span class="pc-thumb-example">&ldquo;Leí los 10 libros más recomendados del año para descubrir si realmente valen la pena.&rdquo;</span></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-help"/></svg></span>
             <div><div class="pc-name">Pregunta central</div><div class="pc-desc">Definir el problema que organiza el recorrido.</div></div>
-            <div class="pc-thumb" title="&ldquo;¿Cuáles de esos libros realmente merecen tu tiempo?&rdquo;"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-clock"/></svg></span>
             <div><div class="pc-name">Revelación progresiva</div><div class="pc-desc">Decidir cuándo revelar la información.</div></div>
-            <div class="pc-thumb" title="El creador no dice desde el inicio cuál fue el mejor libro; distribuye la información a lo largo del recorrido."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-grid"/></svg></span>
             <div><div class="pc-name">Organización en bloques</div><div class="pc-desc">Dividir el contenido en unidades claras.</div></div>
-            <div class="pc-thumb" title="Libros decepcionantes → Libros aceptables → Libros imprescindibles."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
-          <div class="pc-row fx-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-link"/></svg></span>
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-link"/></svg></span>
             <div><div class="pc-name">Cadena de expectativas</div><div class="pc-desc">Conseguir que el espectador quiera ver el siguiente bloque.</div></div>
-            <div class="pc-thumb pc-thumb-fx" title="&ldquo;Pero el siguiente libro cambió completamente mi opinión...&rdquo;"><span class="pc-thumb-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span><span class="pc-thumb-example">&ldquo;Pero el siguiente libro cambió completamente mi opinión...&rdquo;</span></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-star"/></svg></span>
             <div><div class="pc-name">Cierre transformador</div><div class="pc-desc">Recompensar todo el recorrido.</div></div>
-            <div class="pc-thumb" title="El creador no solo recomienda un libro; propone un nuevo criterio para elegir futuras lecturas."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
         </div>
       </div>
 
@@ -1444,29 +1409,29 @@
         <div class="pc-divider"></div>
         <div class="pc-col-headers"><span>Patrón</span><span>¿Qué hace?</span><span>Ejemplo</span></div>
         <div class="pc-rows">
-          <div class="pc-row fx-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-refresh"/></svg></span>
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-refresh"/></svg></span>
             <div><div class="pc-name">Cambio de estado</div><div class="pc-desc">Cada bloque modifica la situación anterior.</div></div>
-            <div class="pc-thumb pc-thumb-fx" title="Después de cada libro, el ranking cambia y el espectador reevalúa cuál podría ser el mejor."><span class="pc-thumb-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span><span class="pc-thumb-example">Después de cada libro, el ranking cambia y el espectador reevalúa cuál podría ser el mejor.</span></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-bookopen"/></svg></span>
             <div><div class="pc-name">Construcción de comprensión</div><div class="pc-desc">Construye conocimiento paso a paso.</div></div>
-            <div class="pc-thumb" title="Antes de comparar dos libros, el creador explica el criterio de evaluación."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-filecheck"/></svg></span>
             <div><div class="pc-name">Evidencia y ejemplificación</div><div class="pc-desc">Respalda las afirmaciones.</div></div>
-            <div class="pc-thumb" title="Leer un fragmento del libro para justificar una crítica."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-gift"/></svg></span>
             <div><div class="pc-name">Recompensas parciales</div><div class="pc-desc">Entrega valor antes del final.</div></div>
-            <div class="pc-thumb" title="Cada reseña ofrece una conclusión útil sin esperar al ranking definitivo."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
-          <div class="pc-row fx-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-bar"/></svg></span>
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-bar"/></svg></span>
             <div><div class="pc-name">Progreso visible</div><div class="pc-desc">Hace evidente el avance.</div></div>
-            <div class="pc-thumb pc-thumb-fx" title="Contador de libros revisados: 3/10, 4/10, 5/10…"><span class="pc-thumb-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span><span class="pc-thumb-example">Contador de libros revisados: 3/10, 4/10, 5/10…</span></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-target"/></svg></span>
             <div><div class="pc-name">Arquitectura de retención</div><div class="pc-desc">Renueva razones para seguir viendo.</div></div>
-            <div class="pc-thumb" title="Cada recomendación plantea una nueva expectativa sobre el siguiente libro."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
         </div>
       </div>
 
@@ -1480,27 +1445,27 @@
         <div class="pc-rows">
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-layers"/></svg></span>
             <div><div class="pc-name">Gestión de la complejidad</div><div class="pc-desc">Distribuye la dificultad.</div></div>
-            <div class="pc-thumb" title="Explicar primero el contexto antes de analizar una novela compleja."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
-          <div class="pc-row fx-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span>
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span>
             <div><div class="pc-name">Recursos visuales</div><div class="pc-desc">Facilita la comprensión mediante imágenes.</div></div>
-            <div class="pc-thumb pc-thumb-fx" title="Mostrar la portada, una línea temporal o un esquema mientras se explica."><span class="pc-thumb-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span><span class="pc-thumb-example">Mostrar la portada, una línea temporal o un esquema mientras se explica.</span></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-zap"/></svg></span>
             <div><div class="pc-name">Valor creciente del recorrido</div><div class="pc-desc">Cada bloque parece más interesante que el anterior.</div></div>
-            <div class="pc-thumb" title="Reservar el libro favorito para el final."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-scissors"/></svg></span>
             <div><div class="pc-name">Economía narrativa</div><div class="pc-desc">Elimina lo que no hace avanzar.</div></div>
-            <div class="pc-thumb" title="Omitir detalles irrelevantes de una lectura que no cambian la conclusión."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
-          <div class="pc-row fx-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-refresh"/></svg></span>
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-refresh"/></svg></span>
             <div><div class="pc-name">Transformación personal</div><div class="pc-desc">Cambia la forma de interpretar el problema.</div></div>
-            <div class="pc-thumb pc-thumb-fx" title="Mostrar que el problema no era &ldquo;leer poco&rdquo;, sino elegir libros inadecuados."><span class="pc-thumb-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span><span class="pc-thumb-example">Mostrar que el problema no era &ldquo;leer poco&rdquo;, sino elegir libros inadecuados.</span></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-arrowcircle"/></svg></span>
             <div><div class="pc-name">Del conocimiento a la acción</div><div class="pc-desc">Convierte comprensión en acción.</div></div>
-            <div class="pc-thumb" title="Terminar con un criterio claro para escoger la próxima lectura."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
         </div>
       </div>
 
@@ -1684,25 +1649,5 @@
   <div class="footer-copy">© 2026 Investigación sobre Patrones de Diseño Narrativo. Todos los derechos reservados.</div>
 </footer>
 
-<script>
-(function(){
-  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-  var rows = document.querySelectorAll('.fx-row');
-  var MAX_TILT = 6; // degrees
-  rows.forEach(function(row){
-    row.addEventListener('mousemove', function(e){
-      var rect = row.getBoundingClientRect();
-      var x = (e.clientX - rect.left) / rect.width - 0.5;
-      var y = (e.clientY - rect.top) / rect.height - 0.5;
-      var rotateY = x * MAX_TILT * 2;
-      var rotateX = -y * MAX_TILT;
-      row.style.transform = 'perspective(700px) rotateX(' + rotateX.toFixed(2) + 'deg) rotateY(' + rotateY.toFixed(2) + 'deg)';
-    });
-    row.addEventListener('mouseleave', function(){
-      row.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg)';
-    });
-  });
-})();
-</script>
 </body>
 </html>
