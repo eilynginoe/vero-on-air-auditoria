@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patrones de Diseño Narrativo — Investigación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Inter+Tight:wght@700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --hero-bg-1:#0B1022;
+    --hero-bg-2:#0E132B;
+    --white:#FFFFFF;
+    --card-tint:#F3F0FF;
+    --dark-block:#0E132B;
+    --purple:#695CFF;
+    --purple-hover:#5A4DF5;
+    --blue:#4A78FF;
+    --green:#55B87A;
+    --text-main:#1D2133;
+    --text-sec:#5D6478;
+    --border-soft:#ECECF2;
+    --cat-icon-bg:#F5F6FC;
+    --cat-icon-color:#1D2160;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth; overflow-x:hidden;}
+  body{
+    overflow-x:hidden;
+    font-family:'Inter', system-ui, -apple-system, sans-serif;
+    color:var(--text-main);
+    background:#F7F8FC;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%; display:block;}
+
+  .wrap{
+    max-width:1280px;
+    margin:0 auto;
+    padding:0 56px;
+  }
+
+  section{padding-top:64px; padding-bottom:64px;}
+
+  .eyebrow-label{
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+  }
+
+  a{color:inherit; text-decoration:none;}
+  ul{list-style:none;}
+
+  /* ============ HERO ============ */
+  /* ============ READING PROGRESS BAR (pure CSS, no JS) ============ */
+  .progress-bar{
+    position:fixed;
+    top:0; left:0;
+    width:100%;
+    height:3px;
+    background:linear-gradient(90deg,#695CFF,#4A78FF);
+    transform-origin:left;
+    transform:scaleX(0);
+    opacity:0;
+    z-index:9999;
+    pointer-events:none;
+  }
+  @supports (animation-timeline: scroll()) {
+    .progress-bar{
+      opacity:1;
+      animation: progress-scale linear;
+      animation-timeline: scroll(root);
+    }
+  }
+  @keyframes progress-scale{
+    from{ transform:scaleX(0); }
+    to{ transform:scaleX(1); }
+  }
+
+  .hero{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(180deg, var(--hero-bg-1) 0%, var(--hero-bg-2) 100%);
+    padding:76px 0 76px;
+  }
+  .hero-texture{
+    position:absolute;
+    inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px);
+    background-size:24px 24px;
+    -webkit-mask-image:radial-gradient(ellipse 90% 80% at 30% 20%, #000 40%, transparent 85%);
+    mask-image:radial-gradient(ellipse 90% 80% at 30% 20%, #000 40%, transparent 85%);
+    pointer-events:none;
+    z-index:0;
+  }
+  .hero .wrap{ position:relative; z-index:1; }
+  .band-white{ background:#FFFFFF; }
+
+  /* ============ MARQUEE TICKER ============ */
+  .marquee{
+    background:linear-gradient(90deg,#695CFF,#5A4DF5);
+    overflow:hidden;
+    white-space:nowrap;
+    padding:15px 0;
+  }
+  .marquee-track{
+    display:inline-flex;
+    width:max-content;
+    animation:marquee-scroll 26s linear infinite;
+  }
+  .marquee:hover .marquee-track{
+    animation-play-state:paused;
+  }
+  .marquee-item{
+    display:inline-flex;
+    align-items:center;
+    color:#FFFFFF;
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    padding:0 22px;
+    white-space:nowrap;
+  }
+  .marquee-item .dot{
+    display:inline-block;
+    width:4px; height:4px;
+    border-radius:999px;
+    background:rgba(255,255,255,.6);
+    margin-left:22px;
+  }
+  @keyframes marquee-scroll{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .marquee-track{ animation:none; }
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:45% 55%;
+    gap:32px;
+    align-items:center;
+    min-height:340px;
+  }
+  .hero-eyebrow{
+    color:#FFFFFF;
+    font-weight:600;
+    font-size:18px;
+    margin-bottom:18px;
+    opacity:.92;
+  }
+  .hero-title{
+    color:#FFFFFF;
+    font-family:'Inter Tight','Inter',sans-serif;
+    font-weight:700;
+    font-size:clamp(38px, 5vw, 68px);
+    line-height:0.98;
+    letter-spacing:-0.02em;
+    margin-bottom:22px;
+  }
+  .hero-desc{
+    color:rgba(255,255,255,.82);
+    font-weight:400;
+    font-size:19px;
+    line-height:1.55;
+    max-width:520px;
+    margin-bottom:30px;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--purple);
+    color:#fff;
+    font-weight:600;
+    font-size:16px;
+    padding:16px 30px;
+    border-radius:12px;
+    border:none;
+    cursor:pointer;
+    transition:background .18s ease, transform .18s ease;
+  }
+  .btn:hover{background:var(--purple-hover); transform:translateY(-1px);}
+  .btn svg{width:18px; height:18px;}
+
+  .hero-visual{
+    position:relative;
+    display:flex;
+    justify-content:center;
+  }
+  .hero-img-frame{
+    width:100%;
+    max-width:640px;
+  }
+  .hero-img-frame img{width:100%; height:auto;}
+
+  .float-chip{
+    position:absolute;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#11182F;
+    border-radius:999px;
+    padding:10px 18px 10px 10px;
+    box-shadow:0 12px 30px rgba(0,0,0,.35);
+  }
+  .float-chip .chip-icon{
+    width:44px; height:44px;
+    border-radius:999px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.15);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .float-chip .chip-icon svg{width:20px; height:20px; stroke:#fff;}
+  .chip-text{display:flex; flex-direction:column; line-height:1.25;}
+  .chip-text .l1{font-size:14px; font-weight:600; color:rgba(255,255,255,.92);}
+  .chip-text .l2{font-size:13px; font-weight:400; color:rgba(255,255,255,.65);}
+
+  .chip-1{top:-8%; right:2%;}
+  .chip-2{top:36%; right:-8%;}
+  .chip-3{bottom:-6%; right:8%;}
+
+  /* ============ EL PROBLEMA + PREGUNTA DE INVESTIGACIÓN ============ */
+  .problem-card{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border-radius:20px;
+    overflow:hidden;
+    border:1px solid var(--border-soft);
+    box-shadow:0 8px 24px rgba(25,30,45,.04);
+  }
+  .problem-col{
+    padding:56px 52px;
+    display:flex;
+    flex-direction:column;
+  }
+  .problem-col-left{
+    background:#FFFFFF;
+    border-right:1px solid var(--border-soft);
+  }
+  .problem-col-right{
+    background:#F7F4FD;
+    justify-content:center;
+  }
+  .problem-eyebrow{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:30px;
+  }
+  .problem-num{
+    font-family:'Inter Tight','Inter',sans-serif;
+    font-weight:800;
+    font-size:13px;
+    color:var(--purple);
+    opacity:.5;
+  }
+  .problem-kicker{
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#5C4DF6;
+  }
+  .problem-body{
+    display:grid;
+    grid-template-columns:0.85fr 1.15fr;
+    gap:36px;
+    align-items:center;
+    margin-bottom:0;
+  }
+  .problem-illustration{
+    width:100%;
+  }
+  .problem-illustration img{
+    width:100%;
+    height:auto;
+    display:block;
+  }
+  .problem-text-wrap{ display:flex; flex-direction:column; gap:22px; }
+  .problem-text-wrap .problem-eyebrow{ margin-bottom:0; }
+  .problem-text{
+    font-size:17.5px;
+    line-height:1.6;
+    color:var(--text-main);
+    margin:0;
+  }
+  .problem-followup{
+    font-size:19px;
+    font-weight:600;
+    color:var(--purple);
+    line-height:1.5;
+    margin:0;
+  }
+  .problem-quote-mark{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:52px; height:52px;
+    border-radius:14px;
+    background:#EDE8FF;
+    margin-bottom:18px;
+  }
+  .problem-quote-mark svg{
+    width:26px; height:26px;
+    stroke:var(--purple);
+  }
+  .problem-quote{
+    font-size:27px;
+    font-weight:600;
+    line-height:1.45;
+    color:#332C6B;
+    max-width:520px;
+  }
+
+  /* ============ A QUIÉNES ESTUDIAMOS ============ */
+  .whom-section{
+    background:#FCFBF9;
+  }
+  .whom-subtitle{
+    font-size:16px;
+    color:var(--text-sec);
+    margin-top:16px;
+    margin-bottom:48px;
+  }
+  .whom-grid{
+    display:grid;
+    grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr;
+    align-items:start;
+    column-gap:0;
+  }
+  .whom-item{
+    text-align:center;
+    padding:0 18px;
+  }
+  .whom-sep{
+    width:1px;
+    height:80px;
+    background:#ECE8F3;
+    justify-self:center;
+    align-self:center;
+  }
+  .whom-icon{
+    height:64px;
+    width:auto;
+    display:block;
+    margin:0 auto 16px;
+  }
+  .whom-name{
+    font-weight:600;
+    font-size:15px;
+    color:#202033;
+    margin-bottom:8px;
+    line-height:1.35;
+  }
+  .whom-desc{
+    font-size:13px;
+    color:#666879;
+    line-height:1.4;
+  }
+  .whom-footnote{
+    text-align:center;
+    font-size:14px;
+    font-weight:400;
+    color:#4A4B57;
+    margin-top:56px;
+  }
+
+  /* ============ SECTION 1: three columns ============ */
+  .section-hook{
+    max-width:780px;
+    margin:2rem auto 4rem;
+    text-align:center;
+  }
+  .section-hook .hook-question{
+    font-family:'Inter Tight','Inter',sans-serif;
+    font-weight:700;
+    font-size:clamp(22px,2.6vw,30px);
+    line-height:1.3;
+    color:var(--text-main);
+    letter-spacing:-0.01em;
+  }
+  .cols-3{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:56px;
+  }
+  .cols-3 > div{
+    position:relative;
+  }
+  .cols-3 > div + div::before{
+    content:"";
+    position:absolute;
+    top:2px;
+    bottom:2px;
+    left:-28px;
+    width:1px;
+    background:var(--border-soft);
+  }
+  .col-title{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    color:#332C87;
+    font-weight:700;
+    font-size:22px;
+    margin-bottom:22px;
+  }
+  .col-title-icon{
+    width:46px; height:46px;
+    border-radius:12px;
+    background:var(--card-tint);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    margin-top:1px;
+  }
+  .col-title-icon svg{width:23px; height:23px; stroke:#5C4DF6; stroke-width:2;}
+  .col-text{
+    font-size:16px;
+    line-height:1.6;
+    color:var(--text-sec);
+  }
+  .quote-card{
+    background:var(--card-tint);
+    border-radius:16px;
+    padding:26px 24px;
+    box-shadow:0 8px 24px rgba(105,92,255,.08);
+    font-size:17px;
+    line-height:1.55;
+    font-weight:500;
+    color:#3A2F87;
+  }
+  .quote-card .quote-mark{
+    font-size:34px;
+    color:var(--purple);
+    display:block;
+    margin-bottom:6px;
+    font-weight:800;
+    font-family:Georgia, serif;
+  }
+  .categories-grid{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:22px 12px;
+    margin-top:6px;
+  }
+  .cat-item{text-align:center;}
+  .cat-circle{
+    width:64px; height:64px;
+    border-radius:999px;
+    background:var(--cat-icon-bg);
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 10px;
+  }
+  .cat-circle svg{width:26px; height:26px; stroke:var(--cat-icon-color);}
+  .cat-name{font-size:13px; font-weight:600; color:var(--text-main); line-height:1.3;}
+
+  /* ============ 04 CÓMO LO HICIMOS ============ */
+  .method-section{ --background:#FCFBF9; background:var(--background); }
+  .method-section .problem-kicker,
+  .method-section .problem-num{ color:#5D4EEA; }
+  .method-steps{
+    display:grid;
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    position:relative;
+    margin-top:56px;
+  }
+  .method-steps::before{
+    content:"";
+    position:absolute;
+    top:71px; left:8%; right:8%;
+    height:0;
+    border-top:2px dotted #D8D2C8;
+    z-index:0;
+  }
+  .m-step{
+    position:relative;
+    z-index:1;
+    text-align:center;
+    padding:0 10px;
+  }
+  .m-step:not(:last-child)::after{
+    content:"";
+    position:absolute;
+    top:66px;
+    right:2px;
+    width:0; height:0;
+    border-top:4px solid transparent;
+    border-bottom:4px solid transparent;
+    border-left:5px solid #C8C1B8;
+    opacity:.75;
+  }
+  .m-num{
+    font-family:'SFMono-Regular', Menlo, Consolas, monospace;
+    font-size:11px;
+    letter-spacing:.03em;
+    color:#B5B0C8;
+    margin-bottom:10px;
+  }
+  .m-circle{
+    width:96px; height:96px;
+    border-radius:999px;
+    background:#FFFFFF;
+    border:1.5px solid #E8E2D8;
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 18px;
+  }
+  .m-circle svg{width:40px; height:40px; stroke:#1F2340; stroke-width:1.6;}
+  .m-text{font-size:14px; font-weight:600; color:#202033; line-height:1.4;}
+  .method-note{
+    margin-top:56px;
+    padding-top:28px;
+    border-top:1px solid var(--border-soft);
+    text-align:center;
+    font-size:15px;
+    line-height:1.6;
+    color:var(--text-sec);
+    max-width:640px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .method-note strong{color:var(--text-main); font-weight:700;}
+  .method-footnote{
+    text-align:center;
+    font-size:15px;
+    font-weight:400;
+    color:#666879;
+    margin-top:22px;
+  }
+
+  /* ============ RESULTADO PRINCIPAL ============ */
+  .result-card{
+    background:var(--dark-block);
+    border-radius:18px;
+    padding:36px;
+    display:grid;
+    grid-template-columns:1.6fr minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);
+    gap:24px;
+    align-items:center;
+  }
+  .result-first{display:flex; gap:18px; align-items:flex-start;}
+  .result-icon{
+    width:52px; height:52px;
+    border-radius:14px;
+    background:rgba(105,92,255,.18);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .result-icon svg{width:26px; height:26px; stroke:var(--purple);}
+  .result-label{
+    color:var(--purple);
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:.1em;
+    margin-bottom:8px;
+  }
+  .result-title{
+    color:#fff;
+    font-weight:700;
+    font-size:23px;
+    line-height:1.25;
+    margin-bottom:8px;
+  }
+  .big-num{
+    font-family:'Fraunces','Inter Tight',serif;
+    font-weight:600;
+    font-optical-sizing:auto;
+    color:#9A8CFF;
+    font-size:1.35em;
+    display:inline-block;
+    position:relative;
+  }
+  .result-desc{
+    color:rgba(255,255,255,.68);
+    font-size:14px;
+    line-height:1.5;
+  }
+  .result-stat{text-align:center;}
+  .result-num{
+    font-family:'Fraunces','Inter Tight',serif;
+    font-weight:600;
+    font-optical-sizing:auto;
+    font-size:52px;
+    line-height:1;
+    display:inline-block;
+    position:relative;
+  }
+  .result-num.p1{color:#695CFF;}
+  .result-num.p2{color:#5A6BFF;}
+  .result-num.p3{color:#55B87A;}
+  .result-stat-label{
+    color:rgba(255,255,255,.68);
+    font-size:13px;
+    margin-top:8px;
+    line-height:1.35;
+  }
+
+  /* ============ LOS 19 PATRONES ============ */
+  .pattern-section-title{
+    text-align:center;
+    color:var(--text-sec);
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:.14em;
+    margin-bottom:44px;
+  }
+  .pattern-cards{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:24px;
+    align-items:stretch;
+  }
+  .pattern-card{
+    width:340px;
+    background:#FFFFFF;
+    border:1px solid #E9EAF3;
+    border-radius:18px;
+    box-shadow:0 8px 24px rgba(25,30,45,.04);
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+  }
+  .pc-header{
+    margin-bottom:14px;
+  }
+  .pc-title{
+    font-weight:700;
+    font-size:24px;
+    line-height:1.2;
+  }
+  .pc-subtitle{
+    font-weight:400;
+    font-size:15px;
+    color:#62687A;
+    line-height:1.4;
+    margin-top:6px;
+  }
+  .pc-divider{
+    height:1px;
+    background:#ECECF3;
+    margin:16px 0 10px;
+  }
+  .pc-col-headers{
+    display:grid;
+    grid-template-columns:44px minmax(0,1fr) 82px;
+    gap:16px;
+    padding-bottom:10px;
+    margin-bottom:2px;
+  }
+  .pc-col-headers span{
+    font-size:11px;
+    font-weight:600;
+    color:#9A9FB2;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    line-height:1.2;
+  }
+  .pc-col-headers span:last-child{text-align:center;}
+  .pc-rows{display:flex; flex-direction:column; flex:1;}
+  .pc-row{
+    display:grid;
+    grid-template-columns:44px minmax(0,1fr) 82px;
+    gap:16px;
+    align-items:center;
+    padding:18px 0;
+    border-top:1px solid #ECECF3;
+  }
+  .pc-row:first-child{border-top:none;}
+  .pc-icon{
+    width:34px; height:34px;
+    border-radius:999px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .pc-icon svg{width:16px; height:16px; stroke-width:1.6;}
+  .pc-name{font-size:16px; font-weight:700; color:#1C2233; line-height:1.25; margin-bottom:3px;}
+  .pc-desc{font-size:13px; font-weight:400; color:#6B7285; line-height:1.35;}
+  .pc-thumb{
+    width:82px; height:46px;
+    border-radius:8px;
+    background:#EFF1F7;
+    border:1px dashed #C9CFDF;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .pc-thumb svg{width:18px; height:18px; stroke:#B7BDD0; stroke-width:1.6;}
+
+  /* ============ FX ROWS: 3D TILT + SLIDE REVEAL (desktop hover only) ============ */
+  @media (hover:hover) and (pointer:fine){
+    .fx-row{
+      transition:transform .18s ease-out, background-color .18s ease;
+      transform-style:preserve-3d;
+      will-change:transform;
+      border-radius:10px;
+      cursor:default;
+    }
+    .fx-row:hover{
+      background-color:#FAFAFF;
+    }
+    .pc-thumb-fx{ overflow:hidden; position:relative; }
+    .pc-thumb-fx .pc-thumb-icon{
+      display:flex; align-items:center; justify-content:center;
+      width:100%; height:100%;
+      transition:transform .38s cubic-bezier(.4,0,.2,1);
+    }
+    .pc-thumb-fx .pc-thumb-example{
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      padding:5px 7px;
+      font-size:9px;
+      line-height:1.25;
+      font-style:italic;
+      text-align:center;
+      color:#4B4570;
+      background:#F5F3FF;
+      transform:translateX(102%);
+      transition:transform .38s cubic-bezier(.4,0,.2,1);
+    }
+    .fx-row:hover .pc-thumb-icon{ transform:translateX(-102%); }
+    .fx-row:hover .pc-thumb-example{ transform:translateX(0); }
+  }
+
+
+  .pattern-card.univ .pc-title{color:#5C4DF6;}
+  .pattern-card.univ .pc-icon{background:rgba(92,77,246,.10);}
+  .pattern-card.univ .pc-icon svg{stroke:#5C4DF6;}
+
+  .pattern-card.trans .pc-title{color:#3C74F7;}
+  .pattern-card.trans .pc-icon{background:rgba(60,116,247,.10);}
+  .pattern-card.trans .pc-icon svg{stroke:#3C74F7;}
+
+  .pattern-card.espec .pc-title{color:#47B36B;}
+  .pattern-card.espec .pc-icon{background:rgba(71,179,107,.10);}
+  .pattern-card.espec .pc-icon svg{stroke:#47B36B;}
+
+  .pattern-head-tag{
+    display:inline-block;
+    font-weight:700;
+    font-size:15px;
+  }
+  .tag-universal{color:#5C4DF6;}
+  .tag-transversal{color:#3C74F7;}
+  .tag-especifico{color:#47B36B;}
+
+  /* ============ COMPARATIVO: PROMESA VS PREGUNTA ============ */
+  .compare-wrap{
+    margin-top:36px;
+    background:#fff;
+    border-radius:16px;
+    border:1px solid var(--border-soft);
+    padding:32px;
+  }
+  .compare-intro{
+    font-size:14px;
+    color:var(--text-sec);
+    margin-bottom:22px;
+    max-width:640px;
+  }
+  .compare-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:24px;
+  }
+  .compare-col{
+    background:#F9F9FD;
+    border-radius:14px;
+    padding:22px 24px;
+  }
+  .compare-col h4{
+    font-size:16px;
+    font-weight:700;
+    color:var(--purple);
+    margin-bottom:10px;
+  }
+  .compare-col .compare-role{
+    font-size:13px;
+    color:var(--text-sec);
+    line-height:1.5;
+    margin-bottom:12px;
+  }
+  .compare-col .compare-q{
+    font-size:13px;
+    font-weight:600;
+    color:var(--text-main);
+    margin-bottom:10px;
+  }
+  .compare-col .compare-ex{
+    font-size:13px;
+    font-style:italic;
+    color:#3A2F87;
+    background:var(--card-tint);
+    border-radius:10px;
+    padding:12px 14px;
+    line-height:1.5;
+  }
+  .compare-foot{
+    margin-top:22px;
+    text-align:center;
+    font-size:14px;
+    font-weight:600;
+    color:var(--text-main);
+  }
+
+  /* ============ 06 EL HALLAZGO PRINCIPAL ============ */
+  .hallazgo-section{ background:#11142D; }
+  .hallazgo-section .problem-kicker,
+  .hallazgo-section .problem-num{ color:#C6B8FF; }
+  .hallazgo-grid{
+    display:grid;
+    grid-template-columns:1.3fr auto 0.9fr;
+    align-items:center;
+    gap:44px;
+    margin-top:24px;
+  }
+  .hallazgo-quote{
+    font-family:'Fraunces','Inter Tight',serif;
+    font-weight:400;
+    font-size:26px;
+    line-height:1.42;
+    color:#FFFFFF;
+  }
+  .hallazgo-accent{
+    color:#9D7BFF;
+    font-weight:600;
+  }
+  .hallazgo-illustration{
+    width:440px;
+    max-width:100%;
+    position:relative;
+    z-index:0;
+    margin:-30px -85px -30px -35px;
+  }
+  .hallazgo-quote{ position:relative; z-index:1; }
+  .hallazgo-conclusion{ position:relative; z-index:1; }
+  .hallazgo-illustration img{
+    width:100%;
+    height:auto;
+    display:block;
+  }
+  .hallazgo-conclusion{
+    font-family:'Fraunces','Inter Tight',serif;
+    font-weight:400;
+    font-size:19px;
+    line-height:1.5;
+    color:#FFFFFF;
+  }
+
+  /* ============ 07 DÓNDE PUEDEN APLICARSE ESTOS PATRONES ============ */
+  .apps-section{ background:#FCFBF9; }
+  .apps-section .problem-kicker,
+  .apps-section .problem-num{ color:#5D4EEA; }
+  .apps-layout{
+    display:grid;
+    grid-template-columns:3fr 1fr;
+    gap:48px;
+    align-items:stretch;
+    margin-top:44px;
+  }
+  .apps-grid-new{
+    display:grid;
+    grid-template-columns:repeat(4, minmax(0,1fr));
+    row-gap:36px;
+    column-gap:16px;
+    height:100%;
+    align-content:center;
+  }
+  .app-item-new{text-align:center;}
+  .app-item-new svg{width:42px; height:42px; stroke:#1F2340; stroke-width:1.5; margin-bottom:14px;}
+  .app-label-new{font-size:13.5px; font-weight:600; color:#202033; line-height:1.35;}
+  .apps-card{
+    background:#F8F4EF;
+    border:1px solid #ECE4D8;
+    border-radius:18px;
+    padding:30px 26px;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .apps-card-text{
+    font-family:'Fraunces','Inter Tight',serif;
+    font-weight:400;
+    font-size:22px;
+    line-height:1.45;
+    color:#202033;
+    margin:0 0 20px;
+  }
+  .apps-card-icon svg{width:28px; height:28px; color:#5D4EEA;}
+
+  /* ============ 08 ESTADO DEL PROYECTO / 09 PRÓXIMO PASO ============ */
+  .sp-section{ background:#F8F7F5; font-family:'Inter', system-ui, -apple-system, sans-serif; }
+  .sp-title-row{
+    display:flex; align-items:center; justify-content:center; gap:12px;
+    margin-bottom:40px;
+  }
+  .sp-line{ flex:1; max-width:160px; height:2px; background:#6B5CF6; }
+  .sp-dot{ width:7px; height:7px; border-radius:50%; background:#6B5CF6; flex-shrink:0; }
+  .sp-title{ color:#5046E5; font-weight:700; font-size:14px; letter-spacing:.12em; white-space:nowrap; }
+
+  .sp-layout{ display:grid; grid-template-columns:70fr 30fr; gap:28px; align-items:stretch; }
+
+  .sp-left{
+    background:#FFFFFF;
+    border:1px solid #E7E3DD;
+    border-radius:24px;
+    box-shadow:0 10px 30px rgba(30,30,30,.05);
+    padding:56px;
+  }
+  .sp-timeline{ display:flex; justify-content:space-between; position:relative; margin-bottom:40px; }
+  .sp-line-solid{ position:absolute; top:30px; left:8.33%; right:25%; height:3px; background:#3BB46E; z-index:0; }
+  .sp-line-dashed{ position:absolute; top:30px; left:75%; right:8.33%; height:0; border-top:3px dashed #6F56F5; z-index:0; }
+  .sp-tstep{ position:relative; z-index:1; flex:1; padding:0 6px; display:flex; flex-direction:column; align-items:center; }
+  .sp-circle{
+    width:60px; height:60px; border-radius:50%;
+    background:#FFFFFF; border:2px solid #38B36D;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .sp-circle svg{ width:24px; height:24px; stroke:#38B36D; stroke-width:2; }
+  .sp-circle-alt{ width:72px; height:72px; border-color:#6F56F5; }
+  .sp-circle-alt svg{ stroke:#6F56F5; }
+  .sp-num{
+    width:28px; height:28px; border-radius:50%; background:#38B36D; color:#fff;
+    font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center;
+    margin-top:12px; margin-bottom:14px;
+  }
+  .sp-num-alt{ background:#5B3DF5; }
+  .sp-tstep-title{ font-size:15px; font-weight:600; color:#182033; margin-bottom:8px; line-height:1.3; }
+  .sp-tstep-title-alt{ color:#5B3DF5; }
+  .sp-tstep-desc{ font-size:13px; color:#5D6577; max-width:150px; line-height:1.45; }
+  .sp-tstep-desc-alt{ color:#5B3DF5; font-weight:600; }
+  .sp-badge{
+    display:inline-block; margin-top:14px;
+    border:1px solid #5B3DF5; color:#5B3DF5;
+    font-size:11.5px; font-weight:700; letter-spacing:.05em;
+    border-radius:999px; padding:8px 20px;
+  }
+
+  .sp-objective{
+    margin-top:40px; background:#F5F3FE; border-radius:18px; padding:28px;
+    display:flex; align-items:center; gap:24px;
+  }
+  .sp-obj-icon{
+    width:56px; height:56px; border-radius:50%; background:#ECE7FF;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .sp-obj-icon svg{ width:24px; height:24px; stroke:#5B3DF5; stroke-width:2; }
+  .sp-obj-sep{ width:1px; height:48px; background:#D8D4FE; flex-shrink:0; }
+  .sp-obj-title{ color:#5B3DF5; font-weight:700; font-size:15px; letter-spacing:.04em; flex-shrink:0; }
+  .sp-obj-text{ color:#384152; font-size:16px; line-height:1.5; }
+
+  .sp-right{
+    background:linear-gradient(180deg,#6F56F5 0%,#4F39E8 100%);
+    border-radius:24px; padding:40px;
+    display:flex; flex-direction:column;
+    color:#fff; height:100%;
+  }
+  .sp-right-icon{
+    width:64px; height:64px; border-radius:16px; background:rgba(255,255,255,.12);
+    display:flex; align-items:center; justify-content:center; margin-bottom:22px;
+  }
+  .sp-right-icon svg{ width:26px; height:26px; stroke:#fff; stroke-width:2; }
+  .sp-right-label{
+    font-size:13px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    color:rgba(255,255,255,.9); margin-bottom:10px;
+  }
+  .sp-right-title{ font-size:26px; font-weight:700; line-height:1.28; margin-bottom:22px; }
+  .sp-right-title .accent{ color:#D7B5FF; }
+  .sp-right-sep{ height:1px; background:rgba(255,255,255,.3); margin-bottom:20px; }
+  .sp-right-text{ font-size:16px; line-height:1.7; color:rgba(255,255,255,.92); }
+  .sp-right-dashed{ height:0; border-top:1px dashed rgba(255,255,255,.3); margin:24px 0 20px; margin-top:auto; }
+  .sp-right-status{ display:flex; align-items:center; gap:14px; }
+  .sp-right-status-icon{
+    width:56px; height:56px; border-radius:14px; background:rgba(255,255,255,.12);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .sp-right-status-icon svg{ width:24px; height:24px; stroke:#fff; stroke-width:2; }
+  .sp-right-status-label{ font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.8); margin-bottom:4px; }
+  .sp-right-status-value{ font-size:24px; font-weight:700; color:#fff; }
+
+  .sp-footnote{
+    text-align:center; margin-top:36px; font-size:15px; color:#4A4B57;
+    display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;
+  }
+  .sp-footnote svg{ width:18px; height:18px; stroke:#5B3DF5; flex-shrink:0; }
+  .sp-footnote .accent{ color:#5B3DF5; font-weight:600; }
+
+  /* ============ CTA FINAL ============ */
+  .cta-final{
+    background:linear-gradient(100deg,#6B5BFF,#7A5CFF);
+    border-radius:0;
+  }
+  .cta-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    padding:36px 0;
+    flex-wrap:wrap;
+  }
+  .cta-title{color:#fff; font-weight:700; font-size:26px; margin-bottom:6px;}
+  .cta-desc{color:rgba(255,255,255,.85); font-size:15px; max-width:560px;}
+  .btn-white{
+    background:#fff;
+    color:#5A4DF5;
+  }
+  .btn-white:hover{background:#F1F0FF;}
+
+  footer{
+    text-align:center;
+    padding:48px 24px 40px;
+    color:rgba(255,255,255,.68);
+    background:var(--dark-block);
+  }
+  .footer-avatar{
+    height:30dvh;
+    width:auto;
+    max-width:420px;
+    margin:0 auto 18px;
+    display:block;
+  }
+  .footer-credit{
+    font-size:14px;
+    font-weight:600;
+    color:rgba(255,255,255,.92);
+    margin-bottom:4px;
+  }
+  .footer-copy{
+    font-size:12.5px;
+    color:rgba(255,255,255,.55);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:980px){
+    .wrap{padding:0 24px;}
+    .problem-card{grid-template-columns:1fr;}
+    .problem-col{padding:36px 28px;}
+    .problem-col-left{border-right:none; border-bottom:1px solid var(--border-soft);}
+    .problem-body{grid-template-columns:1fr; gap:24px;}
+    .problem-illustration{width:60%; max-width:220px; margin:0 auto;}
+    .problem-quote{font-size:22px; max-width:none;}
+    .whom-grid{grid-template-columns:repeat(2, minmax(0,1fr)); row-gap:32px; column-gap:20px;}
+    .whom-sep{display:none;}
+    .hero-grid{grid-template-columns:minmax(0,1fr); text-align:left;}
+    .hero-visual{margin-top:40px; flex-direction:column; align-items:center;}
+    .float-chip{position:static; margin-top:14px; width:fit-content;}
+    .chip-1,.chip-2,.chip-3{position:static;}
+    .cols-3, .result-card, .compare-grid{grid-template-columns:minmax(0,1fr);}
+    .cols-3 > div + div::before{display:none;}
+    .pattern-card{width:100%; max-width:340px;}
+    .categories-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .method-steps{grid-template-columns:repeat(2,minmax(0,1fr)); row-gap:32px;}
+    .method-steps::before{display:none;}
+    .m-step::after{display:none;}
+    .t-line{display:none;}
+    .hallazgo-grid{grid-template-columns:1fr; gap:28px; text-align:center;}
+    .hallazgo-illustration{width:160px; margin:0 auto; position:static;}
+    .hallazgo-quote{font-size:22px;}
+    .hallazgo-conclusion{font-size:17px;}
+    .sp-layout{grid-template-columns:minmax(0,1fr);}
+    .sp-left{padding:32px 24px;}
+    .sp-right{padding:32px 24px;}
+    .sp-title-row{gap:8px;}
+    .sp-line{display:none;}
+    .sp-timeline{flex-wrap:wrap; gap:32px 0; justify-content:flex-start;}
+    .sp-line-solid, .sp-line-dashed{display:none;}
+    .sp-tstep{flex:0 0 50%;}
+    .sp-objective{flex-direction:column; align-items:flex-start; gap:14px;}
+    .sp-obj-sep{display:none;}
+    .apps-layout{grid-template-columns:1fr; gap:32px;}
+    .apps-grid-new{grid-template-columns:repeat(2,minmax(0,1fr)); row-gap:28px;}
+    .apps-card{padding:26px 22px;}
+    .result-first{flex-direction:column; gap:16px;}
+    .cta-inner{flex-direction:column; align-items:flex-start;}
+  }
+
+  @media (max-width:480px){
+    .categories-grid{grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px 10px;}
+    .pattern-card{padding:20px 16px;}
+    .pc-row, .pc-col-headers{grid-template-columns:32px minmax(0,1fr) 58px; gap:10px;}
+    .pc-icon{width:30px; height:30px;}
+    .pc-icon svg{width:14px; height:14px;}
+    .pc-thumb{width:58px; height:34px;}
+    .pc-thumb svg{width:15px; height:15px;}
+    .pc-name{font-size:14.5px;}
+    .pc-desc{font-size:12px;}
+    .compare-col{padding:18px 16px;}
+    .sp-tstep{flex:0 0 100%;}
+  }
+  /* ============ SCROLL-DRIVEN ANIMATIONS (pure CSS, no JS) ============ */
+  @supports (animation-timeline: view()) {
+    .reveal{
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 65%;
+    }
+    .reveal-stagger-2{ animation-range: entry 10% entry 75%; }
+    .reveal-stagger-3{ animation-range: entry 20% entry 85%; }
+  }
+  @keyframes reveal-up{
+    from{ opacity:0; transform:translateY(52px) scale(.96); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" aria-hidden="true"></div>
+
+<!-- ICON SPRITE -->
+<svg width="0" height="0" style="position:absolute">
+<defs>
+  <g id="ic-magnet" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m12 15 4 4"/><path d="M2.352 10.648a1.205 1.205 0 0 0 0 1.704l2.296 2.296a1.205 1.205 0 0 0 1.704 0l6.029-6.029a1 1 0 1 1 3 3l-6.029 6.029a1.205 1.205 0 0 0 0 1.704l2.296 2.296a1.205 1.205 0 0 0 1.704 0l6.365-6.367A1 1 0 0 0 8.716 4.282z"/><path d="m5 8 4 4"/>
+  </g>
+  <g id="ic-clock" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+  </g>
+  <g id="ic-compass" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/>
+  </g>
+  <g id="ic-search" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+  </g>
+  <g id="ic-list" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/>
+  </g>
+  <g id="ic-users" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/>
+  </g>
+  <g id="ic-target" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+  </g>
+  <g id="ic-puzzle" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z"/>
+  </g>
+  <g id="ic-check" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+  </g>
+  <g id="ic-trophy" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2"/><path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2"/><path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/>
+  </g>
+  <g id="ic-book" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/>
+  </g>
+  <g id="ic-flask" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"/><path d="M6.453 15h11.094"/><path d="M8.5 2h7"/>
+  </g>
+  <g id="ic-clapper" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m12.296 3.464 3.02 3.956"/><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3z"/><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="m6.18 5.276 3.1 3.899"/>
+  </g>
+  <g id="ic-leaf" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+  </g>
+  <g id="ic-trend" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/>
+  </g>
+  <g id="ic-gift" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 7v14"/><path d="M20 11v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="M7.5 7a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5 1 1 0 0 1 0 5"/><rect x="3" y="7" width="18" height="4" rx="1"/>
+  </g>
+  <g id="ic-help" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>
+  </g>
+  <g id="ic-grid" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>
+  </g>
+  <g id="ic-link" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+  </g>
+  <g id="ic-star" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>
+  </g>
+  <g id="ic-refresh" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>
+  </g>
+  <g id="ic-bookopen" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 5v16"/><path d="M20.001 19A2 2 0 0 0 22 17V5a2 2 0 0 0-1.999-2L16 3.002A5 5 0 0 0 12 5a5 5 0 0 0-4-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 1.999 2H8a5 5 0 0 1 4 2 5 5 0 0 1 4-2z"/>
+  </g>
+  <g id="ic-filecheck" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="m9 15 2 2 4-4"/>
+  </g>
+  <g id="ic-bar" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 21v-6"/><path d="M12 21V3"/><path d="M19 21V9"/>
+  </g>
+  <g id="ic-layers" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/>
+  </g>
+  <g id="ic-image" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+  </g>
+  <g id="ic-zap" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15.914 4a1.5 1.5 0 0 0-2.474-1.561l-9 9A1.5 1.5 0 0 0 5.5 14h4.002a.5.5 0 0 1 .471.666L8.086 20a1.5 1.5 0 0 0 2.475 1.56l9-9A1.5 1.5 0 0 0 18.5 10h-3.997a.5.5 0 0 1-.472-.667z"/>
+  </g>
+  <g id="ic-scissors" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>
+  </g>
+  <g id="ic-arrowcircle" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="m12 16 4-4-4-4"/><path d="M8 12h8"/>
+  </g>
+  <g id="ic-play" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/>
+  </g>
+  <g id="ic-grad" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>
+  </g>
+  <g id="ic-monitor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>
+  </g>
+  <g id="ic-masks" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 11h.01"/><path d="M14 6h.01"/><path d="M18 6h.01"/><path d="M6.5 13.1h.01"/><path d="M22 5c0 9-4 12-6 12s-6-3-6-12c0-2 2-3 6-3s6 1 6 3"/><path d="M17.4 9.9c-.8.8-2 .8-2.8 0"/><path d="M10.1 7.1C9 7.2 7.7 7.7 6 8.6c-3.5 2-4.7 3.9-3.7 5.6 4.5 7.8 9.5 8.4 11.2 7.4.9-.5 1.9-2.1 1.9-4.7"/><path d="M9.1 16.5c.3-1.1 1.4-1.7 2.4-1.4"/>
+  </g>
+  <g id="ic-mic" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 19v3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><rect x="9" y="2" width="6" height="13" rx="3"/>
+  </g>
+  <g id="ic-brain" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 18V5"/><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/><path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/><path d="M18 18a4 4 0 0 0 2-7.464"/><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/><path d="M6 18a4 4 0 0 1-2-7.464"/><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/>
+  </g>
+  <g id="ic-settings" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/>
+  </g>
+  <g id="ic-arrow" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+  </g>  <g id="ic-alert" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>
+  </g>
+  <g id="ic-quote" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/>
+    <path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/>
+  </g>
+  <g id="ic-heart" fill="currentColor" stroke="none">
+    <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/>
+  </g>
+  <g id="ic-hourglass" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>
+  </g>
+  <g id="ic-sparkles" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/>
+  </g>
+</defs>
+</svg>
+
+
+<!-- ================= HERO ================= -->
+<div class="hero">
+  <div class="hero-texture" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow">Investigación sobre</div>
+        <h1 class="hero-title">Patrones de<br>Diseño Narrativo</h1>
+        <p class="hero-desc">Descubrimos las decisiones de diseño que toman los creadores de YouTube con mayor capacidad para captar, mantener y dirigir la atención.</p>
+        <button class="btn">Explora los patrones <svg viewBox="0 0 24 24"><use href="#ic-arrow" stroke="#fff"/></svg></button>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-img-frame">
+          <img src="https://i.postimg.cc/FKVBXzxD/video.webp" alt="Ilustración de investigación de patrones narrativos">
+        </div>
+        <div class="float-chip chip-1">
+          <span class="chip-icon"><svg viewBox="0 0 24 24"><use href="#ic-magnet"/></svg></span>
+          <span class="chip-text"><span class="l1">Captar</span><span class="l2">la atención</span></span>
+        </div>
+        <div class="float-chip chip-2">
+          <span class="chip-icon"><svg viewBox="0 0 24 24"><use href="#ic-clock"/></svg></span>
+          <span class="chip-text"><span class="l1">Mantener</span><span class="l2">el interés</span></span>
+        </div>
+        <div class="float-chip chip-3">
+          <span class="chip-icon"><svg viewBox="0 0 24 24"><use href="#ic-compass"/></svg></span>
+          <span class="chip-text"><span class="l1">Dirigir</span><span class="l2">el recorrido</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="marquee-item">18 patrones<span class="dot"></span></span>
+    <span class="marquee-item">5 categorías<span class="dot"></span></span>
+    <span class="marquee-item">1 solo hallazgo<span class="dot"></span></span>
+    <span class="marquee-item">Investigación sobre diseño narrativo<span class="dot"></span></span>
+    <span class="marquee-item">18 patrones<span class="dot"></span></span>
+    <span class="marquee-item">5 categorías<span class="dot"></span></span>
+    <span class="marquee-item">1 solo hallazgo<span class="dot"></span></span>
+    <span class="marquee-item">Investigación sobre diseño narrativo<span class="dot"></span></span>
+  </div>
+</div>
+
+<!-- ================= EL PROBLEMA + PREGUNTA DE INVESTIGACIÓN ================= -->
+<section>
+  <div class="wrap">
+    <div class="problem-card reveal">
+      <div class="problem-col problem-col-left">
+        <div class="problem-body">
+          <div class="problem-illustration"><img src="https://i.postimg.cc/FFWnMTS7/problema.webp" alt=""></div>
+          <div class="problem-text-wrap">
+            <div class="problem-eyebrow"><span class="problem-num">01</span><span class="problem-kicker">EL PROBLEMA</span></div>
+            <p class="problem-text">La mayoría del contenido compite por nuestra atención, pero muy pocos la mantienen hasta el final.</p>
+            <p class="problem-followup">¿Por qué algunos creadores lo logran y la mayoría no?</p>
+          </div>
+        </div>
+      </div>
+      <div class="problem-col problem-col-right">
+        <div class="problem-eyebrow"><span class="problem-num">02</span><span class="problem-kicker">NUESTRA PREGUNTA DE INVESTIGACIÓN</span></div>
+        <div class="problem-quote">
+          <span class="problem-quote-mark"><svg viewBox="0 0 24 24"><use href="#ic-quote"/></svg></span>
+          ¿Qué decisiones de diseño se repiten una y otra vez en los creadores que logran captar, mantener y dirigir la atención, independientemente del tema que traten?
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= A QUIÉNES ESTUDIAMOS ================= -->
+<section class="whom-section" style="padding-top:44px; padding-bottom:52px;">
+  <div class="wrap">
+    <div class="problem-eyebrow"><span class="problem-num">03</span><span class="problem-kicker">A QUIÉNES ESTUDIAMOS</span></div>
+    <p class="whom-subtitle">Cinco categorías. Un mismo objetivo: descubrir las decisiones que se repiten.</p>
+
+    <div class="whom-grid">
+      <div class="whom-item">
+        <img class="whom-icon" src="https://i.postimg.cc/QMQyvsQz/libro.webp" alt="BookTubers">
+        <div class="whom-name">BookTubers</div>
+        <div class="whom-desc">Hablan de libros.</div>
+      </div>
+      <div class="whom-sep" aria-hidden="true"></div>
+      <div class="whom-item">
+        <img class="whom-icon" src="https://i.postimg.cc/HnxvJyqk/microscopio.webp" alt="Divulgadores">
+        <div class="whom-name">Divulgadores</div>
+        <div class="whom-desc">Explican el mundo.</div>
+      </div>
+      <div class="whom-sep" aria-hidden="true"></div>
+      <div class="whom-item">
+        <img class="whom-icon" src="https://i.postimg.cc/BnDY1sVs/storytellers.webp" alt="Storytellers">
+        <div class="whom-name">Storytellers</div>
+        <div class="whom-desc">Cuentan historias.</div>
+      </div>
+      <div class="whom-sep" aria-hidden="true"></div>
+      <div class="whom-item">
+        <img class="whom-icon" src="https://i.postimg.cc/jSJ9QyL5/desarrollo-personal.webp" alt="Desarrollo personal">
+        <div class="whom-name">Desarrollo personal</div>
+        <div class="whom-desc">Transforman vidas.</div>
+      </div>
+      <div class="whom-sep" aria-hidden="true"></div>
+      <div class="whom-item">
+        <img class="whom-icon" src="https://i.postimg.cc/W3Sfbnfh/maestros-de-la-retencion.webp" alt="Maestros de la retención">
+        <div class="whom-name">Maestros de la retención</div>
+        <div class="whom-desc">Hacen que no puedas dejar de ver.</div>
+      </div>
+    </div>
+
+    <p class="whom-footnote">Ingeniería inversa de cientos de videos. Miles de minutos analizados. Un objetivo: encontrar convergencias.</p>
+  </div>
+</section>
+
+<!-- ================= 04 CÓMO LO HICIMOS ================= -->
+<section class="method-section" style="padding-top:88px; padding-bottom:92px;">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="problem-eyebrow"><span class="problem-num">04</span><span class="problem-kicker">CÓMO LO HICIMOS</span></div>
+      <div class="method-steps">
+        <div class="m-step"><div class="m-num">01</div><div class="m-circle"><svg viewBox="0 0 24 24"><use href="#ic-search"/></svg></div><div class="m-text">Ingeniería inversa</div></div>
+        <div class="m-step"><div class="m-num">02</div><div class="m-circle"><svg viewBox="0 0 24 24"><use href="#ic-list"/></svg></div><div class="m-text">Identificación de decisiones de diseño</div></div>
+        <div class="m-step"><div class="m-num">03</div><div class="m-circle"><svg viewBox="0 0 24 24"><use href="#ic-users"/></svg></div><div class="m-text">Comparación entre categorías</div></div>
+        <div class="m-step"><div class="m-num">04</div><div class="m-circle"><svg viewBox="0 0 24 24"><use href="#ic-target"/></svg></div><div class="m-text">Búsqueda de convergencias</div></div>
+        <div class="m-step"><div class="m-num">05</div><div class="m-circle"><svg viewBox="0 0 24 24"><use href="#ic-puzzle"/></svg></div><div class="m-text">Identificación de patrones</div></div>
+        <div class="m-step"><div class="m-num">06</div><div class="m-circle"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div><div class="m-text">Traducción operativa</div></div>
+      </div>
+      <div class="method-note">En lugar de preguntar <strong>&ldquo;¿qué hace diferente este creador?&rdquo;</strong>, la investigación preguntó: <strong>¿qué decisiones toman todos, aunque produzcan contenidos completamente distintos?</strong></div>
+      <p class="method-footnote">Del análisis de cientos de videos a un conjunto de decisiones de diseño reutilizables.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RESULTADO PRINCIPAL ================= -->
+<section class="band-white" style="padding-top:0;">
+  <div class="wrap">
+    <div class="result-card reveal">
+      <div class="result-first">
+        <div class="result-icon"><svg viewBox="0 0 24 24"><use href="#ic-trophy"/></svg></div>
+        <div>
+          <div class="result-label">RESULTADO PRINCIPAL</div>
+          <div class="result-title"><span class="big-num">18</span> patrones de diseño narrativo</div>
+          <div class="result-desc">No son técnicas aisladas. Son decisiones que organizan la experiencia del espectador antes incluso de escribir el guion.</div>
+        </div>
+      </div>
+      <div class="result-stat"><div class="result-num p1">6</div><div class="result-stat-label">Patrones Universales</div></div>
+      <div class="result-stat"><div class="result-num p2">6</div><div class="result-stat-label">Patrones Transversales</div></div>
+      <div class="result-stat"><div class="result-num p3">6</div><div class="result-stat-label">Patrones Específicos</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LOS 18 PATRONES ================= -->
+<section style="padding-top:48px;">
+  <div class="wrap">
+    <div class="pattern-section-title">LOS 18 PATRONES</div>
+    <div class="pattern-cards">
+
+      <div class="pattern-card univ reveal">
+        <div class="pc-header">
+          <div class="pc-title">1. Patrones Universales</div>
+          <div class="pc-subtitle">Aparecen en prácticamente todas las categorías analizadas.</div>
+        </div>
+        <div class="pc-divider"></div>
+        <div class="pc-col-headers"><span>Patrón</span><span>¿Qué decisión representa?</span><span>Ejemplo</span></div>
+        <div class="pc-rows">
+          <div class="pc-row fx-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-gift"/></svg></span>
+            <div><div class="pc-name">Promesa inicial</div><div class="pc-desc">Dar una razón para comenzar.</div></div>
+            <div class="pc-thumb pc-thumb-fx" title="&ldquo;Leí los 10 libros más recomendados del año para descubrir si realmente valen la pena.&rdquo;"><span class="pc-thumb-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span><span class="pc-thumb-example">&ldquo;Leí los 10 libros más recomendados del año para descubrir si realmente valen la pena.&rdquo;</span></div></div>
+
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-help"/></svg></span>
+            <div><div class="pc-name">Pregunta central</div><div class="pc-desc">Definir el problema que organiza el recorrido.</div></div>
+            <div class="pc-thumb" title="&ldquo;¿Cuáles de esos libros realmente merecen tu tiempo?&rdquo;"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-clock"/></svg></span>
+            <div><div class="pc-name">Revelación progresiva</div><div class="pc-desc">Decidir cuándo revelar la información.</div></div>
+            <div class="pc-thumb" title="El creador no dice desde el inicio cuál fue el mejor libro; distribuye la información a lo largo del recorrido."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-grid"/></svg></span>
+            <div><div class="pc-name">Organización en bloques</div><div class="pc-desc">Dividir el contenido en unidades claras.</div></div>
+            <div class="pc-thumb" title="Libros decepcionantes → Libros aceptables → Libros imprescindibles."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+
+          <div class="pc-row fx-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-link"/></svg></span>
+            <div><div class="pc-name">Cadena de expectativas</div><div class="pc-desc">Conseguir que el espectador quiera ver el siguiente bloque.</div></div>
+            <div class="pc-thumb pc-thumb-fx" title="&ldquo;Pero el siguiente libro cambió completamente mi opinión...&rdquo;"><span class="pc-thumb-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span><span class="pc-thumb-example">&ldquo;Pero el siguiente libro cambió completamente mi opinión...&rdquo;</span></div></div>
+
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-star"/></svg></span>
+            <div><div class="pc-name">Cierre transformador</div><div class="pc-desc">Recompensar todo el recorrido.</div></div>
+            <div class="pc-thumb" title="El creador no solo recomienda un libro; propone un nuevo criterio para elegir futuras lecturas."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+        </div>
+      </div>
+
+      <div class="pattern-card trans reveal reveal-stagger-2">
+        <div class="pc-header">
+          <div class="pc-title">2. Patrones Transversales</div>
+          <div class="pc-subtitle">Aparecen en varias categorías y fortalecen el recorrido.</div>
+        </div>
+        <div class="pc-divider"></div>
+        <div class="pc-col-headers"><span>Patrón</span><span>¿Qué hace?</span><span>Ejemplo</span></div>
+        <div class="pc-rows">
+          <div class="pc-row fx-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-refresh"/></svg></span>
+            <div><div class="pc-name">Cambio de estado</div><div class="pc-desc">Cada bloque modifica la situación anterior.</div></div>
+            <div class="pc-thumb pc-thumb-fx" title="Después de cada libro, el ranking cambia y el espectador reevalúa cuál podría ser el mejor."><span class="pc-thumb-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span><span class="pc-thumb-example">Después de cada libro, el ranking cambia y el espectador reevalúa cuál podría ser el mejor.</span></div></div>
+
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-bookopen"/></svg></span>
+            <div><div class="pc-name">Construcción de comprensión</div><div class="pc-desc">Construye conocimiento paso a paso.</div></div>
+            <div class="pc-thumb" title="Antes de comparar dos libros, el creador explica el criterio de evaluación."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-filecheck"/></svg></span>
+            <div><div class="pc-name">Evidencia y ejemplificación</div><div class="pc-desc">Respalda las afirmaciones.</div></div>
+            <div class="pc-thumb" title="Leer un fragmento del libro para justificar una crítica."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-gift"/></svg></span>
+            <div><div class="pc-name">Recompensas parciales</div><div class="pc-desc">Entrega valor antes del final.</div></div>
+            <div class="pc-thumb" title="Cada reseña ofrece una conclusión útil sin esperar al ranking definitivo."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+
+          <div class="pc-row fx-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-bar"/></svg></span>
+            <div><div class="pc-name">Progreso visible</div><div class="pc-desc">Hace evidente el avance.</div></div>
+            <div class="pc-thumb pc-thumb-fx" title="Contador de libros revisados: 3/10, 4/10, 5/10…"><span class="pc-thumb-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span><span class="pc-thumb-example">Contador de libros revisados: 3/10, 4/10, 5/10…</span></div></div>
+
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-target"/></svg></span>
+            <div><div class="pc-name">Arquitectura de retención</div><div class="pc-desc">Renueva razones para seguir viendo.</div></div>
+            <div class="pc-thumb" title="Cada recomendación plantea una nueva expectativa sobre el siguiente libro."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+        </div>
+      </div>
+
+      <div class="pattern-card espec reveal reveal-stagger-3">
+        <div class="pc-header">
+          <div class="pc-title">3. Patrones Específicos</div>
+          <div class="pc-subtitle">Aparecen únicamente cuando el tipo de contenido lo requiere.</div>
+        </div>
+        <div class="pc-divider"></div>
+        <div class="pc-col-headers"><span>Patrón</span><span>¿Qué hace?</span><span>Ejemplo</span></div>
+        <div class="pc-rows">
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-layers"/></svg></span>
+            <div><div class="pc-name">Gestión de la complejidad</div><div class="pc-desc">Distribuye la dificultad.</div></div>
+            <div class="pc-thumb" title="Explicar primero el contexto antes de analizar una novela compleja."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+
+          <div class="pc-row fx-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span>
+            <div><div class="pc-name">Recursos visuales</div><div class="pc-desc">Facilita la comprensión mediante imágenes.</div></div>
+            <div class="pc-thumb pc-thumb-fx" title="Mostrar la portada, una línea temporal o un esquema mientras se explica."><span class="pc-thumb-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span><span class="pc-thumb-example">Mostrar la portada, una línea temporal o un esquema mientras se explica.</span></div></div>
+
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-zap"/></svg></span>
+            <div><div class="pc-name">Valor creciente del recorrido</div><div class="pc-desc">Cada bloque parece más interesante que el anterior.</div></div>
+            <div class="pc-thumb" title="Reservar el libro favorito para el final."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-scissors"/></svg></span>
+            <div><div class="pc-name">Economía narrativa</div><div class="pc-desc">Elimina lo que no hace avanzar.</div></div>
+            <div class="pc-thumb" title="Omitir detalles irrelevantes de una lectura que no cambian la conclusión."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+
+          <div class="pc-row fx-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-refresh"/></svg></span>
+            <div><div class="pc-name">Transformación personal</div><div class="pc-desc">Cambia la forma de interpretar el problema.</div></div>
+            <div class="pc-thumb pc-thumb-fx" title="Mostrar que el problema no era &ldquo;leer poco&rdquo;, sino elegir libros inadecuados."><span class="pc-thumb-icon"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></span><span class="pc-thumb-example">Mostrar que el problema no era &ldquo;leer poco&rdquo;, sino elegir libros inadecuados.</span></div></div>
+
+          <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-arrowcircle"/></svg></span>
+            <div><div class="pc-name">Del conocimiento a la acción</div><div class="pc-desc">Convierte comprensión en acción.</div></div>
+            <div class="pc-thumb" title="Terminar con un criterio claro para escoger la próxima lectura."><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="compare-wrap reveal">
+      <div class="pattern-head-tag tag-universal" style="margin-bottom:4px;">Promesa inicial vs. Pregunta central</div>
+      <p class="compare-intro">Aunque puedan parecer similares, cumplen funciones distintas dentro del recorrido.</p>
+      <div class="compare-grid">
+        <div class="compare-col">
+          <h4>Promesa inicial</h4>
+          <p class="compare-role">Es el contrato con el espectador.</p>
+          <p class="compare-q">Responde: ¿qué ganaré si veo este video?</p>
+          <div class="compare-ex">&ldquo;Leí todos los libros nominados al Booker Prize para descubrir cuál realmente merece la pena.&rdquo;</div>
+        </div>
+        <div class="compare-col">
+          <h4>Pregunta central</h4>
+          <p class="compare-role">Es el problema que organiza el recorrido.</p>
+          <p class="compare-q">Responde: ¿qué debe resolver este video para cumplir la promesa?</p>
+          <div class="compare-ex">&ldquo;¿Cuál de esos libros merece realmente ser leído?&rdquo;</div>
+        </div>
+      </div>
+      <div class="compare-foot">La promesa consigue el clic. La pregunta central organiza toda la narrativa.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 06 EL HALLAZGO PRINCIPAL ================= -->
+<section class="hallazgo-section" style="padding-top:40px; padding-bottom:40px;">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="problem-eyebrow"><span class="problem-num">06</span><span class="problem-kicker">EL HALLAZGO PRINCIPAL</span></div>
+      <div class="hallazgo-grid">
+        <div class="hallazgo-quote">&ldquo;La atención sostenida no depende del tema, del formato o del carisma del creador. Depende de <span class="hallazgo-accent">cómo se diseña el recorrido</span> que vive la audiencia.&rdquo;</div>
+        <div class="hallazgo-illustration"><img src="https://i.postimg.cc/15np7BPg/hallazgo-trasparente.webp" alt=""></div>
+        <div class="hallazgo-conclusion">Los temas cambian.<br>Los formatos cambian.<br>Las decisiones que organizan la experiencia, <span class="hallazgo-accent">no.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 07 DÓNDE PUEDEN APLICARSE ESTOS PATRONES ================= -->
+<section class="apps-section" style="padding-top:56px; padding-bottom:56px;">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="problem-eyebrow"><span class="problem-num">07</span><span class="problem-kicker">DÓNDE PUEDEN APLICARSE ESTOS PATRONES</span></div>
+      <div class="apps-layout">
+        <div class="apps-left">
+          <div class="apps-grid-new">
+            <div class="app-item-new"><svg viewBox="0 0 24 24"><use href="#ic-play"/></svg><div class="app-label-new">Videos de YouTube</div></div>
+            <div class="app-item-new"><svg viewBox="0 0 24 24"><use href="#ic-grad"/></svg><div class="app-label-new">Cursos online</div></div>
+            <div class="app-item-new"><svg viewBox="0 0 24 24"><use href="#ic-monitor"/></svg><div class="app-label-new">Presentaciones</div></div>
+            <div class="app-item-new"><svg viewBox="0 0 24 24"><use href="#ic-flask"/></svg><div class="app-label-new">Divulgación científica</div></div>
+            <div class="app-item-new"><svg viewBox="0 0 24 24"><use href="#ic-masks"/></svg><div class="app-label-new">Storytelling</div></div>
+            <div class="app-item-new"><svg viewBox="0 0 24 24"><use href="#ic-book"/></svg><div class="app-label-new">Libros</div></div>
+            <div class="app-item-new"><svg viewBox="0 0 24 24"><use href="#ic-mic"/></svg><div class="app-label-new">Podcasts</div></div>
+            <div class="app-item-new"><svg viewBox="0 0 24 24"><use href="#ic-brain"/></svg><div class="app-label-new">Experiencias de aprendizaje</div></div>
+          </div>
+        </div>
+        <div class="apps-right">
+          <div class="apps-card">
+            <p class="apps-card-text">Una base científica y práctica para diseñar experiencias que captan, mantienen y dirigen la atención.</p>
+            <span class="apps-card-icon"><svg viewBox="0 0 24 24"><use href="#ic-heart"/></svg></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 08 ESTADO DEL PROYECTO / 09 PRÓXIMO PASO ================= -->
+<section class="sp-section" style="padding-top:64px; padding-bottom:64px;">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sp-title-row">
+        <span class="sp-line"></span><span class="sp-dot"></span>
+        <span class="sp-title">ESTADO DEL PROYECTO</span>
+        <span class="sp-dot"></span><span class="sp-line"></span>
+      </div>
+
+      <div class="sp-layout">
+        <div class="sp-left">
+          <div class="sp-timeline">
+            <div class="sp-line-solid"></div>
+            <div class="sp-line-dashed"></div>
+
+            <div class="sp-tstep">
+              <div class="sp-circle"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
+              <div class="sp-num">1</div>
+              <div class="sp-tstep-title">Benchmark<br>completado</div>
+              <div class="sp-tstep-desc">Análisis de las mejores prácticas en creadores de YouTube.</div>
+            </div>
+
+            <div class="sp-tstep">
+              <div class="sp-circle"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
+              <div class="sp-num">2</div>
+              <div class="sp-tstep-title">Ingeniería<br>inversa completada</div>
+              <div class="sp-tstep-desc">Descomposición de videos que captan y retienen la atención.</div>
+            </div>
+
+            <div class="sp-tstep">
+              <div class="sp-circle"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
+              <div class="sp-num">3</div>
+              <div class="sp-tstep-title">Patrones<br>identificados</div>
+              <div class="sp-tstep-desc">Descubrimiento de decisiones de diseño recurrentes entre categorías.</div>
+            </div>
+
+            <div class="sp-tstep">
+              <div class="sp-circle"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
+              <div class="sp-num">4</div>
+              <div class="sp-tstep-title">Clasificación<br>completada</div>
+              <div class="sp-tstep-desc">Organización de los 18 patrones en tres grupos: universales, transversales y específicos.</div>
+            </div>
+
+            <div class="sp-tstep">
+              <div class="sp-circle"><svg viewBox="0 0 24 24"><use href="#ic-check"/></svg></div>
+              <div class="sp-num">5</div>
+              <div class="sp-tstep-title">Traducción operativa<br>finalizada</div>
+              <div class="sp-tstep-desc">Cada patrón convertido en una decisión aplicable al diseño narrativo.</div>
+            </div>
+
+            <div class="sp-tstep">
+              <div class="sp-circle sp-circle-alt"><svg viewBox="0 0 24 24"><use href="#ic-search"/></svg></div>
+              <div class="sp-num sp-num-alt">6</div>
+              <div class="sp-tstep-title sp-tstep-title-alt">Primera<br>validación</div>
+              <div class="sp-tstep-desc sp-tstep-desc-alt">Auditoría del canal de Vero ON AIR.</div>
+              <span class="sp-badge">PENDIENTE</span>
+            </div>
+          </div>
+
+          <div class="sp-objective">
+            <span class="sp-obj-icon"><svg viewBox="0 0 24 24"><use href="#ic-target"/></svg></span>
+            <span class="sp-obj-sep"></span>
+            <span class="sp-obj-title">OBJETIVO</span>
+            <p class="sp-obj-text">Construir un marco de diseño basado en patrones que permita crear experiencias narrativas capaces de captar, mantener y dirigir la atención de forma deliberada.</p>
+          </div>
+        </div>
+
+        <div class="sp-right">
+          <span class="sp-right-icon"><svg viewBox="0 0 24 24"><use href="#ic-search"/></svg></span>
+          <div class="sp-right-label">Próximo paso</div>
+          <div class="sp-right-title">Auditoría del canal de <span class="accent">Vero ON AIR</span></div>
+          <div class="sp-right-sep"></div>
+          <p class="sp-right-text">La investigación ha identificado 19 patrones de diseño narrativo.</p>
+          <p class="sp-right-text" style="margin-top:14px;">El siguiente paso consiste en aplicarlos para analizar un canal de YouTube real e identificar qué decisiones están ayudando a captar, mantener y dirigir la atención, y cuáles representan oportunidades de mejora.</p>
+          <div class="sp-right-dashed"></div>
+          <div class="sp-right-status">
+            <span class="sp-right-status-icon"><svg viewBox="0 0 24 24"><use href="#ic-hourglass"/></svg></span>
+            <span>
+              <div class="sp-right-status-label">Estado</div>
+              <div class="sp-right-status-value">Pendiente</div>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <p class="sp-footnote">
+        <svg viewBox="0 0 24 24"><use href="#ic-sparkles"/></svg>
+        Este proyecto está en constante evolución. Cada paso nos acerca a un sistema que convierte <span class="accent">decisiones de diseño en experiencias memorables</span>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA FINAL ================= -->
+<div class="cta-final">
+  <div class="wrap">
+    <div class="cta-inner reveal">
+      <div>
+        <div class="cta-title">De la investigación a la aplicación</div>
+        <div class="cta-desc">Una base de conocimiento para transformar los hallazgos de la investigación en experiencias narrativas que captan, mantienen y dirigen la atención de forma sistemática.</div>
+      </div>
+      <button class="btn btn-white">Hablemos <svg viewBox="0 0 24 24"><use href="#ic-arrow" stroke="#5A4DF5"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <img class="footer-avatar" src="https://i.postimg.cc/MKD3Q7hM/Eilyn-Ginoe.webp" alt="Firma de Eilyn Ginoe Brito">
+  <div class="footer-credit">Elaborado por Eilyn Ginoe Brito</div>
+  <div class="footer-copy">© 2026 Investigación sobre Patrones de Diseño Narrativo. Todos los derechos reservados.</div>
+</footer>
+
+<script>
+(function(){
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  var rows = document.querySelectorAll('.fx-row');
+  var MAX_TILT = 6; // degrees
+  rows.forEach(function(row){
+    row.addEventListener('mousemove', function(e){
+      var rect = row.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / rect.width - 0.5;
+      var y = (e.clientY - rect.top) / rect.height - 0.5;
+      var rotateY = x * MAX_TILT * 2;
+      var rotateX = -y * MAX_TILT;
+      row.style.transform = 'perspective(700px) rotateX(' + rotateX.toFixed(2) + 'deg) rotateY(' + rotateY.toFixed(2) + 'deg)';
+    });
+    row.addEventListener('mouseleave', function(){
+      row.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg)';
+    });
+  });
+})();
+</script>
+</body>
+</html>
