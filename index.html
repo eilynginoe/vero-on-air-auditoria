@@ -617,7 +617,7 @@
     align-items:stretch;
   }
   .pattern-card{
-    width:340px;
+    width:370px;
     background:#FFFFFF;
     border:1px solid #E9EAF3;
     border-radius:18px;
@@ -648,7 +648,7 @@
   }
   .pc-col-headers{
     display:grid;
-    grid-template-columns:44px minmax(0,1fr) 82px;
+    grid-template-columns:44px minmax(0,1fr) 132px;
     gap:16px;
     padding-bottom:10px;
     margin-bottom:2px;
@@ -665,7 +665,7 @@
   .pc-rows{display:flex; flex-direction:column; flex:1;}
   .pc-row{
     display:grid;
-    grid-template-columns:44px minmax(0,1fr) 82px;
+    grid-template-columns:44px minmax(0,1fr) 132px;
     gap:16px;
     align-items:center;
     padding:18px 0;
@@ -682,7 +682,7 @@
   .pc-name{font-size:16px; font-weight:700; color:#1C2233; line-height:1.25; margin-bottom:3px;}
   .pc-desc{font-size:13px; font-weight:400; color:#6B7285; line-height:1.35;}
   .pc-thumb{
-    width:82px; height:46px;
+    width:132px; height:110px;
     border-radius:8px;
     background:#EFF1F7;
     border:1px dashed #C9CFDF;
@@ -690,6 +690,18 @@
     flex-shrink:0;
   }
   .pc-thumb svg{width:18px; height:18px; stroke:#B7BDD0; stroke-width:1.6;}
+  .pc-thumb-filled{
+    border-style:solid;
+    border-color:#E4E7F0;
+    background:#fff;
+    overflow:hidden;
+    padding:0;
+  }
+  .pc-thumb-filled img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+  }
 
 
   .pattern-card.univ .pc-title{color:#5C4DF6;}
@@ -1017,7 +1029,7 @@
     .chip-1,.chip-2,.chip-3{position:static;}
     .cols-3, .result-card, .compare-grid{grid-template-columns:minmax(0,1fr);}
     .cols-3 > div + div::before{display:none;}
-    .pattern-card{width:100%; max-width:340px;}
+    .pattern-card{width:100%; max-width:370px;}
     .categories-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
     .method-steps{grid-template-columns:repeat(2,minmax(0,1fr)); row-gap:32px;}
     .method-steps::before{display:none;}
@@ -1047,11 +1059,11 @@
   @media (max-width:480px){
     .categories-grid{grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px 10px;}
     .pattern-card{padding:20px 16px;}
-    .pc-row, .pc-col-headers{grid-template-columns:32px minmax(0,1fr) 58px; gap:10px;}
+    .pc-row, .pc-col-headers{grid-template-columns:32px minmax(0,1fr) 76px; gap:10px;}
     .pc-icon{width:30px; height:30px;}
     .pc-icon svg{width:14px; height:14px;}
-    .pc-thumb{width:58px; height:34px;}
-    .pc-thumb svg{width:15px; height:15px;}
+    .pc-thumb{width:76px; height:64px;}
+    .pc-thumb svg{width:16px; height:16px;}
     .pc-name{font-size:14.5px;}
     .pc-desc{font-size:12px;}
     .compare-col{padding:18px 16px;}
@@ -1377,27 +1389,27 @@
         <div class="pc-rows">
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-gift"/></svg></span>
             <div><div class="pc-name">Promesa inicial</div><div class="pc-desc">Dar una razón para comenzar.</div></div>
-            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb pc-thumb-filled"><img src="https://i.postimg.cc/Bvfh568z/p-1-1.webp" alt="Ejemplo: Promesa inicial"></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-help"/></svg></span>
             <div><div class="pc-name">Pregunta central</div><div class="pc-desc">Definir el problema que organiza el recorrido.</div></div>
-            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb pc-thumb-filled"><img src="https://i.postimg.cc/Fs7m8PTw/P-2-1.webp" alt="Ejemplo: Pregunta central"></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-clock"/></svg></span>
             <div><div class="pc-name">Revelación progresiva</div><div class="pc-desc">Decidir cuándo revelar la información.</div></div>
-            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb pc-thumb-filled"><img src="https://i.postimg.cc/mZ6WYYTn/P-3-1.webp" alt="Ejemplo: Revelación progresiva"></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-grid"/></svg></span>
             <div><div class="pc-name">Organización en bloques</div><div class="pc-desc">Dividir el contenido en unidades claras.</div></div>
-            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb pc-thumb-filled"><img src="https://i.postimg.cc/dtkP4h1k/P-4-1.webp" alt="Ejemplo: Organización en bloques"></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-link"/></svg></span>
             <div><div class="pc-name">Cadena de expectativas</div><div class="pc-desc">Conseguir que el espectador quiera ver el siguiente bloque.</div></div>
-            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb pc-thumb-filled"><img src="https://i.postimg.cc/3x2MQzmL/P-5-1.webp" alt="Ejemplo: Cadena de expectativas"></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-star"/></svg></span>
             <div><div class="pc-name">Cierre transformador</div><div class="pc-desc">Recompensar todo el recorrido.</div></div>
-            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb pc-thumb-filled"><img src="https://i.postimg.cc/KzvCLzVC/P-6-1.webp" alt="Ejemplo: Cierre transformador"></div></div>
         </div>
       </div>
 
@@ -1411,27 +1423,27 @@
         <div class="pc-rows">
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-refresh"/></svg></span>
             <div><div class="pc-name">Cambio de estado</div><div class="pc-desc">Cada bloque modifica la situación anterior.</div></div>
-            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb pc-thumb-filled"><img src="https://i.postimg.cc/QCg6yZRK/P-1-2.webp" alt="Ejemplo: Cambio de estado"></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-bookopen"/></svg></span>
             <div><div class="pc-name">Construcción de comprensión</div><div class="pc-desc">Construye conocimiento paso a paso.</div></div>
-            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb pc-thumb-filled"><img src="https://i.postimg.cc/zXjtw5wD/P-2-2.webp" alt="Ejemplo: Construcción de comprensión"></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-filecheck"/></svg></span>
             <div><div class="pc-name">Evidencia y ejemplificación</div><div class="pc-desc">Respalda las afirmaciones.</div></div>
-            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb pc-thumb-filled"><img src="https://i.postimg.cc/bvGmjt7k/P-3-2.webp" alt="Ejemplo: Evidencia y ejemplificación"></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-gift"/></svg></span>
             <div><div class="pc-name">Recompensas parciales</div><div class="pc-desc">Entrega valor antes del final.</div></div>
-            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb pc-thumb-filled"><img src="https://i.postimg.cc/rmxgDLF8/P-4-2.webp" alt="Ejemplo: Recompensas parciales"></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-bar"/></svg></span>
             <div><div class="pc-name">Progreso visible</div><div class="pc-desc">Hace evidente el avance.</div></div>
-            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb pc-thumb-filled"><img src="https://i.postimg.cc/rs9J9C4k/P-5-2.webp" alt="Ejemplo: Progreso visible"></div></div>
 
           <div class="pc-row"><span class="pc-icon"><svg viewBox="0 0 24 24"><use href="#ic-target"/></svg></span>
             <div><div class="pc-name">Arquitectura de retención</div><div class="pc-desc">Renueva razones para seguir viendo.</div></div>
-            <div class="pc-thumb"><svg viewBox="0 0 24 24"><use href="#ic-image"/></svg></div></div>
+            <div class="pc-thumb pc-thumb-filled"><img src="https://i.postimg.cc/BQqNnyrY/P-6-2.webp" alt="Ejemplo: Arquitectura de retención"></div></div>
         </div>
       </div>
 
