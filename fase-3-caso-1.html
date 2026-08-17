@@ -1,0 +1,2733 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fase 3 · Caso 1 · Aplicación </title>
+
+  <style>
+    :root {
+      --hero-bg-1: #0B1022;
+      --hero-bg-2: #0E132B;
+      --white: #FFFFFF;
+      --card-tint: #F3F0FF;
+      --dark-block: #0E132B;
+      --purple: #695CFF;
+      --purple-hover: #5A4DF5;
+      --blue: #4A78FF;
+      --green: #55B87A;
+      --text-main: #1D2133;
+      --text-sec: #5D6478;
+      --border-soft: #ECECF2;
+      --cat-icon-bg: #F5F6FC;
+      --cat-icon-color: #1D2160;
+      --page-bg: #F1F1F2;
+      --serif: Georgia, "Times New Roman", serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden
+    }
+
+    body {
+      overflow-x: hidden;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--text-main);
+      background: var(--page-bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img {
+      max-width: 100%;
+      display: block
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    button {
+      font: inherit
+    }
+
+    ul {
+      list-style: none
+    }
+
+    .wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 56px
+    }
+
+    .section {
+      padding: 72px 0
+    }
+
+    .eyebrow-label {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: #5f6477
+    }
+
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #695CFF, #4A78FF);
+      transform-origin: left;
+      transform: scaleX(0);
+      opacity: 0;
+      z-index: 9999;
+      pointer-events: none
+    }
+
+    @supports (animation-timeline:scroll()) {
+      .progress-bar {
+        opacity: 1;
+        animation: progress-scale linear;
+        animation-timeline: scroll(root)
+      }
+    }
+
+    @keyframes progress-scale {
+      from {
+        transform: scaleX(0)
+      }
+
+      to {
+        transform: scaleX(1)
+      }
+    }
+
+    /* NAV */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 54px;
+      background: rgba(255, 255, 255, .97);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #dfdfe5;
+    }
+
+    .topbar-inner {
+      height: 56px;
+      max-width: 1280px;
+      margin: auto;
+      padding: 0 56px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      overflow-x: auto;
+      scrollbar-width: none
+    }
+
+    .topbar-inner::-webkit-scrollbar {
+      display: none
+    }
+
+    .phase-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0
+    }
+
+    .phase-tab {
+      border: 0;
+      background: transparent;
+      color: #6b6e7b;
+      text-transform:uppercase;
+      padding: 11px 16px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      cursor: pointer
+    }
+
+        .phase-tab.active {
+      color: #4f42cf;
+      background: #eeeaff;
+      /*box-shadow: inset 0 0 0 1.5px #1d2133*/
+    }
+
+    .phase-tab:hover {
+      color: #1d2133
+    }
+
+    /* HERO */
+    .hero {
+      background: var(--page-bg);
+      padding: 68px 0 62px
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 46% 54%;
+      gap: 24px;
+      align-items: center;
+      min-height: 330px
+    }
+
+    .hero-eyebrow {
+      color: #5e6376;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 28px
+    }
+
+    .hero-title {
+      color: var(--text-main);
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: clamp(48px, 5.2vw, 72px);
+      line-height: .96;
+      letter-spacing: -.035em;
+      margin-bottom: 22px;
+    }
+
+    .hero-title .accent {
+      color: var(--purple)
+    }
+
+    .hero-desc {
+      color: var(--text-sec);
+      font-size: 17px;
+      line-height: 1.6;
+      max-width: 540px
+    }
+
+    .hero-visual {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center
+    }
+
+    .hero-img-frame {
+      width: min(100%, 650px)
+    }
+
+    .hero-img-frame img {
+      width: 100%;
+      height: auto
+    }
+
+    /* MARQUEE */
+    .marquee {
+      background: linear-gradient(90deg, #695CFF, #5A4DF5);
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 13px 0
+    }
+
+    .marquee-track {
+      display: inline-flex;
+      width: max-content;
+      animation: marquee-scroll 26s linear infinite
+    }
+
+    .marquee:hover .marquee-track {
+      animation-play-state: paused
+    }
+
+    .marquee-item {
+      display: inline-flex;
+      align-items: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: 0 22px;
+      white-space: nowrap
+    }
+
+    .marquee-item .dot {
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .65);
+      margin-left: 22px
+    }
+
+    @keyframes marquee-scroll {
+      from {
+        transform: translateX(0)
+      }
+
+      to {
+        transform: translateX(-50%)
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      .marquee-track {
+        animation: none
+      }
+    }
+
+    /* CASE INTRO */
+    .case-intro {
+      padding: 76px 0 62px;
+      background: var(--page-bg)
+    }
+
+    .case-kicker {
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      margin-bottom: 13px
+    }
+
+    .case-title {
+      font-family: var(--serif);
+      font-size: 52px;
+      line-height: 1.02;
+      font-weight: 600;
+      letter-spacing: -.025em
+    }
+
+    .case-title span {
+      color: var(--purple)
+    }
+
+    .case-lead {
+      max-width: 760px;
+      color: var(--text-sec);
+      font-size: 16px;
+      line-height: 1.65;
+      margin-top: 18px
+    }
+
+    .case-question {
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: 1fr 1.25fr;
+      border: 1px solid #dddde5;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .case-question .case-opportunity {
+      padding: 30px 34px
+    }
+
+    .case-question .case-opportunity h3,
+    .case-question .question-box h3 {
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+      color: #5d6478
+    }
+
+    .opportunity-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    .pill {
+      padding: 9px 12px;
+      border: 1px solid #dedde7;
+      border-radius: 999px;
+      background: #f8f8fb;
+      font-size: 11px;
+      font-weight: 750
+    }
+
+    .question-box {
+      padding: 30px 34px;
+      background: #f7f3ff;
+      border-left: 1px solid #e4e0f2
+    }
+
+    .question-box .big-question {
+      font-family: var(--serif);
+      font-size: 30px;
+      font-style: italic;
+      line-height: 1.2
+    }
+
+    /* PROCESS */
+    .process-intro {
+      padding: 10px 0 38px
+    }
+
+    .process-intro h2 {
+      font-family: var(--serif);
+      font-size: 43px;
+      font-weight: 600;
+      line-height: 1.05
+    }
+
+    .process-intro p {
+      margin-top: 12px;
+      max-width: 700px;
+      color: var(--text-sec);
+      font-size: 14px;
+      line-height: 1.65
+    }
+
+    .process-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: 39% 61%;
+      column-gap: 42px
+    }
+
+    .process-grid:before {
+      content: "";
+      position: absolute;
+      left: 16px;
+      top: 17px;
+      bottom: 18px;
+      border-left: 1px dashed #c9cad3
+    }
+
+    .process-step {
+      display: contents
+    }
+
+    .step-left {
+      position: relative;
+      padding: 0 10px 42px 52px;
+      min-height: 158px
+    }
+
+    .step-number {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--purple);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 850
+    }
+
+    .step-left h3 {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.3;
+      font-weight: 800;
+      margin: 3px 0 11px
+    }
+
+    .step-left p {
+      color: var(--text-sec);
+      font-size: 12px;
+      line-height: 1.65;
+      max-width: 360px
+    }
+
+    .step-right {
+      min-height: 158px;
+      padding: 0 0 42px
+    }
+
+    .evidence-card {
+      width: 100%;
+      border: 1px solid #dedee5;
+      border-radius: 12px;
+      background: #fff;
+      padding: 20px 22px
+    }
+
+    .evidence-kicker {
+      color: #26283a;
+      font-size: 10px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 17px
+    }
+
+    .evidence-kicker.purple {
+      color: #5a45d5
+    }
+
+    .evidence-kicker.yellow {
+      color: #a66d00
+    }
+
+    .evidence-kicker.blue {
+      color: #3267b5
+    }
+
+    .evidence-kicker.green {
+      color: #2c7651
+    }
+
+    .evidence-kicker.lavender {
+      color: #5d48b7
+    }
+
+    .opportunity-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px
+    }
+
+    .op {
+      text-align: center
+    }
+
+    .op-icon {
+      width: 38px;
+      height: 38px;
+      margin: 0 auto 8px;
+      display: grid;
+      place-items: center;
+      font-size: 27px;
+      color: #2d3150
+    }
+
+    .op-title {
+      font-size: 10px;
+      font-weight: 800
+    }
+
+    .question-card {
+      background: #fff3f3;
+      border-color: #f0d7d7;
+      padding: 22px
+    }
+
+    .question-label {
+      color: #9c4040;
+      font-size: 9px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .08em
+    }
+
+    .question-card blockquote {
+      margin: 14px 0 2px;
+      text-align: center;
+      font-family: var(--serif);
+      font-size: 25px;
+      font-style: italic;
+      color: #25253a
+    }
+
+    .blocks-card {
+      background: #f6f2ff;
+      border-color: #ddd5f6
+    }
+
+    .block-flow {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      align-items: start
+    }
+
+    .flow-item {
+      position: relative;
+      text-align: center;
+      padding: 0 7px
+    }
+
+    .flow-item:not(:last-child):after {
+      content: "→";
+      position: absolute;
+      right: -6px;
+      top: 7px;
+      color: #7565d6;
+      font-size: 18px
+    }
+
+    .flow-number {
+      width: 30px;
+      height: 30px;
+      margin: 0 auto 9px;
+      border: 1px solid #8d7ce2;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      color: #4e3ac7;
+      font-size: 10px;
+      font-weight: 850
+    }
+
+    .flow-item:last-child .flow-number {
+      font-size: 15px
+    }
+
+    .flow-title {
+      font-size: 8.5px;
+      line-height: 1.35;
+      font-weight: 800
+    }
+
+    .topic-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 7px
+    }
+
+    .topic-card {
+      min-height: 106px;
+      border: 1px solid #e0e0e6;
+      border-radius: 7px;
+      background: #fff;
+      padding: 10px 9px
+    }
+
+    .topic-card h4 {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 8px;
+      font-weight: 850;
+      line-height: 1.28;
+      margin-bottom: 8px
+    }
+
+    .topic-card p {
+      color: #606274;
+      font-size: 8px;
+      line-height: 1.5
+    }
+
+    .design-card {
+      background: #fff9eb;
+      border-color: #f0dfb7
+    }
+
+    .design-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      text-align: center
+    }
+
+    .design-item .design-icon {
+      font-size: 26px;
+      line-height: 1;
+      margin-bottom: 8px
+    }
+
+    .design-item strong {
+      display: block;
+      font-size: 10px
+    }
+
+    .design-note {
+      margin-top: 13px;
+      color: #6d675b;
+      font-size: 9px;
+      line-height: 1.5
+    }
+
+    .connect-card {
+      background: #f2f7ff;
+      border-color: #d9e3f2
+    }
+
+    .connect-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      align-items: center
+    }
+
+    .connect-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 10px;
+      font-weight: 800
+    }
+
+    .connect-item .icon {
+      font-size: 23px
+    }
+
+    .connect-item:not(:last-child):after {
+      content: "→";
+      color: #6679a1;
+      margin-left: 8px
+    }
+
+    .review-card {
+      background: #eff9f2;
+      border-color: #d2e5d7
+    }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px
+    }
+
+    .review-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 10px;
+      font-weight: 800
+    }
+
+    .review-item .icon {
+      font-size: 23px
+    }
+
+    .resolution-card {
+      background: #f6f2ff;
+      border-color: #ddd5f6
+    }
+
+    .resolution-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px
+    }
+
+    .resolution-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 10px;
+      font-weight: 800
+    }
+
+    .resolution-item .icon {
+      font-size: 23px
+    }
+
+    .gold-rule {
+      grid-column: 1/-1;
+      margin: 3px 0 0;
+      border: 1px solid #dedee5;
+      border-radius: 12px;
+      background: #fff;
+      padding: 19px 20px;
+      display: grid;
+      grid-template-columns: 220px 1fr 1fr 1fr 1.15fr;
+      align-items: center
+    }
+
+    .gold-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      font-weight: 850
+    }
+
+    .gold-star {
+      width: 38px;
+      height: 38px;
+      border: 1px dashed #8575e0;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #6752e8;
+      font-size: 20px
+    }
+
+    .gold-cell {
+      padding: 0 17px;
+      border-left: 1px solid #e4e3e8;
+      font-size: 9px;
+      line-height: 1.55;
+      color: #5e6070
+    }
+
+    .gold-cell strong {
+      color: #2a2c40;
+      display: block;
+      margin-bottom: 3px
+    }
+
+    /* SCRIPT RESULT */
+    .script-result {
+      background: #fff;
+      border-top: 1px solid #e3e3e8;
+      border-bottom: 1px solid #e3e3e8
+    }
+
+    .script-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      align-items: end;
+      margin-bottom: 30px
+    }
+
+    .script-header h2 {
+      font-family: var(--serif);
+      font-size: 46px;
+      line-height: 1.02;
+      font-weight: 600
+    }
+
+    .script-header p {
+      max-width: 510px;
+      color: var(--text-sec);
+      font-size: 14px;
+      line-height: 1.6
+    }
+
+    .script-timeline {
+      border-top: 1px solid #dedee5
+    }
+
+    .script-block {
+      display: grid;
+      grid-template-columns: 130px 1fr 210px;
+      gap: 25px;
+      padding: 25px 0;
+      border-bottom: 1px solid #e6e6eb
+    }
+
+    .script-time {
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .05em
+    }
+
+    .script-title {
+      font-size: 15px;
+      font-weight: 850;
+      margin-bottom: 8px
+    }
+
+    .script-line {
+      font-family: var(--serif);
+      font-size: 16px;
+      line-height: 1.5;
+      color: #34364a
+    }
+
+    .script-patterns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-content: flex-start
+    }
+
+    .script-tag {
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: #f0edff;
+      color: #5140c5;
+      font-size: 9px;
+      font-weight: 800
+    }
+
+    .script-note {
+      margin-top: 7px;
+      color: #777987;
+      font-size: 10px;
+      line-height: 1.45
+    }
+
+    /* PATTERN APPLICATION */
+    .pattern-section {
+      background: var(--page-bg);
+      border-top: 1px solid #dedee4;
+      padding: 72px 0 78px
+    }
+
+    .pattern-intro {
+      max-width: 780px;
+      margin-bottom: 42px
+    }
+
+    .pattern-intro h2 {
+      font-family: var(--serif);
+      font-size: 46px;
+      line-height: 1.04;
+      font-weight: 600;
+      margin: 8px 0 14px
+    }
+
+    .pattern-intro p {
+      color: var(--text-sec);
+      font-size: 14px;
+      line-height: 1.65
+    }
+
+    .pattern-note {
+      margin-top: 20px;
+      padding: 17px 19px;
+      background: #eeeaff;
+      border-left: 2px solid var(--purple);
+      color: #5f6071;
+      font-size: 12px;
+      line-height: 1.55
+    }
+
+    .pattern-group {
+      margin-top: 42px
+    }
+
+    .pattern-group h3 {
+      font-size: 13px;
+      font-weight: 850;
+      letter-spacing: .03em;
+      margin-bottom: 13px
+    }
+
+    .pattern-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px
+    }
+
+    .pattern-item {
+      border: 1px solid #dedee5;
+      border-radius: 10px;
+      background: #fff;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px
+    }
+
+    .pattern-meta {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0
+    }
+
+    .pattern-index {
+      flex: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #efedff;
+      color: #5140c5;
+      display: grid;
+      place-items: center;
+      font-size: 9px;
+      font-weight: 850
+    }
+
+    .pattern-name {
+      font-size: 12px;
+      font-weight: 850
+    }
+
+    .pattern-summary {
+      color: #6d6e7b;
+      font-size: 10px;
+      margin-top: 3px
+    }
+
+    .pattern-open {
+      flex: none;
+      border: 0;
+      background: transparent;
+      color: #5140c5;
+      font-size: 10px;
+      font-weight: 850;
+      cursor: pointer
+    }
+
+    .rejected {
+      margin-top: 28px;
+      padding: 18px;
+      border: 1px dashed #cfcfd8;
+      border-radius: 10px;
+      background: #fff;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      color: #666877;
+      font-size: 11px;
+      line-height: 1.5
+    }
+
+    .rejected strong {
+      color: #3e4050;
+      white-space: nowrap
+    }
+
+    /* CASE 02/03 scaffolding */
+    .case-next {
+      background: var(--page-bg);
+      border-top: 1px solid #dddde3;
+      padding: 82px 0
+    }
+
+    .next-card {
+      border: 1px solid #dedee5;
+      border-radius: 16px;
+      background: #fff;
+      padding: 38px 42px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center
+    }
+
+    .next-kicker {
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .12em;
+      text-transform: uppercase
+    }
+
+    .next-card h2 {
+      font-family: var(--serif);
+      font-size: 40px;
+      line-height: 1.05;
+      font-weight: 600;
+      margin-top: 9px
+    }
+
+    .next-card p {
+      color: var(--text-sec);
+      font-size: 13px;
+      line-height: 1.65;
+      margin-top: 12px
+    }
+
+    .next-status {
+      background: #f3f0ff;
+      border-radius: 12px;
+      padding: 22px;
+      color: #575a6b;
+      font-size: 11px;
+      line-height: 1.6
+    }
+
+    .next-status strong {
+      display: block;
+      color: #3d36a0;
+      margin-bottom: 5px
+    }
+
+    /* FINAL */
+    .closing {
+      background: var(--dark-block);
+      color: #fff
+    }
+
+    .closing-inner {
+      max-width: 1280px;
+      margin: auto;
+      padding: 70px 56px 80px
+    }
+
+    .closing h2 {
+      font-family: var(--serif);
+      font-size: 48px;
+      font-weight: 600;
+      line-height: 1.04
+    }
+
+    .closing p {
+      max-width: 760px;
+      margin-top: 16px;
+      color: rgba(255, 255, 255, .72);
+      font-size: 15px;
+      line-height: 1.65
+    }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(23, 23, 34, .58);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px
+    }
+
+    .modal-backdrop.open {
+      display: flex
+    }
+
+    .modal {
+      width: min(760px, 100%);
+      max-height: 88vh;
+      overflow: auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .18)
+    }
+
+    .modal-head {
+      padding: 24px 27px 19px;
+      border-bottom: 1px solid #e4e3e8;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px
+    }
+
+    .modal-kicker {
+      color: var(--purple);
+      font-size: 9px;
+      font-weight: 850;
+      letter-spacing: .1em;
+      text-transform: uppercase
+    }
+
+    .modal h2 {
+      font-family: var(--serif);
+      font-size: 32px;
+      margin-top: 5px
+    }
+
+    .modal-close {
+      width: 34px;
+      height: 34px;
+      border: 1px solid #dedde4;
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1
+    }
+
+    .modal-body {
+      padding: 25px 27px 30px
+    }
+
+    .detail-block+.detail-block {
+      margin-top: 23px
+    }
+
+    .detail-block h4 {
+      font-size: 10px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #676879;
+      margin-bottom: 7px
+    }
+
+    .detail-block p {
+      color: #4f5161;
+      font-size: 13px;
+      line-height: 1.65
+    }
+
+    .detail-block blockquote {
+      margin: 0;
+      padding: 16px 18px;
+      border-left: 2px solid var(--purple);
+      background: #f0edff;
+      font-family: var(--serif);
+      font-size: 18px;
+      line-height: 1.45
+    }
+
+    .status {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 20px;
+      background: #efedf9;
+      color: #5946c9;
+      font-size: 10px;
+      font-weight: 800
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:900px) {
+
+      .wrap,
+      .topbar-inner,
+      .closing-inner {
+        padding-left: 28px;
+        padding-right: 28px
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+        min-height: 0
+      }
+
+      .hero-visual {
+        justify-content: center;
+        margin-top: 25px
+      }
+
+      .case-question {
+        grid-template-columns: 1fr
+      }
+
+      .question-box {
+        border-left: 0;
+        border-top: 1px solid #e4e0f2
+      }
+
+      .process-grid {
+        grid-template-columns: 1fr
+      }
+
+      .process-grid:before {
+        display: none
+      }
+
+      .step-left {
+        padding-left: 50px;
+        padding-bottom: 14px
+      }
+
+      .step-right {
+        padding-bottom: 35px
+      }
+
+      .gold-rule {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .gold-title {
+        grid-column: 1/-1;
+        padding-bottom: 14px
+      }
+
+      .gold-cell {
+        border-left: 0;
+        border-top: 1px solid #e4e3e8;
+        padding: 13px 0 0
+      }
+
+      .script-block {
+        grid-template-columns: 100px 1fr
+      }
+
+      .script-patterns {
+        grid-column: 2
+      }
+
+      .next-card {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media(max-width:620px) {
+      .topbar {
+        height: 58px
+      }
+
+      .topbar-inner {
+        height: 58px;
+        justify-content: flex-start;
+        padding: 0 12px
+      }
+
+      .phase-tab {
+        font-size: 10px;
+        padding: 8px 10px
+      }
+
+      .wrap,
+      .closing-inner {
+        padding-left: 18px;
+        padding-right: 18px
+      }
+
+      .hero {
+        padding: 46px 0
+      }
+
+      .hero-title {
+        font-size: 44px
+      }
+
+      .case-title {
+        font-size: 40px
+      }
+
+      .case-question .case-opportunity,
+      .question-box {
+        padding: 24px
+      }
+
+      .block-flow {
+        grid-template-columns: repeat(2, 1fr);
+        row-gap: 18px
+      }
+
+      .flow-item:not(:last-child):after {
+        display: none
+      }
+
+      .topic-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .design-grid,
+      .review-grid,
+      .resolution-grid {
+        grid-template-columns: repeat(2, 1fr);
+        row-gap: 16px
+      }
+
+      .connect-grid {
+        grid-template-columns: 1fr;
+        gap: 12px
+      }
+
+      .connect-item:not(:last-child):after {
+        display: none
+      }
+
+      .gold-rule {
+        grid-template-columns: 1fr
+      }
+
+      .gold-title {
+        grid-column: auto
+      }
+
+      .gold-cell {
+        border-top: 1px solid #e4e3e8
+      }
+
+      .script-block {
+        grid-template-columns: 1fr;
+        gap: 9px
+      }
+
+      .script-patterns {
+        grid-column: auto
+      }
+
+      .pattern-list {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* Contexto explícito de aplicación de patrones */
+    .step-left p strong {
+      color: #4035a8;
+      font-weight: 800
+    }
+
+    .design-note strong {
+      color: #393b4c
+    }
+
+
+    /* GUION COMO GUÍA DE DESARROLLO */
+    .script-context {
+      margin-bottom: 7px;
+      color: #5d6070;
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .script-context strong,
+    .script-themes strong {
+      color: #2f3142
+    }
+
+    .script-themes {
+      margin-bottom: 10px;
+      color: #5d6070;
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    .script-block .script-line {
+      margin-top: 8px
+    }
+
+    .transversal-tag {
+      background: #e9e5ff;
+      border: 1px solid #d7d0ff;
+    }
+
+    .script-transition {
+      background: #fcfcfd
+    }
+
+    .script-transversal {
+      background: #faf9ff
+    }
+
+    .script-transversal .script-title {
+      color: #5140c5
+    }
+
+
+    .pattern-group-intro {
+      color: var(--text-sec);
+      font-size: 11px;
+      line-height: 1.5;
+      margin: -6px 0 14px;
+      max-width: 760px;
+    }
+
+    .pattern-group+.pattern-group {
+      margin-top: 48px
+    }
+
+
+    .theme-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 7px;
+    }
+
+    .theme-tags span {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border: 1px solid #ded8ff;
+      border-radius: 999px;
+      background: #f6f4ff;
+      color: #5140c5;
+      font-size: 9px;
+      font-weight: 750;
+      line-height: 1.2;
+    }
+
+    .script-block .script-themes {
+      margin-bottom: 9px;
+    }
+
+
+    .pattern-validation-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+      margin: 34px 0 18px;
+    }
+
+    .pattern-validation-head h3 {
+      font-family: 'Inter Tight', 'Inter', sans-serif;
+      font-size: 24px;
+      line-height: 1.15;
+      margin: 5px 0 8px;
+    }
+
+    .pattern-validation-head p {
+      color: var(--text-sec);
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 720px;
+    }
+
+    .pattern-validation-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 7px;
+      max-width: 430px;
+    }
+
+    .legend,
+    .validation-status {
+      display: inline-flex;
+      align-items: center;
+      width: max-content;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 750;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .legend.direct,
+    .validation-status.direct {
+      background: #E9F7EF;
+      color: #257447
+    }
+
+    .legend.adapted,
+    .validation-status.adapted {
+      background: #FFF3DC;
+      color: #9A6500
+    }
+
+    .legend.optional,
+    .validation-status.optional {
+      background: #F0EEFF;
+      color: #5B4BE5
+    }
+
+    .legend.need,
+    .validation-status.need {
+      background: #EAF3FF;
+      color: #3267A8
+    }
+
+    .legend.dependent,
+    .validation-status.dependent {
+      background: #F4EAFB;
+      color: #8A4AA8
+    }
+
+    .pattern-table-wrap {
+      background: #fff;
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+      overflow: auto;
+      box-shadow: 0 8px 24px rgba(25, 30, 45, .035);
+    }
+
+    .pattern-validation-table {
+      width: 100%;
+      min-width: 900px;
+      border-collapse: collapse;
+    }
+
+    .pattern-validation-table th {
+      text-align: left;
+      padding: 14px 18px;
+      background: #F8F7FB;
+      color: #666B7D;
+      font-size: 10px;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      font-weight: 800;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .pattern-validation-table td {
+      padding: 15px 18px;
+      border-bottom: 1px solid #EEEFF4;
+      color: var(--text-sec);
+      font-size: 12px;
+      line-height: 1.45;
+      vertical-align: middle;
+    }
+
+    .pattern-validation-table tr:last-child td {
+      border-bottom: none
+    }
+
+    .pattern-validation-table tbody tr:hover {
+      background: #FCFBFF
+    }
+
+    .validation-pattern {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 280px
+    }
+
+    .validation-number {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 30px;
+      background: #F0EEFF;
+      color: #5B4BE5;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .validation-pattern strong {
+      display: block;
+      color: var(--text-main);
+      font-size: 13px;
+      margin-bottom: 2px
+    }
+
+    .validation-pattern span:not(.validation-number) {
+      display: block;
+      color: #777C8D;
+      font-size: 10px
+    }
+
+    .table-open {
+      border: 0;
+      background: none;
+      color: #5140D8;
+      cursor: pointer;
+      font: 700 11px 'Inter', sans-serif;
+      white-space: nowrap;
+      padding: 5px 0;
+    }
+
+    .table-open:hover {
+      text-decoration: underline
+    }
+
+    .pattern-case-note {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-top: 22px;
+      padding: 20px 22px;
+      background: #F7F4FD;
+      border: 1px solid #E4DFFF;
+      border-radius: 14px;
+    }
+
+    .pattern-case-note-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      flex: 0 0 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #EAE6FF;
+      color: #5B4BE5;
+      font-size: 16px;
+    }
+
+    .pattern-case-note strong {
+      display: block;
+      font-size: 13px;
+      color: var(--text-main);
+      margin-bottom: 5px
+    }
+
+    .pattern-case-note p {
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--text-sec)
+    }
+
+    @media(max-width:800px) {
+      .pattern-validation-head {
+        display: block
+      }
+
+      .pattern-validation-legend {
+        justify-content: flex-start;
+        margin-top: 14px
+      }
+    }
+
+
+    .validation-application {
+      color: var(--text-main);
+      font-size: 12px;
+      line-height: 1.5
+    }
+
+    .validation-observation {
+      margin-top: 5px;
+      color: #7B8090;
+      font-size: 10px;
+      line-height: 1.4
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <nav class="phase-nav" aria-label="Fases">
+
+  <a href="index.html#fase-1" class="phase-tab">
+    FASE 1 · INVESTIGACIÓN
+  </a>
+
+  <a href="index.html#fase-2" class="phase-tab">
+    FASE 2 · AUDITORÍA VERO
+  </a>
+
+  <a class="phase-tab active"
+     aria-current="page"
+     href="fase-3-caso-1.html">
+    FASE 3 · CASO 1 · APLICACIÓN
+  </a>
+
+  <a class="phase-tab"
+     href="fase-3-caso-2.html">
+    FASE 3 · CASO 2 · APLICACIÓN
+  </a>
+
+   <a class="phase-tab" aria-current="page" href="fase-3-caso-3.html">FASE 3 · CASO 3 · APLICACIÓN</a>
+
+</nav>
+    </div>
+  </header>
+  <div class="progress-bar" aria-hidden="true"></div>
+
+  <main>
+
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero-grid">
+          <div>
+            <div class="hero-eyebrow">Fase 3 → Construcción del recorrido</div>
+            <h1 class="hero-title">Cómo construimos<br>el <span class="accent">recorrido.</span></h1>
+            <p class="hero-desc">
+              Antes de aplicar patrones, diseñamos la experiencia.
+              Este es el proceso que seguimos para convertir los hallazgos de la auditoría
+              en decisiones concretas de diseño.
+            </p>
+          </div>
+          <div class="hero-visual">
+            <div class="hero-img-frame">
+              <img src="https://i.postimg.cc/MpnLWYgD/image-49.webp"
+                alt="Mesa de experimentación con libros, café, decisiones de diseño y patrones">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <div class="marquee" aria-label="Principios de la fase">
+      <div class="marquee-track">
+        <span class="marquee-item">DE HALLAZGOS A DECISIONES <span class="dot"></span></span>
+        <span class="marquee-item">EL USUARIO DIRIGE EL RECORRIDO <span class="dot"></span></span>
+        <span class="marquee-item">CADA DECISIÓN TIENE UN PROPÓSITO <span class="dot"></span></span>
+        <span class="marquee-item">DE HALLAZGOS A DECISIONES <span class="dot"></span></span>
+        <span class="marquee-item">EL USUARIO DIRIGE EL RECORRIDO <span class="dot"></span></span>
+        <span class="marquee-item">CADA DECISIÓN TIENE UN PROPÓSITO <span class="dot"></span></span>
+      </div>
+    </div>
+
+
+    <section class="case-intro">
+      <div class="wrap">
+        <div class="case-kicker">Caso 01 · Quicksilver</div>
+        <h2 class="case-title">Construimos un recorrido para responder una <span>pregunta.</span></h2>
+        <p class="case-lead">
+          Partimos de un libro que ya genera conversación y de una intención concreta:
+          evaluar si el hype que lo rodea está realmente justificado. La pregunta no es
+          “¿qué quiere contar Vero sobre Quicksilver?”, sino qué necesita descubrir el
+          espectador para poder responderla.
+        </p>
+
+        <div class="case-question">
+          <div class="case-opportunity">
+            <h3>La oportunidad</h3>
+            <div class="opportunity-pills">
+              <span class="pill">Libro popular</span>
+              <span class="pill">Evaluar</span>
+              <span class="pill">Hype</span>
+            </div>
+          </div>
+          <div class="question-box">
+            <h3>Pregunta central</h3>
+            <div class="big-question">¿Quicksilver merece el hype?</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section">
+      <div class="wrap">
+        <div class="process-intro">
+          <div class="eyebrow-label">Cómo se construye el recorrido</div>
+          <h2>Primero resolvemos qué debe descubrir el usuario.</h2>
+          <p>
+            Después decidimos qué contenido necesita cada bloque y solo entonces
+            seleccionamos las decisiones de diseño que hacen que ese contenido funcione.
+          </p>
+        </div>
+
+        <div class="process-grid">
+
+          <article class="process-step">
+            <div class="step-left">
+              <span class="step-number">01</span>
+              <h3>Tenemos una oportunidad</h3>
+              <p>Partimos de un libro popular que ya genera conversación y de una intención: evaluar.</p>
+            </div>
+            <div class="step-right">
+              <div class="evidence-card">
+                <div class="evidence-kicker">¿Qué tenemos?</div>
+                <div class="opportunity-grid">
+                  <div class="op">
+                    <div class="op-icon">↗</div>
+                    <div class="op-title">Popularidad</div>
+                  </div>
+                  <div class="op">
+                    <div class="op-icon">⌕</div>
+                    <div class="op-title">Evaluación</div>
+                  </div>
+                  <div class="op">
+                    <div class="op-icon">♡</div>
+                    <div class="op-title">Expectativa del público</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="process-step">
+            <div class="step-left">
+              <span class="step-number">02</span>
+              <h3>Convertimos la oportunidad en una pregunta central</h3>
+              <p>La pregunta organiza todo lo que viene después. Es el problema que el recorrido debe resolver.</p>
+            </div>
+            <div class="step-right">
+              <div class="evidence-card question-card">
+                <div class="question-label">Pregunta central</div>
+                <blockquote>¿Quicksilver merece el hype?</blockquote>
+              </div>
+            </div>
+          </article>
+
+          <article class="process-step">
+            <div class="step-left">
+              <span class="step-number">03</span>
+              <h3>Determinamos qué necesitamos resolver</h3>
+              <p>Descomponemos la pregunta central en preguntas que el usuario necesita resolver para poder acercarse al
+                veredicto.</p>
+            </div>
+            <div class="step-right">
+              <div class="evidence-card blocks-card">
+                <div class="evidence-kicker purple">Bloques del recorrido</div>
+                <div class="block-flow">
+                  <div class="flow-item">
+                    <div class="flow-number">1</div>
+                    <div class="flow-title">¿Por qué existe tanto hype?</div>
+                  </div>
+                  <div class="flow-item">
+                    <div class="flow-number">2</div>
+                    <div class="flow-title">¿Qué encontré realmente?</div>
+                  </div>
+                  <div class="flow-item">
+                    <div class="flow-number">3</div>
+                    <div class="flow-title">¿Qué empezó a hacerme dudar?</div>
+                  </div>
+                  <div class="flow-item">
+                    <div class="flow-number">4</div>
+                    <div class="flow-title">¿Qué pesa más?</div>
+                  </div>
+                  <div class="flow-item">
+                    <div class="flow-number">5</div>
+                    <div class="flow-title">¿Qué explica finalmente el hype?</div>
+                  </div>
+                  <div class="flow-item">
+                    <div class="flow-number">☆</div>
+                    <div class="flow-title">VEREDICTO<br>¿Merece el hype?</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="process-step">
+            <div class="step-left">
+              <span class="step-number">04</span>
+              <h3>Dentro de cada bloque, seleccionamos el contenido</h3>
+              <p>Los temas nos dicen de qué necesitamos hablar para conseguir el objetivo de cada bloque.</p>
+            </div>
+            <div class="step-right">
+              <div class="topic-grid">
+                <div class="topic-card">
+                  <h4>BLOQUE 1<br>¿Por qué existe tanto hype?</h4>
+                  <p>• Contexto real<br>• Popularización<br>• Promesa de la premisa<br>• BookTok</p>
+                </div>
+                <div class="topic-card">
+                  <h4>BLOQUE 2<br>¿Qué encontré realmente?</h4>
+                  <p>• Ritmo<br>• Personajes<br>• Romance<br>• Escenas concretas</p>
+                </div>
+                <div class="topic-card">
+                  <h4>BLOQUE 3<br>¿Qué empezó a hacerme dudar?</h4>
+                  <p>• Problema real<br>• Evidencia negativa<br>• Contradicción</p>
+                </div>
+                <div class="topic-card">
+                  <h4>BLOQUE 4<br>¿Qué argumento decide?</h4>
+                  <p>• Argumento central<br>• Peso relativo<br>• Contexto acumulado</p>
+                </div>
+                <div class="topic-card">
+                  <h4>BLOQUE 5 · ¿Cuánto pesa todo esto?<br>¿Qué explica el hype?</h4>
+                  <p>• Lo positivo<br>• La duda<br>• El argumento decisivo</p>
+                </div>
+                <div class="topic-card">
+                  <h4>RESOLUCIÓN<br>¿Deberías leerlo?</h4>
+                  <p>• Comprensión<br>• Transformación<br>• Decisión</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="process-step">
+            <div class="step-left">
+              <span class="step-number">05</span>
+              <h3>Organizamos la información dentro del bloque</h3>
+              <p><strong>Aquí aplicamos los patrones de diseño.</strong> No para “llenar” el guion, sino para decidir
+                cómo debe funcionar cada contenido dentro del bloque.</p>
+            </div>
+            <div class="step-right">
+              <div class="evidence-card design-card">
+                <div class="evidence-kicker yellow">Patrones aplicados · Bloque 2</div>
+                <div class="design-grid">
+                  <div class="design-item">
+                    <div class="design-icon">⌕</div><strong>09 · Evidencia</strong>
+                  </div>
+                  <div class="design-item">
+                    <div class="design-icon">◌</div><strong>10 · Recompensa</strong>
+                  </div>
+                  <div class="design-item">
+                    <div class="design-icon">↗</div><strong>07 · Cambio</strong>
+                  </div>
+                  <div class="design-item">
+                    <div class="design-icon">→</div><strong>Resultado</strong>
+                  </div>
+                </div>
+                <p class="design-note"><strong>¿Qué hacen aquí los patrones?</strong> Transforman el contenido del
+                  bloque para que el espectador pueda observarlo, comprenderlo y obtener algo de él.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="process-step">
+            <div class="step-left">
+              <span class="step-number">06</span>
+              <h3>Conectamos un bloque con otro</h3>
+              <p><strong>Aquí aplicamos patrones de continuidad.</strong> Diseñamos la transición para que la siguiente
+                pieza sea necesaria, no simplemente consecutiva.</p>
+            </div>
+            <div class="step-right">
+              <div class="evidence-card connect-card">
+                <div class="evidence-kicker blue">Patrones entre bloques</div>
+                <div class="connect-grid">
+                  <div class="connect-item"><span class="icon">↗</span> Expectativa</div>
+                  <div class="connect-item"><span class="icon">◉</span> Nueva pregunta</div>
+                  <div class="connect-item"><span class="icon">▱</span> Continuidad</div>
+                </div>
+                <p class="design-note"><strong>¿Qué hace el patrón aquí?</strong> Gestiona la expectativa que queda
+                  abierta al terminar un bloque. En Quicksilver: “Pero había un problema.” La frase no cierra; abre la
+                  necesidad del siguiente descubrimiento.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="process-step">
+            <div class="step-left">
+              <span class="step-number">07</span>
+              <h3>Revisamos todo el recorrido</h3>
+              <p><strong>Aquí aplicamos patrones transversales.</strong> Evaluamos el sistema completo y comprobamos
+                dónde esos patrones aportan valor a más de un bloque.</p>
+            </div>
+            <div class="step-right">
+              <div class="evidence-card review-card">
+                <div class="evidence-kicker green">Patrones transversales · Todo el recorrido</div>
+                <div class="review-grid">
+                  <div class="review-item"><span class="icon">◷</span> 17 · Economía</div>
+                  <div class="review-item"><span class="icon">▱</span> 13 · Complejidad</div>
+                  <div class="review-item"><span class="icon">↗</span> 11 · Progreso</div>
+                  <div class="review-item"><span class="icon">☆</span> 16 · Valor creciente</div>
+                </div>
+                <p class="design-note"><strong>¿Qué significa “transversal”?</strong> Estos patrones no pertenecen a un
+                  único bloque: funcionan como criterios que pueden repetirse y afectar el recorrido completo.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="process-step">
+            <div class="step-left">
+              <span class="step-number">08</span>
+              <h3>Diseñamos la resolución</h3>
+              <p><strong>Aquí aplicamos los patrones de cierre y resolución.</strong> La respuesta final debe cerrar la
+                pregunta, transformar la comprensión y permitir una decisión.</p>
+            </div>
+            <div class="step-right">
+              <div class="evidence-card resolution-card">
+                <div class="evidence-kicker lavender">Patrones de resolución</div>
+                <div class="resolution-grid">
+                  <div class="resolution-item"><span class="icon">⚑</span> 06 · Cierre</div>
+                  <div class="resolution-item"><span class="icon">♡</span> 18 · Transformación</div>
+                  <div class="resolution-item"><span class="icon">◎</span> 19 · Acción</div>
+                </div>
+                <p class="design-note"><strong>¿Qué hacen estos patrones?</strong> Determinan cómo se entrega la
+                  respuesta, qué cambia en la comprensión del espectador y cómo esa comprensión puede convertirse en una
+                  decisión.</p>
+              </div>
+            </div>
+          </article>
+
+          <div class="gold-rule">
+            <div class="gold-title">
+              <div class="gold-star">☆</div>
+              <div>Regla de oro<br>para todo el sistema</div>
+            </div>
+            <div class="gold-cell"><strong>Los temas responden</strong>¿de qué necesito hablar?</div>
+            <div class="gold-cell"><strong>Los bloques responden</strong>¿para qué necesito hablar de esto aquí?</div>
+            <div class="gold-cell"><strong>Los patrones responden</strong>¿qué decisión de diseño necesito tomar para
+              que esta parte funcione?</div>
+            <div class="gold-cell">No son excluyentes: un bloque puede contener varios temas, un tema puede aparecer en
+              varios bloques y varios patrones pueden intervenir en un mismo bloque.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section script-result" id="guion-caso-01">
+      <div class="wrap">
+        <div class="script-header">
+          <div>
+            <div class="eyebrow-label">Resultado del Caso 01</div>
+            <h2>Así quedó el guion.</h2>
+          </div>
+          <p>
+            El recorrido anterior se convierte en una guía para desarrollar el guion.
+            Aquí no mostramos solo “qué decir”: cada bloque conecta <strong>la pregunta que debe resolver,
+              los temas que necesita trabajar y los patrones que deben intervenir</strong>. Así Vero puede
+            desarrollar el contenido sin perder la lógica del recorrido.
+          </p>
+        </div>
+
+        <div class="script-timeline">
+
+          <article class="script-block">
+            <div class="script-time">0:00–0:40</div>
+            <div>
+              <div class="script-title">APERTURA</div>
+              <div class="script-context"><strong>Qué debe resolver:</strong> dar una razón autónoma para entrar y
+                convertir la popularidad del libro en una pregunta que el espectador quiera resolver.</div>
+              <div class="script-themes"><strong>Temas que conectamos:</strong>
+                <div class="theme-tags" aria-label="Temas del bloque">
+                  <span>Popularidad</span><span>BookTok</span><span>Recomendaciones</span><span>Expectativa del
+                    público</span></div>
+              </div>
+              <div class="script-line">“Este es el libro que llevo tres meses viendo en todos lados. Booktok, mi grupo
+                de lectura, mi feed de Goodreads. Todo el mundo lo recomienda como si fuera obligatorio leerlo. Así que
+                lo leí. Y en los próximos [X] minutos vamos a descubrir si Quicksilver realmente merece todo ese hype, o
+                si es otro caso de marketing que le ganó al libro.”</div>
+              <div class="script-note"><strong>Para Vero:</strong> todavía no resuelvas la pregunta. Presenta el
+                fenómeno y deja claro qué vamos a descubrir.</div>
+            </div>
+            <div class="script-patterns">
+              <span class="script-tag">01 · Promesa inicial</span>
+              <span class="script-tag">02 · Pregunta central</span>
+              <span class="script-tag transversal-tag">03 · Revelación progresiva</span>
+            </div>
+          </article>
+
+          <article class="script-block">
+            <div class="script-time">0:40–2:30</div>
+            <div>
+              <div class="script-title">BLOQUE 1 · ¿Por qué existe tanto hype?</div>
+              <div class="script-context"><strong>Qué debe resolver:</strong> explicar de dónde viene la expectativa que
+                rodea al libro antes de empezar a comprobar si esa expectativa está justificada.</div>
+              <div class="script-themes">
+                <strong>Temas que conectamos:</strong>
+                <div class="theme-tags" aria-label="Temas del bloque 1">
+                  <span>Popularidad</span>
+                  <span>Autopublicación</span>
+                  <span>BookTok</span>
+                  <span>Premisa</span>
+                  <span>Adaptación de Netflix</span>
+                  <span>Expectativa del público</span>
+                </div>
+              </div>
+              <div class="script-line">“Quicksilver no empezó como uno de esos libros que llegan con una campaña
+                editorial gigantesca detrás. Fue un libro autopublicado que empezó a encontrar lectores, y después
+                BookTok hizo que esa conversación creciera muchísimo. Y cuando Netflix adquiere los derechos para
+                llevarlo a una adaptación, la historia deja de ser solamente la de un libro que se volvió popular: se
+                convierte en un fenómeno que genera todavía más expectativa.”</div>
+              <div class="script-line">“Y ahí está lo que quiero que tengamos claro antes de hablar de mi experiencia
+                leyéndolo: cuando alguien llega a Quicksilver, no llega solamente a una historia. Llega con todo ese
+                hype detrás, con una premisa que ya le prometieron que funciona y con la expectativa de que hay algo
+                especial en este libro. Eso es precisamente lo que vamos a poner a prueba.”</div>
+              <div class="script-note"><strong>Para Vero:</strong> no conviertas este bloque en una biografía del libro.
+                Cada dato debe explicar una parte de la expectativa: cómo pasó de autopublicado a fenómeno, qué papel
+                tuvo BookTok, qué hace atractiva su premisa y por qué la adaptación de Netflix aumenta todavía más lo
+                que el espectador espera encontrar. El objetivo es que, al terminar este bloque, entendamos <em>por qué
+                  existe el hype</em>, no que ya sepamos si está justificado.</div>
+            </div>
+            <div class="script-patterns">
+              <span class="script-tag">15 · Guía del recorrido</span>
+              <span class="script-tag transversal-tag">03 · Revelación progresiva</span>
+              <span class="script-tag transversal-tag">11 · Progreso visible</span>
+            </div>
+          </article>
+
+          <article class="script-block">
+            <div class="script-time">2:30–5:30</div>
+            <div>
+              <div class="script-title">BLOQUE 2 · ¿Qué encontré realmente?</div>
+              <div class="script-context"><strong>Qué debe resolver:</strong> contrastar la expectativa creada por el
+                fenómeno con la experiencia real de lectura.</div>
+              <div class="script-themes"><strong>Temas que conectamos:</strong>
+                <div class="theme-tags" aria-label="Temas del bloque">
+                  <span>Ritmo</span><span>Personajes</span><span>Romance</span><span>Experiencia real de lectura</span>
+                </div>
+              </div>
+              <div class="script-line">“Y tengo que decir: al principio, entendí perfectamente el hype.”</div>
+              <div class="script-note"><strong>Para Vero:</strong> desarrolla los temas con evidencia concreta. No basta
+                decir que el ritmo funciona o que los personajes gustan: muestra qué ocurre en la lectura que permite
+                sostener esa afirmación. El bloque debe producir un primer hallazgo y una recompensa parcial: “Esto ya
+                me dice algo: el hype no salió de la nada.”</div>
+            </div>
+            <div class="script-patterns">
+              <span class="script-tag">09 · Evidencia</span>
+              <span class="script-tag transversal-tag">10 · Recompensas</span>
+              <span class="script-tag transversal-tag">03 · Revelación progresiva</span>
+              <span class="script-tag transversal-tag">07 · Cambio de estado</span>
+              <span class="script-tag transversal-tag">11 · Progreso visible</span>
+            </div>
+          </article>
+
+          <article class="script-block script-transition">
+            <div class="script-time">5:30–5:40</div>
+            <div>
+              <div class="script-title">TRANSICIÓN</div>
+              <div class="script-context"><strong>Qué debe resolver:</strong> convertir el hallazgo anterior en una
+                nueva incertidumbre que haga necesario el siguiente bloque.</div>
+              <div class="script-themes"><strong>Qué conecta:</strong>
+                <div class="theme-tags" aria-label="Elementos que conecta la transición">
+                  <span>Lo que funcionó</span>
+                  <span>Problema pendiente</span>
+                  <span>Nueva incertidumbre</span>
+                </div>
+              </div>
+              <div class="script-line">“Pero había un problema.”</div>
+              <div class="script-note"><strong>Para Vero:</strong> la transición no es decoración. Debe nacer de lo que
+                acabamos de descubrir y abrir la pregunta que el siguiente bloque resolverá.</div>
+            </div>
+            <div class="script-patterns">
+              <span class="script-tag">05 · Cadena de expectativas</span>
+              <span class="script-tag transversal-tag">03 · Revelación progresiva</span>
+            </div>
+          </article>
+
+          <article class="script-block">
+            <div class="script-time">5:40–8:30</div>
+            <div>
+              <div class="script-title">BLOQUE 3 · ¿Qué explica el hype?</div>
+              <div class="script-context"><strong>Qué debe resolver:</strong> introducir la evidencia que complica la
+                primera conclusión y obliga a reevaluar el hype.</div>
+              <div class="script-themes"><strong>Temas que conectamos:</strong>
+                <div class="theme-tags" aria-label="Temas del bloque"><span>Elementos que explican el
+                    hype</span><span>Evidencia</span><span>Análisis de la experiencia</span></div>
+              </div>
+              <div class="script-line">[ASÍ: el problema real que encontraste, siempre con un ejemplo concreto.] “Y aquí
+                es donde empecé a preguntarme si esto realmente sostiene todo el hype, o si estamos hablando de un libro
+                bueno que se volvió viral por otras razones.”</div>
+              <div class="script-note"><strong>Para Vero:</strong> conecta el problema con la evidencia anterior. El
+                objetivo no es agregar una crítica aislada, sino mostrar qué cambia cuando incorporamos esta nueva
+                información.</div>
+            </div>
+            <div class="script-patterns">
+              <span class="script-tag">09 · Evidencia</span>
+              <span class="script-tag transversal-tag">03 · Revelación progresiva</span>
+              <span class="script-tag transversal-tag">10 · Recompensas</span>
+              <span class="script-tag transversal-tag">07 · Cambio de estado</span>
+              <span class="script-tag transversal-tag">11 · Progreso visible</span>
+            </div>
+          </article>
+
+          <article class="script-block">
+            <div class="script-time">8:30–11:00</div>
+            <div>
+              <div class="script-title">BLOQUE 4 · ¿Qué empezó a hacerme dudar?</div>
+              <div class="script-context"><strong>Qué debe resolver:</strong> determinar qué argumento tiene mayor peso
+                después de haber incorporado todo lo descubierto hasta aquí.</div>
+              <div class="script-themes"><strong>Temas que conectamos:</strong>
+                <div class="theme-tags" aria-label="Temas del bloque">
+                  <span>Dudas</span><span>Problemas</span><span>Evidencia acumulada</span><span>Peso relativo de los
+                    factores</span></div>
+              </div>
+              <div class="script-line">[ASÍ: el argumento más importante de toda la evaluación.] “De todo lo que
+                hablamos hasta ahora, esto es lo que más pesa en mi veredicto, y te voy a explicar por qué.”</div>
+              <div class="script-note"><strong>Para Vero:</strong> aquí no introduzcas simplemente otro tema. Compara y
+                jerarquiza lo anterior para explicar por qué este argumento pesa más. El espectador debe sentir que la
+                evaluación está acercándose a una conclusión.</div>
+            </div>
+            <div class="script-patterns">
+              <span class="script-tag transversal-tag">03 · Revelación progresiva</span>
+              <span class="script-tag transversal-tag">10 · Recompensas</span>
+              <span class="script-tag transversal-tag">07 · Cambio de estado</span>
+              <span class="script-tag">16 · Valor creciente</span>
+              <span class="script-tag">13 · Gestión de complejidad</span>
+              <span class="script-tag transversal-tag">11 · Progreso visible</span>
+            </div>
+          </article>
+
+          <article class="script-block">
+            <div class="script-time">11:00–12:30</div>
+            <div>
+              <div class="script-title">BLOQUE 5 · ¿Cuánto pesa todo esto?</div>
+              <div class="script-context"><strong>Qué debe resolver:</strong> conectar las piezas anteriores para
+                explicar finalmente qué sostiene el hype.</div>
+              <div class="script-themes"><strong>Temas que conectamos:</strong>
+                <div class="theme-tags" aria-label="Temas del bloque"><span>Hallazgos
+                    anteriores</span><span>Fortalezas</span><span>Dudas</span><span>Factor
+                    decisivo</span><span>Explicación del hype</span></div>
+              </div>
+              <div class="script-line">“Entonces, ¿qué explica finalmente todo este hype?”</div>
+              <div class="script-note"><strong>Para Vero:</strong> no repitas los bloques. Relaciona sus hallazgos: qué
+                funcionó, qué generó dudas y qué factor termina explicando mejor la reacción del público. Aquí la
+                recompensa es la comprensión de conjunto.</div>
+            </div>
+            <div class="script-patterns">
+              <span class="script-tag transversal-tag">03 · Revelación progresiva</span>
+              <span class="script-tag transversal-tag">10 · Recompensas</span>
+              <span class="script-tag">08 · Comprensión</span>
+              <span class="script-tag transversal-tag">07 · Cambio de estado</span>
+            </div>
+          </article>
+
+          <article class="script-block">
+            <div class="script-time">12:30–13:30</div>
+            <div>
+              <div class="script-title">CIERRE TRANSFORMADOR</div>
+              <div class="script-context"><strong>Qué debe resolver:</strong> transformar la pregunta inicial en una
+                comprensión nueva, sin negar lo descubierto durante el recorrido.</div>
+              <div class="script-themes"><strong>Qué conectamos:</strong>
+                <div class="theme-tags" aria-label="Temas de resolución">
+                  <span>Explicación del hype</span>
+                  <span>Interpretación de Vero</span>
+                  <span>Conclusión construida</span>
+                </div>
+              </div>
+              <div class="script-line">“Y honestamente, ahora entiendo por qué este libro genera esta reacción en tanta
+                gente — [ASÍ: aunque tu conclusión personal sea negativa, completa con qué exactamente entendiste]. Eso
+                no significa que sea el libro perfecto que Booktok a veces vende. Significa que el hype, en este caso,
+                no salió de la nada.”</div>
+              <div class="script-note"><strong>Para Vero:</strong> el cierre debe mostrar qué cambió en la
+                interpretación, no solamente cuál fue la calificación.</div>
+            </div>
+            <div class="script-patterns">
+              <span class="script-tag">06 · Cierre transformador</span>
+              <span class="script-tag">18 · Transformación personal</span>
+              <span class="script-tag transversal-tag">07 · Cambio de estado</span>
+            </div>
+          </article>
+
+          <article class="script-block">
+            <div class="script-time">13:30–14:30</div>
+            <div>
+              <div class="script-title">VEREDICTO · ¿Merece el hype?</div>
+              <div class="script-context"><strong>Qué debe resolver:</strong> convertir la comprensión construida en una
+                decisión útil para el espectador.</div>
+              <div class="script-themes"><strong>Qué conectamos:</strong>
+                <div class="theme-tags" aria-label="Temas de resolución">
+                  <span>Veredicto</span>
+                  <span>Tipo de lector</span>
+                  <span>Expectativa del lector</span>
+                  <span>Decisión de lectura</span>
+                </div>
+              </div>
+              <div class="script-line">“Entonces, ¿deberías leerlo?”</div>
+              <div class="script-note"><strong>Para Vero:</strong> segmenta la respuesta según quién está viendo el
+                video y qué espera encontrar en el libro. La decisión final debe desprenderse de todo el recorrido
+                anterior.</div>
+            </div>
+            <div class="script-patterns">
+              <span class="script-tag">19 · Del conocimiento a la acción</span>
+              <span class="script-tag">06 · Cierre transformador</span>
+            </div>
+          </article>
+
+          <article class="script-block script-transversal">
+            <div class="script-time">TRANSVERSAL</div>
+            <div>
+              <div class="script-title">CAPAS QUE ATRAVIESAN EL GUIÓN</div>
+              <div class="script-context"><strong>No son pasos adicionales.</strong> Son patrones que pueden repetirse
+                en distintos bloques cuando la necesidad del recorrido los vuelve pertinentes.</div>
+              <div class="script-themes"><strong>Ejemplos:</strong>
+                <div class="theme-tags">
+                  <span>Revelación progresiva</span>
+                  <span>Recompensas parciales</span>
+                  <span>Cambio de estado</span>
+                  <span>Progreso visible</span>
+                  <span>Economía narrativa</span>
+                </div>
+              </div>
+              <div class="script-line">Su presencia se rastrea en los bloques anteriores: no se “usan una vez”, sino que
+                acompañan el recorrido cuando cada decisión lo requiere.</div>
+              <div class="script-note"><strong>Para Vero:</strong> no intentes colocar todos los patrones en todos los
+                bloques. Repite los que resuelven una necesidad recurrente y deja fuera los que no aporten.</div>
+            </div>
+            <div class="script-patterns">
+              <span class="script-tag transversal-tag">03 · Revelación progresiva</span>
+              <span class="script-tag transversal-tag">10 · Recompensas</span>
+              <span class="script-tag transversal-tag">07 · Cambio de estado</span>
+              <span class="script-tag transversal-tag">11 · Progreso visible</span>
+              <span class="script-tag">17 · Economía narrativa</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+      </div>
+    </section>
+
+
+    <section class="pattern-section" id="patrones">
+      <div class="wrap">
+        <div class="pattern-intro">
+          <div class="eyebrow-label">Validación de patrones · Caso 01</div>
+          <h2>Ahora sí: ¿dónde entran los patrones?</h2>
+          <p>
+            En este caso no clasificamos todavía los 19 patrones como “dentro del bloque”,
+            “en la transición”, “en el recorrido”, “transversales” o “en la resolución”.
+            Primero observamos qué patrones fueron realmente necesarios, cómo se aplicaron
+            y qué tan central fue su función dentro de Quicksilver.
+          </p>
+          <div class="pattern-note">
+            <strong>Regla para este caso:</strong> no se trata de usar los 19 patrones.
+            Se seleccionan los que ayudan a resolver la necesidad que aparece en cada punto
+            del diseño. La clasificación funcional definitiva la construiremos después de comparar los casos.
+          </div>
+        </div>
+
+        <div class="pattern-validation-head">
+          <div>
+            <div class="eyebrow-label">Caso 01 · Quicksilver</div>
+            <h3>Qué utilizamos y cómo se aplicó</h3>
+            <p>
+              La matriz no responde todavía “a qué categoría pertenece” cada patrón.
+              Responde una pregunta anterior: <strong>¿qué ocurrió cuando intentamos aplicarlo en este caso?</strong>
+            </p>
+          </div>
+          <div class="pattern-validation-legend">
+            <span class="legend direct">Directa</span>
+            <span class="legend adapted">Adaptada</span>
+            <span class="legend optional">Opcional</span>
+            <span class="legend need">Según necesidad</span>
+            <span class="legend dependent">Dependiente</span>
+          </div>
+        </div>
+
+        <div class="pattern-table-wrap">
+          <table class="pattern-validation-table">
+            <thead>
+              <tr>
+                <th>Patrón</th>
+                <th>Decisión en Caso 01</th>
+                <th>Cómo se aplicó</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="patternValidationTable"></tbody>
+          </table>
+        </div>
+
+        <div class="pattern-case-note">
+          <div class="pattern-case-note-icon">✦</div>
+          <div>
+            <strong>Lo que todavía no concluimos</strong>
+            <p>
+              Que un patrón aparezca varias veces no significa automáticamente que sea transversal.
+              Y que aparezca una sola vez no significa que pertenezca a una categoría específica.
+              Eso solo podremos determinarlo al contrastar los tres casos.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-next" id="casos-02-03">
+      <div class="wrap">
+        <div class="next-card">
+          <div>
+            <div class="next-kicker">Caso 02 · Próxima aplicación</div>
+            <h2>El mismo proceso, otra experiencia.</h2>
+            <p>
+              La estructura de Fase 3 se repite: primero presentamos la oportunidad y la pregunta
+              del caso; después construimos sus bloques, seleccionamos contenido, aplicamos patrones,
+              revisamos el recorrido y mostramos el guion resultante.
+            </p>
+          </div>
+          <div class="next-status">
+            <strong>Contenido pendiente de integrar</strong>
+            El Caso 02 todavía no está incluido en el material fuente disponible para esta página.
+            No inventamos sus decisiones: cuando se incorpore su análisis, ocupará aquí la misma estructura
+            que Quicksilver.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-next">
+      <div class="wrap">
+        <div class="next-card">
+          <div>
+            <div class="next-kicker">Caso 03 · Próxima aplicación</div>
+            <h2>La tecnología se prueba en otro contexto.</h2>
+            <p>
+              El objetivo no es repetir un guion, sino comprobar qué decisiones se mantienen,
+              cuáles cambian y qué patrones muestran comportamiento consistente entre casos.
+            </p>
+          </div>
+          <div class="next-status">
+            <strong>Contenido pendiente de integrar</strong>
+            El Caso 03 seguirá la misma arquitectura cuando dispongamos de su evidencia y guion.
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="closing">
+      <div class="closing-inner">
+        <div class="eyebrow-label" style="color:#aaa5e8">Fase 3 · Aplicación</div>
+        <h2>Primero construimos el recorrido.</h2>
+        <p>
+          Después decidimos qué patrones ayudan a que cada parte funcione.
+          <strong>No diseñamos para usar patrones. Diseñamos para resolver las necesidades del espectador.</strong>
+        </p>
+      </div>
+    </section>
+
+  </main>
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div>
+          <div class="modal-kicker" id="modalKicker"></div>
+          <h2 id="modalTitle"></h2>
+        </div>
+        <button class="modal-close" id="modalClose" aria-label="Cerrar">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+    <script>
+      const patterns = {
+        dentro_bloque: [
+          {
+            n: "08", name: "Construcción de comprensión",
+            summary: "Hacer que las piezas formen una explicación.",
+            function: "Conectar evidencias y hallazgos hasta construir una comprensión progresiva.",
+            decision: "Cada bloque aporta una pieza necesaria para comprender el fenómeno, en lugar de acumular opiniones sobre temas separados.",
+            application: "La experiencia, los elementos que explican el hype y las dudas se relacionan para construir la evaluación.",
+            why: "El espectador puede seguir una línea de razonamiento en lugar de procesar una lista de observaciones.",
+            result: "Aplicable transversalmente."
+          },
+          {
+            n: "09", name: "Evidencia y ejemplificación",
+            summary: "Permitir que una afirmación pueda comprobarse.",
+            function: "Dar sustento concreto a los juicios importantes.",
+            decision: "Apoyar las afirmaciones relevantes con ejemplos concretos del libro, no solo con la opinión de Vero.",
+            application: "Cuando se afirma que un aspecto funciona, se recurre a una escena, fragmento o ejemplo que permita entender por qué.",
+            why: "El usuario necesita poder evaluar si la evidencia sostiene la respuesta que vino a descubrir.",
+            result: "Aplicable directamente."
+          },
+          {
+            n: "13", name: "Gestión de la complejidad",
+            summary: "Distribuir criterios para no acumular información.",
+            function: "Evitar que una evaluación con varios criterios se convierta en una carga de procesamiento.",
+            decision: "Distribuir los elementos de evaluación a lo largo del recorrido en lugar de presentarlos todos simultáneamente.",
+            application: "Los distintos aspectos de la experiencia aparecen en relación con las preguntas que el recorrido necesita resolver.",
+            why: "La complejidad se administra como parte de la arquitectura, no se deja al espectador como trabajo de organización.",
+            result: "Aplicable con adaptación."
+          },
+          {
+            n: "14", name: "Recursos visuales",
+            summary: "Usar lo visual cuando mejora la comprensión.",
+            function: "Hacer más comprensible una afirmación cuando las palabras no son la forma más eficiente de mostrarla.",
+            decision: "Usar portada, fragmentos y elementos gráficos cuando faciliten entender una afirmación concreta.",
+            application: "Los recursos visuales funcionan como evidencia o apoyo de comprensión, no como decoración.",
+            why: "El recurso aparece porque resuelve una necesidad de comprensión.",
+            result: "Aplicable directamente."
+          }
+        ],
+        transicion: [
+          {
+            n: "05", name: "Cadena de expectativas",
+            summary: "Hacer que cada descubrimiento genere la necesidad del siguiente.",
+            function: "Conectar bloques mediante nuevas incertidumbres.",
+            decision: "Después de cada bloque, identificar qué acaba de descubrir el espectador y qué pregunta queda abierta.",
+            application: "Después de encontrar elementos que explican el hype, aparece la tensión: si funcionan tan bien, ¿por qué no funcionan necesariamente para todo lector?",
+            why: "El siguiente bloque existe porque el anterior cambió lo que el espectador necesita saber.",
+            result: "Aplicable directamente."
+          }
+        ],
+        recorrido: [
+          {
+            n: "01", name: "Promesa inicial",
+            summary: "Dar una razón para comenzar.",
+            function: "Dar una razón para comenzar y establecer qué puede ganar el espectador con el recorrido.",
+            decision: "Abrir dejando claro qué libro se evalúa, por qué merece atención, qué vamos a comprobar y qué obtendrá el espectador al final.",
+            application: "“Este es el libro que todo el mundo me ha recomendado. Lo leí para descubrir si realmente merece todo el hype.”",
+            why: "La promesa convierte una reseña genérica en una experiencia con resultado esperado y permite que alguien que no conoce a Vero tenga una razón autónoma para entrar.",
+            result: "Aplicable directamente."
+          },
+          {
+            n: "02", name: "Pregunta central",
+            summary: "Organizar el recorrido alrededor de una pregunta.",
+            function: "Convertir la oportunidad en una pregunta que pueda organizar todas las decisiones posteriores.",
+            decision: "Mantener “¿Realmente merece Quicksilver el hype?” como filtro de relevancia para bloques, temas y decisiones.",
+            application: "El video no se organiza alrededor de todo lo que Vero podría decir sobre el libro, sino alrededor de lo que necesitamos descubrir para responder la pregunta.",
+            why: "Evita que la experiencia se convierta en una reseña temática y mantiene al usuario orientado hacia la respuesta que vino a buscar.",
+            result: "Aplicable directamente."
+          },
+          {
+            n: "04", name: "Organización en bloques",
+            summary: "Dividir la evaluación en etapas con función propia.",
+            function: "Convertir una pregunta amplia en unidades de descubrimiento que puedan resolverse progresivamente.",
+            decision: "Construir seis etapas: fenómeno, experiencia, explicación del hype, complicación, evaluación y veredicto.",
+            application: "Cada bloque responde una pregunta que hace posible la siguiente.",
+            why: "Los bloques dejan de ser capítulos temáticos y se convierten en pasos necesarios hacia la respuesta.",
+            result: "Aplicable directamente."
+          },
+          {
+            n: "15", name: "Guía del recorrido",
+            summary: "Mantener al espectador orientado.",
+            function: "Mantener al espectador orientado durante el recorrido.",
+            decision: "Explicitar qué se resolverá primero, qué vendrá después y dónde se llegará al final.",
+            application: "“Primero voy a hablar de lo que sí funciona. Después de lo que me hizo dudar. Y al final veremos si todo eso compensa.”",
+            why: "Reduce la incertidumbre estructural sin revelar todavía la respuesta.",
+            result: "Aplicable directamente."
+          },
+          {
+            n: "16", name: "Valor creciente del recorrido",
+            summary: "Hacer que lo que viene parezca progresivamente más relevante.",
+            function: "Hacer que lo que viene parezca progresivamente más relevante o interesante.",
+            decision: "No presentar los argumentos aleatoriamente; organizar las observaciones menores antes de los problemas importantes y reservar para después el elemento que realmente determina el veredicto.",
+            application: "El argumento más importante de la evaluación se reserva para una etapa posterior, cuando ya existe el contexto necesario para que tenga todo su peso.",
+            why: "El escalamiento hace que los hallazgos posteriores tengan mayor peso que los anteriores.",
+            result: "Aplicable directamente."
+          }
+        ],
+        transversales: [
+          {
+            n: "03", name: "Revelación progresiva",
+            summary: "Construir la respuesta sin entregarla de inmediato.",
+            function: "Dosificar la información para que la respuesta final se construya durante el recorrido.",
+            decision: "No revelar el veredicto al principio; primero se presentan el fenómeno, la experiencia, los elementos que explican el hype y las dudas que complican la evaluación.",
+            application: "El veredicto aparece después de recorrer las evidencias y tensiones que lo hacen comprensible.",
+            why: "Permite que el espectador actualice su interpretación paso a paso en lugar de recibir una conclusión que vuelve irrelevante el resto del video.",
+            result: "Aplicable directamente."
+          },
+          {
+            n: "07", name: "Cambio de estado",
+            summary: "Mover al espectador de una comprensión inicial a otra más útil.",
+            function: "Definir qué debe entender de forma diferente al terminar un tramo.",
+            decision: "Diseñar el recorrido para pasar de “sé que Quicksilver es muy popular” a “entiendo qué explica su popularidad y puedo decidir si merece mi atención”.",
+            application: "Cada bloque debe producir una actualización de comprensión, no solo añadir información.",
+            why: "Permite evaluar el recorrido por el cambio que produce en el espectador, no por la cantidad de contenido.",
+            result: "Aplicable transversalmente."
+          },
+          {
+            n: "10", name: "Recompensas parciales",
+            summary: "Entregar valor antes del veredicto final.",
+            function: "Permitir que el espectador obtenga respuestas útiles mientras la pregunta principal sigue abierta.",
+            decision: "Cada etapa debe producir un hallazgo que actualice la evaluación sin cerrar todavía el veredicto.",
+            application: "Encontrar qué elementos sí explican el hype funciona como una conclusión parcial antes de resolver si el hype está justificado.",
+            why: "El espectador no tiene que esperar hasta el minuto final para obtener algo que justifique su recorrido.",
+            result: "Aplicable transversalmente."
+          },
+          {
+            n: "11", name: "Progreso visible",
+            summary: "Hacer perceptible que la evaluación avanza.",
+            function: "Ayudar a comprender que cada etapa acerca la respuesta.",
+            decision: "Organizar los bloques como pasos necesarios hacia el veredicto, sin convertir el progreso en una barra mecánica.",
+            application: "El recorrido avanza de fenómeno → experiencia → explicación → tensión → evaluación → veredicto.",
+            why: "Reduce la sensación de estar acumulando información sin saber hacia dónde conduce.",
+            result: "Aplicable transversalmente."
+          },
+          {
+            n: "12", name: "Arquitectura de retención",
+            summary: "Renovar la razón para continuar.",
+            function: "Diseñar el recorrido para que cada bloque mantenga viva la necesidad de resolver la pregunta central.",
+            decision: "Hacer que cada respuesta parcial genere una nueva incertidumbre relevante.",
+            application: "El video no depende de “aguantar” al espectador; cada etapa cambia lo que necesita descubrir.",
+            why: "La continuidad nace del problema que sigue sin resolver, no de una promesa artificial de más contenido.",
+            result: "Aplicable transversalmente."
+          }
+        ],
+        resolucion: [
+          {
+            n: "06", name: "Cierre transformador",
+            summary: "Cerrar modificando la comprensión inicial.",
+            function: "Hacer que la respuesta final cambie la manera en que el espectador entiende el fenómeno.",
+            decision: "No terminar solamente con una calificación; cerrar explicando qué aprendimos sobre el hype y por qué la respuesta es la que es.",
+            application: "El espectador pasa de saber que Quicksilver es popular a entender qué explica esa popularidad y cómo valorar el fenómeno.",
+            why: "La resolución devuelve al espectador una comprensión más completa que la que tenía cuando hizo clic.",
+            result: "Aplicable directamente."
+          },
+          {
+            n: "17", name: "Economía narrativa",
+            summary: "Eliminar aquello que no contribuye al avance.",
+            function: "Eliminar aquello que no contribuye al avance del recorrido.",
+            decision: "Pasar cada fragmento por una pregunta sencilla: ¿esto ayuda a responder si merece el hype? Si no, se corta.",
+            application: "Se evita resumir demasiado el libro o incluir datos interesantes que no ayuden a responder la pregunta central.",
+            why: "Protege el recorrido de información que puede ser interesante pero no necesaria.",
+            result: "Aplicable directamente."
+          },
+          {
+            n: "18", name: "Transformación personal",
+            summary: "Cambiar la manera en que el espectador interpreta el problema.",
+            function: "Cambiar la manera en que el espectador interpreta el problema.",
+            decision: "Diseñar el recorrido para que pueda comenzar con “No entiendo por qué todo el mundo ama este libro” y terminar con “Ahora entiendo perfectamente por qué genera esa reacción”.",
+            application: "El espectador termina entendiendo por qué el libro genera esa reacción, incluso si la conclusión personal de Vero es negativa.",
+            why: "No todos los videos de evaluación necesitan una transformación personal tan fuerte; en este caso depende de lo que el recorrido consiga explicar.",
+            result: "Aplicable directamente, pero dependiente del caso."
+          },
+          {
+            n: "19", name: "Del conocimiento a la acción",
+            summary: "Convertir la comprensión final en una decisión útil.",
+            function: "Traducir lo descubierto durante el recorrido en una decisión que el espectador pueda tomar.",
+            decision: "Cerrar con una recomendación segmentada que conecte el veredicto con el tipo de lector y con lo que espera encontrar.",
+            application: "“Entonces, ¿deberías leerlo?” La respuesta se construye a partir de todo lo descubierto, no de una calificación aislada.",
+            why: "La resolución adquiere utilidad cuando la comprensión construida permite decidir qué hacer con ella.",
+            result: "Aplicable directamente."
+          }
+        ]
+      };
+
+      const modal = document.getElementById("modalBackdrop");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalKicker = document.getElementById("modalKicker");
+      const modalBody = document.getElementById("modalBody");
+
+      function renderPatterns(targetId, group, label) {
+        const target = document.getElementById(targetId);
+        target.innerHTML = group.map(p => `
+    <article class="pattern-item">
+      <div class="pattern-meta">
+        <div class="pattern-index">${p.n}</div>
+        <div>
+          <div class="pattern-name">${p.name}</div>
+          <div class="pattern-summary">${p.summary}</div>
+        </div>
+      </div>
+      <button class="pattern-open" data-pattern="${p.n}" data-group="${label}">Ver aplicación →</button>
+    </article>
+  `).join("");
+      }
+
+      const allPatterns = [
+        ...patterns.dentro_bloque,
+        ...patterns.transicion,
+        ...patterns.recorrido,
+        ...patterns.transversales,
+        ...patterns.resolucion
+      ];
+
+      const validation = {
+        "01": ["Directa", "Fundamental"],
+        "02": ["Directa", "Fundamental"],
+        "03": ["Directa", "Fundamental"],
+        "04": ["Directa", "Necesaria"],
+        "05": ["Directa", "Muy útil"],
+        "06": ["Directa", "Eleva la conclusión"],
+        "07": ["Directa", "Estructura la experiencia"],
+        "08": ["Adaptada", "Menos central"],
+        "09": ["Directa", "Fundamental"],
+        "10": ["Directa", "Sostiene valor"],
+        "11": ["Opcional", "Puede ser visual"],
+        "12": ["Directa", "Posible solapamiento con 05"],
+        "13": ["Adaptada", "Control cognitivo"],
+        "14": ["Según necesidad", "Dependiente del formato"],
+        "15": ["Directa", "Orientación"],
+        "16": ["Directa", "Escalamiento"],
+        "17": ["Directa", "Evita resumen innecesario"],
+        "18": ["Dependiente", "No siempre necesaria"],
+        "19": ["Directa", "Cierre decisional"]
+      };
+
+      const statusClass = {
+        "Directa": "direct",
+        "Adaptada": "adapted",
+        "Opcional": "optional",
+        "Según necesidad": "need",
+        "Dependiente": "dependent"
+      };
+
+      const validationTable = document.getElementById("patternValidationTable");
+      validationTable.innerHTML = allPatterns.map(p => {
+        const [status, observation] = validation[p.n] || ["—", "Sin decisión registrada"];
+        return `
+    <tr>
+      <td>
+        <div class="validation-pattern">
+          <span class="validation-number">${p.n}</span>
+          <div>
+            <strong>${p.name}</strong>
+            <span>${p.summary}</span>
+          </div>
+        </div>
+      </td>
+      <td><span class="validation-status ${statusClass[status] || ''}">${status}</span></td>
+      <td>
+        <div class="validation-application">${p.application}</div>
+        <div class="validation-observation">${observation}</div>
+      </td>
+      <td><button class="pattern-open table-open" data-pattern="${p.n}">Ver aplicación →</button></td>
+    </tr>`;
+      }).join("");
+
+      function openPattern(pattern) {
+        modalKicker.textContent = `${pattern.n} · Patrón`;
+        modalTitle.textContent = pattern.name;
+        modalBody.innerHTML = `
+    <div class="detail-block">
+      <h4>Función original</h4>
+      <p>${pattern.function}</p>
+    </div>
+    <div class="detail-block">
+      <h4>Decisión de diseño</h4>
+      <p>${pattern.decision}</p>
+    </div>
+    <div class="detail-block">
+      <h4>Aplicación en Quicksilver</h4>
+      <blockquote>${pattern.application}</blockquote>
+    </div>
+    <div class="detail-block">
+      <h4>Por qué funciona aquí</h4>
+      <p>${pattern.why}</p>
+    </div>
+    <div class="detail-block">
+      <h4>Resultado en este caso</h4>
+      <span class="status">${pattern.result}</span>
+    </div>
+  `;
+        modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      document.addEventListener("click", e => {
+        const btn = e.target.closest(".pattern-open");
+        if (btn) {
+          const pattern = allPatterns.find(p => p.n === btn.dataset.pattern);
+          if (pattern) openPattern(pattern);
+        }
+      });
+
+      function closeModal() {
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+      document.getElementById("modalClose").addEventListener("click", closeModal);
+      modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+      document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fase 3 · Caso 2 · El caso Hartung</title>
+<style>
+:root{
+  --purple:#695CFF;--purple-dark:#5140c5;--purple-soft:#eeeaff;
+  --page:#F1F1F2;--white:#fff;--text:#1D2133;--muted:#5D6478;
+  --border:#dedee5;--soft:#f7f3ff;--dark:#0E132B;--serif:Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:Inter,system-ui,-apple-system,sans-serif;color:var(--text);background:var(--page);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}img{max-width:100%;display:block}
+button{font:inherit}.wrap{max-width:1280px;margin:auto;padding:0 56px}
+.progress{position:fixed;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#695CFF,#4A78FF);transform:scaleX(0);transform-origin:left;z-index:9999;pointer-events:none}
+@supports(animation-timeline:scroll()){.progress{animation:progress linear;animation-timeline:scroll(root)}}
+@keyframes progress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.topbar{position:sticky;top:0;z-index:100;height:64px;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border-bottom:1px solid #dfdfe5}
+.topbar-inner{height:64px;max-width:1280px;margin:auto;padding:0 56px;display:flex;align-items:center;overflow-x:auto;scrollbar-width:none}.topbar-inner::-webkit-scrollbar{display:none}
+.phase-nav{display:flex;gap:8px;align-items:center;flex-shrink:0}.phase-tab{padding:11px 16px;border-radius:24px;color:#6b6e7b;text-transform:uppercase;font-size:13px;font-weight:700;letter-spacing:.04em;white-space:nowrap}.phase-tab.active{color:#4f42cf;background:#eeeaff;box-shadow:inset 0 0 0 1.5px #1d2133}
+.hero{padding:68px 0 62px}.hero-grid{display:grid;grid-template-columns:46% 54%;gap:24px;align-items:center;min-height:330px}.eyebrow{color:#5e6376;font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:28px}.hero h1{font-family:var(--serif);font-size:clamp(48px,5.2vw,72px);line-height:.96;letter-spacing:-.035em;font-weight:600;margin-bottom:22px}.hero h1 span{color:var(--purple)}.hero-desc{max-width:560px;color:var(--muted);font-size:17px;line-height:1.6}.hero-visual{display:flex;justify-content:flex-end}.hero-art{width:min(100%,650px);border-radius:18px;overflow:hidden}.hero-art img{width:100%;height:auto;object-fit:cover}
+.marquee{background:linear-gradient(90deg,#695CFF,#5A4DF5);overflow:hidden;white-space:nowrap;padding:13px 0}.marquee-track{display:inline-flex;width:max-content;animation:marquee 26s linear infinite}.marquee:hover .marquee-track{animation-play-state:paused}.marquee-item{display:inline-flex;align-items:center;color:#fff;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:0 22px}.dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.65);margin-left:22px}@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.section{padding:76px 0}.kicker{color:var(--purple);font-size:12px;font-weight:850;letter-spacing:.13em;text-transform:uppercase;margin-bottom:13px}.section h2{font-family:var(--serif);font-size:48px;line-height:1.03;font-weight:600;letter-spacing:-.025em}.lead{max-width:780px;color:var(--muted);font-size:16px;line-height:1.65;margin-top:18px}.principle{margin-top:24px;padding:18px 20px;background:#eeeaff;border-left:2px solid var(--purple);color:#5f6071;font-size:13px;line-height:1.55}
+.case-grid{display:grid;grid-template-columns:1fr 1.2fr;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#fff;margin-top:34px}.case-side{padding:30px 34px}.case-side+.case-side{background:var(--soft);border-left:1px solid #e4e0f2}.label{font-size:10px;font-weight:850;letter-spacing:.09em;text-transform:uppercase;color:#666b7d;margin-bottom:13px}.pills{display:flex;flex-wrap:wrap;gap:8px}.pill{padding:9px 12px;border:1px solid #dedde7;border-radius:999px;background:#f8f8fb;font-size:11px;font-weight:750}.big-question{font-family:var(--serif);font-size:30px;line-height:1.2;font-style:italic}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}.compare-card{border:1px solid var(--border);border-radius:14px;background:#fff;padding:22px}.compare-card.accent{background:#f7f3ff;border-color:#ddd5f6}.compare-card h3{font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}.compare-card strong{display:block;font-family:var(--serif);font-size:26px;line-height:1.15}.compare-card p{color:var(--muted);font-size:12px;line-height:1.55;margin-top:8px}
+.editorial{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch;margin-top:36px}.thumb-card,.editorial-copy{height:100%;min-height:0}.thumb-card{border:1px solid var(--border);border-radius:16px;background:#fff;padding:14px;display:flex;overflow:hidden}.thumb-card img{width:100%;height:100%;object-fit:cover;border-radius:10px}.editorial-copy{border:1px solid var(--border);border-radius:16px;background:#fff;padding:28px;display:flex;flex-direction:column}.editorial-copy h3{font-size:20px;margin-bottom:8px}.editorial-copy p{color:var(--muted);font-size:13px;line-height:1.65}.editorial-title{margin-top:20px;padding:16px 18px;border:1px dashed #cfcfd8;border-radius:12px;background:#faf9ff}.editorial-title span{display:block;color:#7a7d8c;font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin-bottom:7px}.editorial-title strong{font-family:var(--serif);font-size:22px;line-height:1.25;font-weight:600}
+.process-head{margin-bottom:36px}.process-grid{position:relative;display:grid;grid-template-columns:39% 61%;column-gap:42px}.process-grid:before{content:"";position:absolute;left:16px;top:17px;bottom:18px;border-left:1px dashed #c9cad3}.step{display:contents}.step-left{position:relative;padding:0 10px 42px 52px;min-height:158px}.num{position:absolute;left:0;top:0;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--purple);color:#fff;font-size:10px;font-weight:850}.step-left h3{font-size:17px;line-height:1.3;font-weight:800;margin:3px 0 11px}.step-left p{color:var(--muted);font-size:12px;line-height:1.65;max-width:370px}.step-right{min-height:158px;padding:0 0 42px}.evidence{border:1px solid var(--border);border-radius:12px;background:#fff;padding:20px 22px}.evidence.purple{background:#f6f2ff;border-color:#ddd5f6}.evidence.yellow{background:#fff9eb;border-color:#f0dfb7}.evidence.blue{background:#f2f7ff;border-color:#d9e3f2}.evidence.green{background:#eff9f2;border-color:#d2e5d7}.evidence-title{font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.06em;margin-bottom:17px}.flow{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;align-items:start}.flow-item{text-align:center;position:relative}.flow-item:not(:last-child):after{content:"→";position:absolute;right:-7px;top:7px;color:#7565d6}.flow-num{width:30px;height:30px;margin:0 auto 9px;border:1px solid #8d7ce2;border-radius:50%;display:grid;place-items:center;background:#fff;color:#4e3ac7;font-size:10px;font-weight:850}.flow-title{font-size:8.5px;line-height:1.35;font-weight:800}.criterion-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.criterion{padding:12px;border:1px solid #e0e0e6;border-radius:9px;background:#fff;font-size:10px;font-weight:750}.criterion small{display:block;color:#777987;font-size:9px;font-weight:500;line-height:1.4;margin-top:4px}.comparison-visual{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}.version{padding:18px;border:1px solid #dddde5;border-radius:10px;background:#fff;text-align:center}.version strong{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase}.version span{display:block;font-family:var(--serif);font-size:22px;margin-top:7px}.arrow{font-size:20px;color:var(--purple)}.consequence{margin-top:10px;padding:13px 15px;border-left:2px solid var(--purple);background:#faf9ff;color:#5e6070;font-size:10px;line-height:1.5}.gold{margin-top:4px;border:1px solid var(--border);border-radius:12px;background:#fff;padding:19px 20px;display:grid;grid-template-columns:200px repeat(3,1fr);gap:0}.gold-title{font-size:12px;font-weight:850}.gold-cell{padding:0 16px;border-left:1px solid #e4e3e8;font-size:9px;line-height:1.55;color:#5e6070}.gold-cell strong{display:block;color:#2a2c40;margin-bottom:3px}
+.retention{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}.balance{border:1px solid var(--border);border-radius:14px;background:#fff;padding:24px}.balance-row{display:grid;grid-template-columns:1fr 50px 1fr;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #eeeef3}.balance-row:last-child{border-bottom:0}.side{font-size:12px;font-weight:800}.score{text-align:center;color:var(--purple);font-weight:850}.question-call{font-family:var(--serif);font-size:27px;line-height:1.2;font-style:italic;padding:22px;background:#f7f3ff;border:1px solid #ddd5f6;border-radius:14px}
+.script{background:#fff;border-top:1px solid #e3e3e8;border-bottom:1px solid #e3e3e8}.script-head{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:30px}.script-head p{max-width:520px;color:var(--muted);font-size:14px;line-height:1.6}.timeline{border-top:1px solid var(--border)}.script-block{display:grid;grid-template-columns:120px 1fr 230px;gap:25px;padding:25px 0;border-bottom:1px solid #e6e6eb}.time{color:var(--purple);font-size:11px;font-weight:850;letter-spacing:.05em}.script-title{font-size:15px;font-weight:850;margin-bottom:8px}.script-context,.script-note,.script-themes{color:#5d6070;font-size:10px;line-height:1.5}.script-themes{margin-top:8px}.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.tags span{display:inline-flex;padding:4px 8px;border:1px solid #ded8ff;border-radius:999px;background:#f6f4ff;color:#5140c5;font-size:9px;font-weight:750}.script-line{font-family:var(--serif);font-size:16px;line-height:1.5;color:#34364a;margin-top:9px}.script-note{margin-top:8px}.script-patterns{display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}.script-tag{padding:6px 8px;border-radius:999px;background:#f0edff;color:#5140c5;font-size:9px;font-weight:800}.pending{margin-top:10px;padding:9px 11px;border:1px dashed #cfcfd8;border-radius:8px;color:#777987;background:#fcfcfd;font-size:9px}
+.pattern-section{border-top:1px solid #dedee4;padding:72px 0 78px}.pattern-note{margin-top:20px;padding:17px 19px;background:#eeeaff;border-left:2px solid var(--purple);color:#5f6071;font-size:12px;line-height:1.55}.pattern-table{margin-top:34px;background:#fff;border:1px solid var(--border);border-radius:16px;overflow:auto}.pattern-table table{width:100%;min-width:900px;border-collapse:collapse}.pattern-table th{text-align:left;padding:14px 18px;background:#f8f7fb;color:#666b7d;font-size:10px;letter-spacing:.09em;text-transform:uppercase;font-weight:800;border-bottom:1px solid var(--border)}.pattern-table td{padding:14px 18px;border-bottom:1px solid #eeeef4;color:var(--muted);font-size:11px;line-height:1.45;vertical-align:middle}.pattern-table tr:last-child td{border-bottom:0}.pname{font-weight:850;color:var(--text)}.status{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:9px;font-weight:800;white-space:nowrap}.direct{background:#e9f7ef;color:#257447}.optional{background:#f0eeff;color:#5b4be5}.case-note{margin-top:22px;padding:20px 22px;background:#f7f4fd;border:1px solid #e4dfff;border-radius:14px;color:var(--muted);font-size:12px;line-height:1.55}.case-note strong{display:block;color:var(--text);margin-bottom:5px}
+.hallazgo{background:#fff;border-top:1px solid #e3e3e8;padding:78px 0}.finding{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:30px}.finding-card{padding:26px;border:1px solid var(--border);border-radius:14px;background:#fff}.finding-card h3{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#666b7d}.finding-card strong{display:block;font-family:var(--serif);font-size:28px;line-height:1.15;margin-top:9px}.finding-card p{color:var(--muted);font-size:12px;line-height:1.55;margin-top:9px}.finding-card.accent{background:#f7f3ff;border-color:#ddd5f6}.bridge{background:var(--dark);color:#fff;padding:70px 0 80px}.bridge h2{font-family:var(--serif);font-size:48px;line-height:1.04}.bridge p{max-width:760px;margin-top:16px;color:rgba(255,255,255,.72);font-size:15px;line-height:1.65}.bridge strong{color:#fff}
+.modal-backdrop{position:fixed;inset:0;z-index:1000;background:rgba(23,23,34,.58);display:none;align-items:center;justify-content:center;padding:22px}.modal-backdrop.open{display:flex}.modal{width:min(760px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:14px}.modal-head{padding:24px 27px 19px;border-bottom:1px solid #e4e3e8;display:flex;justify-content:space-between;gap:18px}.modal-kicker{color:var(--purple);font-size:9px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}.modal h2{font-family:var(--serif);font-size:32px;margin-top:5px}.close{width:34px;height:34px;border:1px solid #dedde4;border-radius:50%;background:#fff;cursor:pointer;font-size:20px}.modal-body{padding:25px 27px 30px}.detail+.detail{margin-top:23px}.detail h4{font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.08em;color:#676879;margin-bottom:7px}.detail p{color:#4f5161;font-size:13px;line-height:1.65}.detail blockquote{margin:0;padding:16px 18px;border-left:2px solid var(--purple);background:#f0edff;font-family:var(--serif);font-size:18px;line-height:1.45}
+@media(max-width:900px){.wrap,.topbar-inner{padding-left:28px;padding-right:28px}.hero-grid,.editorial,.retention,.finding{grid-template-columns:1fr}.hero-visual{justify-content:center;margin-top:25px}.case-grid{grid-template-columns:1fr}.case-side+.case-side{border-left:0;border-top:1px solid #e4e0f2}.process-grid{grid-template-columns:1fr}.process-grid:before{display:none}.script-block{grid-template-columns:100px 1fr}.script-patterns{grid-column:2}.gold{grid-template-columns:1fr 1fr}.gold-title{grid-column:1/-1;padding-bottom:14px}.gold-cell{border-left:0;border-top:1px solid #e4e3e8;padding:13px 0 0}.compare{grid-template-columns:1fr}}
+@media(max-width:620px){.topbar,.topbar-inner{height:58px}.topbar-inner{padding:0 12px}.phase-tab{font-size:10px;padding:8px 10px}.wrap{padding-left:18px;padding-right:18px}.hero{padding:46px 0}.hero h1{font-size:44px}.section h2{font-size:40px}.flow{grid-template-columns:repeat(2,1fr);row-gap:18px}.flow-item:not(:last-child):after{display:none}.criterion-grid{grid-template-columns:1fr 1fr}.script-block{grid-template-columns:1fr;gap:9px}.script-patterns{grid-column:auto}.gold{grid-template-columns:1fr}.gold-title{grid-column:auto}.gold-cell{border-top:1px solid #e4e3e8}.comparison-visual{grid-template-columns:1fr}.arrow{transform:rotate(90deg);justify-self:center}}
+
+/* Desarrollo de las dimensiones y temas — Caso 02 */
+.micro-intro{margin:4px 0 14px;color:var(--muted);font-size:11px}
+.dimension-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.dimension-card{background:#fff;border:1px solid var(--border);border-radius:11px;padding:12px;min-height:105px}
+.dimension-card b{display:block;color:#695cff;font-size:9px;margin-bottom:7px}
+.dimension-card strong{display:block;font-size:11px;line-height:1.25;margin-bottom:5px}
+.dimension-card small{display:block;color:var(--muted);font-size:9px;line-height:1.4}
+.dimension-card.verdict-card{background:#f5f2ff;border-color:#c9c1ff}
+.comparison-visual.expanded .version{min-height:130px}
+.comparison-visual.expanded .version small{display:block;margin-top:8px;color:var(--muted);font-size:9px;line-height:1.45}
+.analysis-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:9px;align-items:stretch;margin-top:10px}
+.analysis-row>div:not(.analysis-arrow){background:#faf9ff;border:1px solid #e3dff4;border-radius:10px;padding:12px}
+.analysis-row b{display:block;color:#5147d9;font-size:8px;line-height:1.25;margin-bottom:5px}
+.analysis-row span{display:block;color:var(--muted);font-size:9px;line-height:1.4}
+.analysis-arrow{display:flex;align-items:center;color:#695cff;font-size:15px}
+.mini-example{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.example-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.example-grid>div{padding:9px;background:#fff;border-left:2px solid #695cff}
+.example-grid b{display:block;color:#5147d9;font-size:7px;line-height:1.25;margin-bottom:4px}
+.example-grid span{display:block;color:var(--muted);font-size:8px;line-height:1.4}
+@media(max-width:1050px){
+  .dimension-grid{grid-template-columns:repeat(2,1fr)}
+  .example-grid{grid-template-columns:repeat(2,1fr)}
+  .analysis-row{grid-template-columns:1fr}
+  .analysis-arrow{justify-content:center;transform:rotate(90deg)}
+}
+@media(max-width:700px){
+  .dimension-grid,.example-grid{grid-template-columns:1fr}
+}
+
+
+.selection-rule{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 10px;
+  padding:10px 12px;
+  border:1px solid #d8d2f4;
+  border-radius:10px;
+  background:#f4f1ff;
+}
+.selection-rule strong{
+  color:#5147d9;
+  font-size:9px;
+  letter-spacing:.07em;
+  white-space:nowrap;
+}
+.selection-rule span{
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.4;
+}
+
+
+.selection-rule{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 10px;
+  padding:10px 12px;
+  border:1px solid #d8d2f4;
+  border-radius:10px;
+  background:#f4f1ff;
+}
+.selection-rule strong{
+  color:#5147d9;
+  font-size:9px;
+  letter-spacing:.07em;
+  white-space:nowrap;
+}
+.selection-rule span{
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.4;
+}
+
+
+/* FIX · Guion y validación de patrones · Caso 02 */
+.content-section{max-width:1280px;margin:0 auto;padding:76px 56px}
+.section-kicker{color:#5e6376;font-size:11px;font-weight:850;letter-spacing:.13em;text-transform:uppercase;margin-bottom:9px}
+.content-section>h2{font-family:var(--serif);font-size:46px;line-height:1.05;letter-spacing:-.025em;margin-bottom:12px;color:var(--text)}
+.section-intro{max-width:800px;color:var(--muted);font-size:15px;line-height:1.65;margin-bottom:24px}
+.script-section{background:#f1f1f2}
+.script-rule{display:flex;gap:14px;align-items:baseline;padding:12px 16px;border:1px solid #ddd8f5;background:#f7f5ff;border-radius:10px;margin:7px 0;color:#4f5265;font-size:12px;line-height:1.5}
+.script-rule strong{font-size:9px;letter-spacing:.08em;color:#5140c5;white-space:nowrap}
+.script-block{display:block!important;background:#fff;border:1px solid #dedee5;border-radius:14px;padding:25px 28px;margin:22px 0;box-shadow:0 1px 0 rgba(20,24,40,.02)}
+.script-block-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:9px}
+.script-num{display:inline-flex;align-items:center;justify-content:center;flex:0 0 34px;width:34px;height:34px;border-radius:50%;background:#695cff;color:#fff;font-size:11px;font-weight:850}
+.script-time{display:block;color:#695cff;font-size:9px;font-weight:850;letter-spacing:.08em;margin-bottom:3px}
+.script-block-head h3{font-size:19px;line-height:1.25;margin:0;color:#171a2b}
+.script-meta{color:#5b5e70;font-size:10px;margin:0 0 18px 48px;line-height:1.5}
+.script-meta b{color:#5140c5;letter-spacing:.07em;font-size:9px}
+.script-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.script-grid>div{background:#faf9fc;border:1px solid #e4e1ea;border-radius:10px;padding:15px}
+.script-grid h4,.script-task b{display:block;color:#676879;font-size:9px;letter-spacing:.08em;margin-bottom:8px}
+.script-grid p,.script-grid li{color:#535669;font-size:11px;line-height:1.55}
+.script-grid ol{padding-left:18px}
+.script-grid li+li{margin-top:4px}
+.script-quote{font-family:var(--serif);font-size:17px;line-height:1.55;color:#34364a;background:#f1efff;border-left:3px solid #695cff;border-radius:0 10px 10px 0;padding:17px 20px;margin-top:12px}
+.script-output{margin-top:14px;padding:11px 14px;background:#f7f7f9;border-top:1px solid #e5e4e9;color:#555869;font-size:10px;line-height:1.5}
+.script-output b{color:#5140c5;font-size:9px;letter-spacing:.08em;margin-right:7px}
+.script-task{display:flex;gap:10px;align-items:flex-start;background:#fff8e8;border:1px solid #ead7a7;border-radius:9px;padding:12px 14px;margin:12px 0}
+.script-task b{color:#986c13;white-space:nowrap;margin:0}
+.script-task span{color:#635c4c;font-size:10px;line-height:1.5}
+.comparison-check{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:14px 0}
+.comparison-check>div{padding:11px;background:#faf9ff;border:1px solid #e2def1;border-radius:9px;min-height:78px}
+.comparison-check b{display:block;color:#5147d9;font-size:8px;letter-spacing:.06em;margin-bottom:5px}
+.comparison-check span{display:block;color:#626477;font-size:9px;line-height:1.4}
+.script-transition{margin:24px 0;padding:17px 20px;background:#eeeaff;border:1px solid #d3cbff;border-left:3px solid #695cff;border-radius:0 12px 12px 0}
+.script-transition>b{display:block;color:#5140c5;font-size:9px;letter-spacing:.08em;margin-bottom:5px}
+.script-transition>span{display:block;color:#5d6070;font-size:10px;margin-bottom:10px}
+.script-transition p{font-family:var(--serif);font-size:16px;line-height:1.5;color:#34364a}
+.script-layer{padding:15px 18px;margin:10px 0;border:1px solid #dcdce4;border-radius:10px;background:#fff}
+.script-layer-head{font-size:9px;font-weight:850;letter-spacing:.08em;color:#5140c5;margin-bottom:5px}
+.script-layer p{color:#5d6070;font-size:10px;line-height:1.5}
+.pattern-validation{background:#fff;border-top:1px solid #e2e2e7}
+.pattern-validation .section-intro{margin-bottom:14px}
+.legend{display:flex;gap:7px;justify-content:flex-end;flex-wrap:wrap;margin:-36px 0 15px}
+.legend span{padding:5px 9px;border-radius:999px;font-size:8px;font-weight:800}
+.legend-directa,.status.direct{background:#e4f5ed;color:#18835d}.legend-adaptada{background:#fff1d4;color:#a36a0b}.legend-opcional,.status.optional{background:#eeeaff;color:#5947d1}.legend-necesidad{background:#e8f2ff;color:#3c6da9}.legend-dependiente{background:#f5eaff;color:#9a45b5}.status.need{background:#e8f2ff;color:#3c6da9}.status.dependent{background:#f5eaff;color:#9a45b5}
+.pattern-table{border:1px solid #e0e0e6;border-radius:14px;overflow:hidden;background:#fff}
+.pattern-table-head,.pattern-row{display:grid;grid-template-columns:2.2fr 1fr 3fr 105px;gap:18px;align-items:center;padding:15px 18px}
+.pattern-table-head{background:#f7f6fa;color:#626577;font-size:8px;font-weight:850;letter-spacing:.1em}
+.pattern-row{border-top:1px solid #e8e7ec;min-height:86px}
+.pattern-name{display:flex;align-items:center;gap:11px}.pattern-id{display:inline-flex;align-items:center;justify-content:center;width:31px;height:31px;border-radius:50%;background:#f0edff;color:#5140c5;font-size:9px;font-weight:850;flex:0 0 31px}.pattern-name strong{display:block;font-size:11px;line-height:1.3}.pattern-name small{display:block;color:#777a89;font-size:8px;line-height:1.35;margin-top:3px}
+.status{display:inline-flex;width:max-content;padding:5px 8px;border-radius:999px;font-size:8px;font-weight:800}.pattern-row>div:nth-child(3) p{color:#4f5263;font-size:10px;line-height:1.5}.pattern-row>div:nth-child(3) small{display:block;color:#777a89;font-size:8px;margin-top:4px}
+.pattern-link{border:0;background:none;color:#5140c5;font-size:9px;font-weight:800;cursor:pointer;text-align:right;white-space:nowrap}.pattern-link:hover{text-decoration:underline}
+.pattern-modal{display:none;position:fixed;inset:0;z-index:10000}.pattern-modal.is-open{display:block}.pattern-modal-backdrop{position:absolute;inset:0;background:rgba(16,19,35,.58);backdrop-filter:blur(3px)}
+.pattern-modal-dialog{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(760px,calc(100% - 36px));max-height:88vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 25px 70px rgba(0,0,0,.25);padding:30px 28px}
+.pattern-modal-close{position:absolute;right:18px;top:18px;width:34px;height:34px;border:1px solid #dedde4;border-radius:50%;background:#fff;font-size:21px;line-height:1;cursor:pointer}.pattern-modal-kicker{color:#695cff;font-size:9px;font-weight:850;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}.pattern-modal-dialog h2{font-family:var(--serif);font-size:31px;line-height:1.1;margin:0 45px 24px 0}.modal-field{margin-top:19px}.modal-field h4,.modal-application h4{font-size:9px;color:#676879;letter-spacing:.08em;margin-bottom:7px}.modal-field p{font-size:12px;line-height:1.6;color:#4f5263}.modal-application{margin-top:19px;padding:15px 18px;background:#f0edff;border-left:3px solid #695cff}.modal-application p{font-family:var(--serif);font-size:17px;line-height:1.5;color:#34364a}.modal-result{display:inline-flex;padding:6px 10px;border-radius:999px;background:#eeeaff;color:#5140c5;font-size:9px;font-weight:800}
+body.modal-open{overflow:hidden}
+@media(max-width:900px){.content-section{padding:60px 28px}.script-grid{grid-template-columns:1fr}.comparison-check{grid-template-columns:repeat(2,1fr)}.pattern-table{overflow-x:auto}.pattern-table-head,.pattern-row{min-width:920px}.legend{justify-content:flex-start;margin:0 0 15px}}
+@media(max-width:620px){.content-section{padding:48px 18px}.content-section>h2{font-size:38px}.script-block{padding:20px 16px}.script-meta{margin-left:0}.comparison-check{grid-template-columns:1fr}.script-quote{font-size:15px}.pattern-modal-dialog{padding:25px 20px}}
+
+
+/* Ajuste de legibilidad — tabla de validación de patrones */
+.pattern-table-head{
+  font-size:10px;
+}
+.pattern-row{
+  min-height:82px;
+}
+.pattern-name strong{
+  font-size:13px;
+}
+.pattern-name small{
+  font-size:10px;
+}
+.pattern-row p{
+  font-size:12px;
+  line-height:1.5;
+}
+.pattern-row>div:nth-child(3) small{
+  font-size:10px;
+  line-height:1.4;
+}
+.status{
+  font-size:9px;
+  padding:6px 10px;
+}
+.pattern-link{
+  font-size:11px;
+}
+.pattern-id{
+  font-size:10px;
+}
+
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+<header class="topbar"><div class="topbar-inner"><nav class="phase-nav" aria-label="Fases">
+  <a class="phase-tab" href="index.html#fase-1">
+    FASE 1 · INVESTIGACIÓN
+  </a>
+
+  <a class="phase-tab" href="index.html#fase-2">
+    FASE 2 · AUDITORÍA VERO
+  </a>
+
+  <a class="phase-tab" href="fase-3-caso-1.html">
+    FASE 3 · CASO 1 · APLICACIÓN
+  </a>
+
+  <a class="phase-tab active"
+     aria-current="page"
+     href="fase-3-caso-2.html">
+    FASE 3 · CASO 2 · APLICACIÓN
+  </a>
+
+   <a class="phase-tab" aria-current="page" href="fase-3-caso-3.html">FASE 3 · CASO 3 · APLICACIÓN</a>
+</nav></div></header>
+
+<main>
+<section class="hero"><div class="wrap"><div class="hero-grid">
+<div><div class="eyebrow">Fase 3 → Construcción del recorrido</div>
+<h1>Cómo construimos<br>una <span>comparación.</span></h1>
+<p class="hero-desc">En el segundo caso cambiamos radicalmente la experiencia: ya no evaluamos un objeto. Comparamos dos versiones de una misma historia para descubrir qué cambia, qué se gana y qué se pierde.</p></div>
+<div class="hero-visual"><div class="hero-art"><img src="https://i.postimg.cc/8cBbj9Nr/caso-02-fase-3.webp" alt="Ilustración editorial del Caso 02: comparación entre el libro y la serie de El caso Hartung"></div></div>
+</div></div></section>
+
+<div class="marquee"><div class="marquee-track">
+<span class="marquee-item">DE HALLAZGOS A DECISIONES <span class="dot"></span></span>
+<span class="marquee-item">COMPARAR UNA DIMENSIÓN A LA VEZ <span class="dot"></span></span>
+<span class="marquee-item">CADA DIFERENCIA DEBE IMPORTAR <span class="dot"></span></span>
+<span class="marquee-item">DE HALLAZGOS A DECISIONES <span class="dot"></span></span>
+<span class="marquee-item">COMPARAR UNA DIMENSIÓN A LA VEZ <span class="dot"></span></span>
+<span class="marquee-item">CADA DIFERENCIA DEBE IMPORTAR <span class="dot"></span></span>
+</div></div>
+
+<section class="section"><div class="wrap">
+<div class="kicker">Caso 02 · El caso Hartung</div><h2>Una historia.<br>Dos versiones.</h2>
+<p class="lead">Vero ya había leído <em>El caso Hartung</em> y existía una adaptación que permitía establecer el contraste. La oportunidad no era hacer una reseña del libro y después una reseña de la serie: era acompañar al espectador a descubrir qué cambia cuando la misma historia pasa del libro a la pantalla.</p>
+<div class="case-grid"><div class="case-side"><div class="label">La oportunidad</div><div class="pills"><span class="pill">Libro</span><span class="pill">Comparar</span><span class="pill">Libro vs. adaptación</span></div></div><div class="case-side"><div class="label">Pregunta de diseño</div><div class="big-question">¿Qué versión cuenta mejor esta historia y por qué?</div></div></div>
+</div></section>
+
+<section class="section"><div class="wrap">
+<div class="kicker">Selección editorial</div><h2>Antes del recorrido,<br>definimos la promesa.</h2>
+<p class="lead">La propuesta debe comunicar inmediatamente que existen dos versiones, que vamos a compararlas y que todavía hay una pregunta por resolver.</p>
+<div class="editorial"><div class="thumb-card"><img src="https://i.postimg.cc/WbzydQN0/caso-hartung.png" alt="Miniatura del Caso Hartung: libro versus serie"></div>
+<div class="editorial-copy"><h3>Miniatura seleccionada</h3><p>La miniatura establece el conflicto en pocos segundos: dos versiones frente a frente y una pregunta que todavía no tiene respuesta.</p><div class="editorial-title"><span>Título · en selección</span><strong>Título editorial: pendiente de selección</strong></div><p style="margin-top:10px">Este título aparece como formulación de trabajo en la investigación. La selección final debe mantener la promesa sin convertirla en una descripción meramente informativa.</p></div></div>
+</div></section>
+
+<section class="section"><div class="wrap">
+<div class="kicker">El cambio de experiencia</div><h2>Los mismos patrones.<br>Un problema diferente.</h2>
+<div class="compare"><div class="compare-card"><h3>Caso 01 · Quicksilver</h3><strong>Evaluar un objeto.</strong><p>La pregunta organiza una evaluación progresiva: ¿realmente merece el hype?</p></div><div class="compare-card accent"><h3>Caso 02 · Hartung</h3><strong>Comparar dos versiones.</strong><p>La pregunta organiza una comparación con resultado abierto: ¿qué diferencias importan para decidir cuál cuenta mejor la historia?</p></div></div>
+<div class="principle">El cambio de experiencia no elimina los patrones. <strong>Cambia la decisión que cada patrón debe producir.</strong></div>
+</div></section>
+
+<section class="section"><div class="wrap"><div class="process-head"><div class="kicker">Cómo se construye el recorrido</div><h2>Primero resolvemos<br>qué debe descubrir el espectador.</h2><p class="lead">Después decidimos qué contenido necesita cada bloque y solo entonces seleccionamos las decisiones de diseño que hacen que ese contenido funcione.</p></div>
+<div class="process-grid">
+<article class="step"><div class="step-left"><span class="num">01</span><h3>Tenemos una oportunidad</h3><p>Un libro ya leído por Vero, una adaptación disponible y una pregunta de comparación que puede resultar relevante para el espectador.</p></div><div class="step-right"><div class="evidence"><div class="evidence-title">Oportunidad</div><div class="criterion-grid"><div class="criterion">LIBRO<small>El caso Hartung</small></div><div class="criterion">SERIE<small>Adaptación</small></div><div class="criterion">MOTOR<small>Comparar</small></div></div></div></div></article>
+<article class="step"><div class="step-left"><span class="num">02</span><h3>Convertimos la oportunidad en una pregunta</h3><p>La pregunta evita que el video se convierta en dos opiniones independientes.</p></div><div class="step-right"><div class="evidence"><div class="evidence-title">Pregunta central</div><div class="big-question">¿Qué versión cuenta mejor esta historia y por qué?</div></div></div></article>
+<article class="step"><div class="step-left"><span class="num">03</span><h3>Definimos qué significa “mejor”</h3><p>Una comparación necesita criterios. No todas las dimensiones candidatas tienen que entrar en el recorrido final.</p></div><div class="step-right"><div class="evidence purple"><div class="evidence-title">Dimensiones candidatas</div><div class="criterion-grid"><div class="criterion">Personajes</div><div class="criterion">Tensión</div><div class="criterion">Desarrollo</div><div class="criterion">Atmósfera</div><div class="criterion">Información</div><div class="criterion">Cambios de adaptación</div></div><div class="pending">Pendiente: seleccionar las dimensiones que realmente permiten decidir cuál versión cuenta mejor la historia.</div></div></div></article>
+<article class="step">
+<div class="step-left">
+  <span class="num">04</span>
+  <h3>Determinamos qué necesitamos comparar</h3>
+  <p>Descomponemos la pregunta central en aspectos concretos que permitan decidir qué versión cuenta mejor la historia.</p>
+</div>
+<div class="step-right">
+  <div class="evidence purple">
+    <div class="evidence-title">Dimensiones a validar</div>
+    <p class="micro-intro">¿Qué vamos a observar en cada versión?</p>
+    <div class="dimension-grid">
+      <div class="dimension-card"><b>01</b><strong>Personajes</strong><small>¿Cómo construye cada versión a sus personajes y qué cambia?</small></div>
+      <div class="dimension-card"><b>02</b><strong>Tensión</strong><small>¿Cómo construye cada versión el suspenso y qué efecto producen sus diferencias?</small></div>
+      <div class="dimension-card"><b>03</b><strong>Información</strong><small>¿Qué entrega, oculta o reorganiza cada versión?</small></div>
+      <div class="dimension-card"><b>04</b><strong>Atmósfera</strong><small>¿Cómo construye cada versión el tono y la sensación de la historia?</small></div>
+      
+      <div class="dimension-card verdict-card"><b>★</b><strong>Veredicto</strong><small>¿Qué versión cuenta mejor la historia y por qué?</small></div>
+    </div>
+    <div class="selection-rule"><strong>SELECCIONAR 2</strong><span>Las dos dimensiones que entren al recorrido se convierten en los bloques 2 y 3.</span></div><div class="pending"><strong>DIMENSIONES A VALIDAR</strong> Estas son dimensiones candidatas. Vero seleccionará dos para construir los bloques de comparación; los cambios de adaptación se analizarán dentro de cada dimensión.</div>
+  </div>
+</div>
+</article>
+<article class="step">
+<div class="step-left">
+  <span class="num">05</span>
+  <h3>Dentro de cada bloque, definimos qué necesitamos observar</h3>
+  <p>Los temas convierten cada dimensión en preguntas concretas que podemos observar, comparar y resolver.</p>
+</div>
+<div class="step-right">
+  <div class="evidence">
+    <div class="evidence-title">Estructura de una dimensión</div>
+
+    <div class="comparison-visual expanded">
+      <div class="version">
+        <strong>01 · LIBRO</strong>
+        <span>¿Qué hace?</span>
+        <small>¿Cómo construye este aspecto?<br>¿Qué recurso utiliza?<br>¿Qué efecto produce?</small>
+      </div>
+      <div class="arrow">→</div>
+      <div class="version">
+        <strong>02 · SERIE</strong>
+        <span>¿Qué hace?</span>
+        <small>¿Qué mantiene?<br>¿Qué modifica?<br>¿Qué elimina o añade?</small>
+      </div>
+    </div>
+
+    <div class="analysis-row">
+      <div><b>03 · ¿QUÉ CAMBIA?</b><span>Diferencia concreta entre ambas versiones.</span></div>
+      <div class="analysis-arrow">→</div>
+      <div><b>04 · ¿POR QUÉ IMPORTA?</b><span>Qué efecto produce ese cambio en la experiencia.</span></div>
+      <div class="analysis-arrow">→</div>
+      <div><b>05 · ¿CUÁL FUNCIONA MEJOR AQUÍ?</b><span>Conclusión parcial antes de pasar a la siguiente dimensión.</span></div>
+    </div>
+
+    <div class="mini-example">
+      <div class="evidence-title">Ejemplo · Tensión</div>
+      <div class="example-grid">
+        <div><b>LIBRO</b><span>¿Cómo construye el suspenso?</span></div>
+        <div><b>SERIE</b><span>¿Qué cambia al revelar o retener información?</span></div>
+        <div><b>DIFERENCIA</b><span>¿Qué hizo la adaptación de manera distinta?</span></div>
+        <div><b>CONSECUENCIA</b><span>¿La tensión aumenta, disminuye o cambia de naturaleza?</span></div>
+        <div><b>CONCLUSIÓN PARCIAL</b><span>¿Cuál versión maneja mejor este aspecto?</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</article>
+<article class="step"><div class="step-left"><span class="num">06</span><h3>Aplicamos los patrones donde resuelven una necesidad</h3><p>No usamos patrones por obligación. Observamos qué decisión concreta producen en este tipo de experiencia.</p></div><div class="step-right"><div class="evidence yellow"><div class="evidence-title">Patrones especialmente relevantes</div><div class="criterion-grid"><div class="criterion">08 · Comprensión<small>Versión → diferencia → consecuencia</small></div><div class="criterion">09 · Evidencia<small>Mostrar qué cambió</small></div><div class="criterion">13 · Complejidad<small>Una dimensión a la vez</small></div><div class="criterion">14 · Visuales<small>Comparar lado a lado</small></div><div class="criterion">16 · Valor creciente<small>Reservar la diferencia decisiva</small></div><div class="criterion">17 · Economía<small>Eliminar diferencias irrelevantes</small></div></div></div></div></article>
+<article class="step"><div class="step-left"><span class="num">07</span><h3>Revisamos el motor de continuidad</h3><p>La retención ya no depende solo de “qué descubriré después”, sino de si el balance entre las dos versiones puede cambiar.</p></div><div class="step-right"><div class="evidence blue"><div class="evidence-title">Cadena de expectativas</div><div class="balance"><div class="balance-row"><div class="side">Libro gana en X</div><div class="score">1–0</div><div class="side">¿Pero la serie gana en Y?</div></div><div class="balance-row"><div class="side">Serie gana en Y</div><div class="score">1–1</div><div class="side">¿Qué cambio pesa más?</div></div><div class="balance-row"><div class="side">Diferencia decisiva</div><div class="score">?</div><div class="side">¿Cambia el resultado?</div></div></div></div></div></article>
+<article class="step"><div class="step-left"><span class="num">08</span><h3>Diseñamos la resolución</h3><p>El cierre no debe reducirse a una puntuación. Debe transformar la comprensión y, si corresponde, permitir una decisión.</p></div><div class="step-right"><div class="evidence green"><div class="evidence-title">Resolución</div><div class="question-call">¿Cuál cuenta mejor la historia y para quién?</div><div class="pending">Pendiente: diferencia decisiva y veredicto final.</div></div></div></article>
+<div class="gold"><div class="gold-title">Regla de oro<br>para el sistema</div><div class="gold-cell"><strong>Los temas responden</strong>¿De qué necesito hablar?</div><div class="gold-cell"><strong>Los bloques responden</strong>¿Para qué necesito hablar de esto aquí?</div><div class="gold-cell"><strong>Los patrones responden</strong>¿Qué decisión de diseño necesito tomar para que esta parte funcione?</div></div>
+</div></div></section>
+
+
+<section class="content-section script-section" id="guion">
+  <div class="section-kicker">GUION · CASO 02</div>
+  <h2>Del recorrido al guion</h2>
+  <p class="section-intro">Este guion no solo indica qué debe decir Vero. Define qué debe conseguir, qué debe observar, qué evidencia necesita y qué decisión debe tomar antes de avanzar al siguiente bloque.</p>
+
+  <div class="script-rule"><strong>PREGUNTA CENTRAL</strong><span>¿Cuál cuenta mejor esta historia?</span></div>
+  <div class="script-rule"><strong>REGLA DEL CASO</strong><span>Cada comparación sigue la misma lógica: <b>Libro → Serie → Diferencia → Consecuencia → Resultado parcial.</b></span></div>
+
+  <div class="script-block">
+    <div class="script-block-head"><span class="script-num">00</span><div><span class="script-time">0:00–0:45</span><h3>Entrada · ¿Qué estamos comparando y por qué?</h3></div></div>
+    <div class="script-meta"><b>PATRONES</b> 01 · Promesa inicial + 02 · Pregunta central</div>
+    <div class="script-grid">
+      <div><h4>OBJETIVO DE VERO</h4><p>Abrir una comparación que todavía no tiene respuesta. No presentar el libro ni la serie como tema aislado.</p></div>
+      <div><h4>LO QUE DEBE HACER</h4><ol><li>Introducir rápidamente el misterio.</li><li>Establecer que conoció primero el libro.</li><li>Introducir después la serie.</li><li>Dejar claro que existen dos versiones de una misma historia.</li><li>Formular la pregunta que gobernará todo el video.</li></ol></div>
+    </div>
+    <div class="script-quote">“Un asesino en serie aterroriza Copenhague. Deja pequeños muñecos de castañas en cada escena del crimen. Y el caso da un giro cuando encuentran, en uno de esos muñecos, la huella de una niña que se suponía muerta hace años.<br><br>Leí <i>El caso Hartung</i> antes de ver la serie de Netflix. Y la pregunta que me interesa no es cuál me gustó más: <b>es cuál de las dos versiones cuenta mejor esta historia.</b>”</div>
+    <div class="script-output"><b>SALIDA</b> Libro + serie + misma historia + comparación pendiente.</div>
+  </div>
+
+  <div class="script-block">
+    <div class="script-block-head"><span class="script-num">01</span><div><span class="script-time">0:45–2:00</span><h3>Definir la comparación · ¿Qué significa “mejor”?</h3></div></div>
+    <div class="script-meta"><b>PATRONES</b> 15 · Guía del recorrido + 04 · Organización en bloques</div>
+    <div class="script-grid">
+      <div><h4>OBJETIVO DE VERO</h4><p>Definir las reglas de la comparación antes de empezar a comparar.</p></div>
+      <div><h4>ACCIONES</h4><ol><li>Revisar las dimensiones candidatas: personajes, tensión, información del misterio y atmósfera.</li><li>Seleccionar <b>dos</b> dimensiones.</li><li>Explicar por qué esas dos permiten responder la pregunta central.</li><li>Definir qué significaría que una versión “gane” cada dimensión.</li></ol></div>
+    </div>
+    <div class="script-task"><b>DECISIÓN PENDIENTE</b><span>¿Cuáles dos dimensiones tienen capacidad real de cambiar la valoración de cómo funciona la historia?</span></div>
+    <div class="script-quote">“Antes de comparar, necesito ser específica sobre qué voy a comparar. No es simplemente cuál me atrapó más o cuál disfruté más.<br><br>Voy a mirar <b>[DIMENSIÓN 1]</b> y <b>[DIMENSIÓN 2]</b>, porque son dos aspectos que pueden cambiar la manera en que funciona esta historia.<br><br>Y en cada una voy a hacer lo mismo: voy a mirar qué hace el libro, qué hace la serie, qué cambia entre ellos y qué efecto produce ese cambio.”</div>
+    <div class="script-output"><b>SALIDA</b> Dos dimensiones seleccionadas + criterio de comparación + evidencia que debe prepararse.</div>
+  </div>
+
+  <div class="script-block">
+    <div class="script-block-head"><span class="script-num">02</span><div><span class="script-time">2:00–4:30</span><h3>Primera dimensión</h3></div></div>
+    <div class="script-meta"><b>PATRONES</b> 09 · Evidencia y ejemplificación + 08 · Construcción de comprensión</div>
+    <div class="script-grid">
+      <div><h4>OBJETIVO</h4><p>Construir la primera comparación completa sin convertirla en dos reseñas separadas.</p></div>
+      <div><h4>ACCIONES</h4><ol><li>Presentar la dimensión y explicar qué se busca.</li><li>Analizar qué hace el libro y reunir evidencia.</li><li>Analizar qué hace la serie y reunir evidencia.</li><li>Poner ambas versiones en relación.</li><li>Explicar la consecuencia del cambio.</li><li>Emitir una conclusión parcial.</li></ol></div>
+    </div>
+    <div class="comparison-check">
+      <div><b>LIBRO</b><span>¿Qué hace? ¿Cómo? ¿Qué efecto produce?</span></div><div><b>SERIE</b><span>¿Qué mantiene, modifica, elimina o añade?</span></div><div><b>DIFERENCIA</b><span>¿Qué cambió concretamente?</span></div><div><b>CONSECUENCIA</b><span>¿Qué efecto produce el cambio?</span></div><div><b>RESULTADO</b><span>¿Quién funciona mejor en esta dimensión?</span></div>
+    </div>
+    <div class="script-quote">“La diferencia entre las dos versiones está en <b>[COMPLETAR]</b>. En el libro esto produce <b>[COMPLETAR]</b>, mientras que en la serie produce <b>[COMPLETAR]</b>. Y esa diferencia importa porque <b>[COMPLETAR]</b>.”<br><br>“Así que, si hablamos específicamente de <b>[DIMENSIÓN 1]</b>, para mí gana <b>[LIBRO/SERIE]</b> porque <b>[RAZÓN]</b>.”</div>
+    <div class="script-output"><b>SALIDA</b> Resultado parcial #1.</div>
+  </div>
+
+  <div class="script-transition"><b>TRANSICIÓN · PATRÓN 05</b><span>La ventaja obtenida debe abrir la expectativa de que el balance puede cambiar.</span><p>“Ahí, para mí, gana <b>[LIBRO/SERIE]</b>. Pero esta es solo una parte de la historia. Porque cuando miro <b>[DIMENSIÓN 2]</b>, las cosas empiezan a cambiar.”</p></div>
+
+  <div class="script-block">
+    <div class="script-block-head"><span class="script-num">03</span><div><span class="script-time">4:30–7:00</span><h3>Segunda dimensión</h3></div></div>
+    <div class="script-meta"><b>PATRONES</b> 09 · Evidencia y ejemplificación + 13 · Gestión de la complejidad</div>
+    <div class="script-grid">
+      <div><h4>OBJETIVO</h4><p>Repetir la misma estructura sin mezclar criterios ni abrir otra dimensión antes de cerrar esta.</p></div>
+      <div><h4>ACCIONES</h4><ol><li>Presentar la segunda dimensión.</li><li>Determinar qué hace el libro.</li><li>Determinar qué hace la serie.</li><li>Identificar la diferencia.</li><li>Explicar la consecuencia.</li><li>Emitir el segundo resultado parcial.</li></ol></div>
+    </div>
+    <div class="script-quote">“Ahora quiero mirar <b>[DIMENSIÓN 2]</b>.”<br><br>“En el libro <b>[COMPLETAR]</b> frente a <b>[COMPLETAR]</b> en la serie. Y esta vez, <b>[COMPLETAR: quién gana esta dimensión y por qué]</b>.”</div>
+    <div class="script-output"><b>SALIDA</b> Resultado parcial #2 + balance actualizado.</div>
+  </div>
+
+  <div class="script-transition"><b>TRANSICIÓN · PATRÓN 05</b><span>La comparación ya produjo dos resultados. Ahora se prepara un cambio de escala.</span><p>“Entonces tenemos <b>[RESULTADO 1]</b> por un lado y <b>[RESULTADO 2]</b> por el otro. Y normalmente aquí podríamos terminar con un ‘depende de gustos’. Pero hay algo que todavía falta mirar: <b>una diferencia que tiene mucho más peso que las anteriores.</b>”</p></div>
+
+  <div class="script-block">
+    <div class="script-block-head"><span class="script-num">04</span><div><span class="script-time">7:00–9:30</span><h3>Diferencia decisiva</h3></div></div>
+    <div class="script-meta"><b>PATRONES</b> 16 · Valor creciente + 09 · Evidencia y ejemplificación</div>
+    <div class="script-grid">
+      <div><h4>OBJETIVO</h4><p>Identificar la diferencia entre libro y serie que más afecta cómo funciona la historia completa.</p></div>
+      <div><h4>ACCIONES</h4><ol><li>Revisar las diferencias encontradas.</li><li>Preguntar cuál tiene mayor peso sobre la historia completa.</li><li>Buscar evidencia suficiente para demostrarla.</li><li>Explicar qué cambia y por qué pesa más que las diferencias anteriores.</li></ol></div>
+    </div>
+    <div class="script-task"><b>DEBE PODER COMPLETAR</b><span>La diferencia decisiva es <b>[COMPLETAR]</b>. Cambia <b>[COMPLETAR]</b> porque <b>[COMPLETAR]</b>.</span></div>
+    <div class="script-quote">“[COMPLETAR: diferencia decisiva].<br><br>Y esto no es una diferencia menor. Cambia <b>[COMPLETAR]</b>, porque <b>[COMPLETAR]</b>. Y por eso tiene más peso que las diferencias que vimos antes.”</div>
+    <div class="script-output"><b>SALIDA</b> Diferencia decisiva + evidencia + consecuencia sobre la historia completa.</div>
+  </div>
+
+  <div class="script-block">
+    <div class="script-block-head"><span class="script-num">05</span><div><span class="script-time">9:30–10:45</span><h3>Síntesis · ¿Qué gana y qué pierde cada versión?</h3></div></div>
+    <div class="script-meta"><b>PATRONES</b> 10 · Recompensas parciales + 08 · Construcción de comprensión</div>
+    <div class="script-grid">
+      <div><h4>OBJETIVO</h4><p>Conectar las tres piezas anteriores en una conclusión, no repetir el contenido.</p></div>
+      <div><h4>ACCIONES</h4><ol><li>Recuperar el resultado de la dimensión 1.</li><li>Recuperar el resultado de la dimensión 2.</li><li>Retomar la diferencia decisiva.</li><li>Explicar qué elemento inclina la comparación.</li></ol></div>
+    </div>
+    <div class="script-quote">“Entonces, ¿qué tenemos?<br><br>El libro gana en <b>[COMPLETAR]</b>. La serie gana en <b>[COMPLETAR]</b>. Pero lo que realmente inclina la comparación es <b>[DIFERENCIA DECISIVA]</b>, porque <b>[CONSECUENCIA]</b>.<br><br>Y ahí es donde empieza a aparecer una respuesta a la pregunta que nos hicimos al principio.”</div>
+    <div class="script-output"><b>SALIDA</b> Una interpretación integrada que prepara el veredicto.</div>
+  </div>
+
+  <div class="script-block">
+    <div class="script-block-head"><span class="script-num">06</span><div><span class="script-time">10:45–12:00</span><h3>Veredicto</h3></div></div>
+    <div class="script-meta"><b>PATRONES</b> 06 · Cierre + 18 · Transformación + 19 · Acción</div>
+    <div class="script-grid">
+      <div><h4>OBJETIVO</h4><p>Responder la pregunta inicial y mostrar qué permite entender la comparación que no habría sido evidente mirando una sola versión.</p></div>
+      <div><h4>ACCIONES</h4><ol><li>Recuperar la pregunta inicial.</li><li>Dar el veredicto o decidir si debe ser segmentado.</li><li>Explicar la razón principal.</li><li>Explicar qué cambió en la comprensión.</li><li>Si corresponde, convertir el resultado en recomendación.</li></ol></div>
+    </div>
+    <div class="script-quote">“Entonces, volvamos a la pregunta del principio: ¿cuál cuenta mejor esta historia?”<br><br>“Para mí, <b>[LIBRO/SERIE]</b>. La diferencia que termina inclinando la balanza es <b>[DIFERENCIA DECISIVA]</b>, porque <b>[CONSECUENCIA]</b>.”<br><br>“Así que, si todavía no conoces <i>El caso Hartung</i>, yo empezaría por <b>[LIBRO/SERIE]</b>. Es la versión que mejor consigue <b>[EXPERIENCIA / CRITERIO DECISIVO]</b>.”<br><br>“Pero si ya conoces esa versión, no descartaría la otra. <b>Hay un cambio concreto —[CAMBIO]— que hace que esta misma historia se experimente de una manera distinta.</b>”<br><br>“<b>Y eso es lo interesante de esta comparación: no se trata solamente de decidir cuál ganó. Se trata de entender qué tuvo que cambiar para que la misma historia funcionara en dos medios diferentes.</b>”</div>
+    <div class="script-output"><b>SALIDA</b> Veredicto + transformación de comprensión + recomendación, solo si la evidencia la justifica.</div>
+  </div>
+
+  <div class="script-layer"><div class="script-layer-head">CAPA TRANSVERSAL · 17 · ECONOMÍA NARRATIVA</div><p>Listar las diferencias encontradas y conservar solo las que ayuden a responder la pregunta central. Una diferencia curiosa pero irrelevante se corta.</p></div>
+  <div class="script-layer"><div class="script-layer-head">CAPA TRANSVERSAL · 14 · RECURSOS VISUALES</div><p>Para cada diferencia seleccionada, preparar evidencia del libro y de la serie y mostrar el cambio junto con su consecuencia. El recurso visual funciona como evidencia o apoyo de comprensión.</p></div>
+  <div class="script-layer"><div class="script-layer-head">CAPA TRANSVERSAL · 11 · PROGRESO VISIBLE · OPCIONAL</div><p>Puede utilizarse una matriz visual si ayuda a seguir el recorrido. Antes de usarla, comprobar que no convierta el análisis en un marcador deportivo artificial.</p></div>
+</section>
+
+
+
+<section class="content-section pattern-validation" id="validacion-patrones">
+  <div class="section-kicker">CASO 02 · HARTUNG</div>
+  <h2>Qué utilizamos y cómo se aplicó</h2>
+  <p class="section-intro">La matriz no responde todavía “a qué categoría pertenece” cada patrón. Responde una pregunta anterior: <b>¿qué decisión concreta produce el patrón cuando cambia el tipo de experiencia?</b></p>
+  <div class="legend">
+    <span class="legend-directa">Directa</span><span class="legend-adaptada">Adaptada</span><span class="legend-opcional">Opcional</span><span class="legend-necesidad">Según necesidad</span><span class="legend-dependiente">Dependiente</span>
+  </div>
+  <div class="pattern-table">
+    <div class="pattern-table-head"><span>PATRÓN</span><span>DECISIÓN EN CASO 02</span><span>CÓMO SE APLICÓ</span><span></span></div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">01</span>
+        <div><strong>Promesa inicial</strong><small>Dar una razón para comenzar.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>Abrir con el conflicto: existen el libro y la serie y todavía hay una comparación pendiente.</p><small>Aplicable directamente.</small></div>
+      <button class="pattern-link" type="button" data-pattern="01">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">02</span>
+        <div><strong>Pregunta central</strong><small>Organizar el recorrido alrededor de una pregunta.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>¿Qué versión cuenta mejor esta historia y por qué? La pregunta organiza toda la comparación.</p><small>Aplicable directamente.</small></div>
+      <button class="pattern-link" type="button" data-pattern="02">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">03</span>
+        <div><strong>Revelación progresiva</strong><small>Dosificar el resultado mientras la comparación permanece abierta.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>Revelar diferencias y resultados parciales sin anticipar la conclusión global.</p><small>Aplicable directamente.</small></div>
+      <button class="pattern-link" type="button" data-pattern="03">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">04</span>
+        <div><strong>Organización en bloques</strong><small>Dividir el recorrido en unidades comparables.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>Los bloques representan aspectos comparables, no capítulos del libro y episodios de la serie.</p><small>Aplicable directamente.</small></div>
+      <button class="pattern-link" type="button" data-pattern="04">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">05</span>
+        <div><strong>Cadena de expectativas</strong><small>Hacer que cada descubrimiento genere la necesidad del siguiente.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>El resultado de una comparación modifica la expectativa sobre la siguiente: si el libro gana en un aspecto, queremos saber si la serie gana en otro y qué significa el balance.</p><small>Aplicable directamente.</small></div>
+      <button class="pattern-link" type="button" data-pattern="05">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">06</span>
+        <div><strong>Cierre transformador</strong><small>Resolver la pregunta y transformar la comprensión.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>El cierre no se limita a declarar un ganador; explica qué revela la comparación sobre las decisiones de adaptación.</p><small>Aplicable directamente.</small></div>
+      <button class="pattern-link" type="button" data-pattern="06">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">07</span>
+        <div><strong>Cambio de estado</strong><small>Mover al espectador de una comprensión inicial a una nueva capacidad de decisión.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>De “la serie adapta el libro” a “entiendo qué ganó y perdió con sus cambios” y puedo decidir qué versión prefiero según lo que busco.</p><small>Aplicable directamente.</small></div>
+      <button class="pattern-link" type="button" data-pattern="07">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">08</span>
+        <div><strong>Construcción de comprensión</strong><small>Hacer que las piezas formen una explicación.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>La estructura de cada comparación es: Libro → Serie → Diferencia → ¿Por qué importa?</p><small>Aplicable directamente y con mayor relevancia que en Caso 01.</small></div>
+      <button class="pattern-link" type="button" data-pattern="08">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">09</span>
+        <div><strong>Evidencia y ejemplificación</strong><small>Permitir que una afirmación pueda comprobarse.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>Mostrar qué cambió entre el libro y la serie y después explicar por qué ese cambio importa.</p><small>Aplicable directamente y fundamental.</small></div>
+      <button class="pattern-link" type="button" data-pattern="09">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">10</span>
+        <div><strong>Recompensas parciales</strong><small>Entregar valor antes del resultado final.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>Cada dimensión produce una pequeña conclusión: por ejemplo, personajes → gana el libro; tensión → gana la serie, mientras la pregunta global permanece abierta.</p><small>Aplicable directamente.</small></div>
+      <button class="pattern-link" type="button" data-pattern="10">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">11</span>
+        <div><strong>Progreso visible</strong><small>Hacer perceptible cómo avanza la comparación.</small></div>
+      </div>
+      <div><span class="status optional">Opcional</span></div>
+      <div><p>Una matriz de comparación puede mostrar cómo evoluciona el balance entre libro y serie, pero no necesariamente debe utilizar puntuaciones.</p><small>Aplicable, pero opcional.</small></div>
+      <button class="pattern-link" type="button" data-pattern="11">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">12</span>
+        <div><strong>Arquitectura de retención</strong><small>Sostener la incertidumbre mediante cambios en el balance.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>El balance puede moverse: Libro 1–Serie 0 → Libro 1–Serie 1 → Libro 2–Serie 1. La pregunta es quién terminará ganando.</p><small>Aplicable directamente.</small></div>
+      <button class="pattern-link" type="button" data-pattern="12">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">13</span>
+        <div><strong>Gestión de la complejidad</strong><small>Distribuir criterios para no acumular información.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>Comparar una dimensión cada vez y cerrar esa comparación antes de pasar a la siguiente.</p><small>Aplicable directamente y más relevante que en Caso 01.</small></div>
+      <button class="pattern-link" type="button" data-pattern="13">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">14</span>
+        <div><strong>Recursos visuales</strong><small>Usar lo visual cuando mejora la comprensión.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>Portadas, imágenes de la adaptación, fragmentos visuales, comparaciones lado a lado, diagramas y citas breves pueden identificar diferencias.</p><small>Aplicable directamente.</small></div>
+      <button class="pattern-link" type="button" data-pattern="14">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">15</span>
+        <div><strong>Guía del recorrido</strong><small>Hacer visible cómo se desarrollará la comparación.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>Explicar al inicio qué dimensiones se compararán y que al final se determinará cuál versión gana y por qué.</p><small>Aplicable directamente.</small></div>
+      <button class="pattern-link" type="button" data-pattern="15">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">16</span>
+        <div><strong>Valor creciente del recorrido</strong><small>Incrementar el peso de los descubrimientos.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>Comenzar con una diferencia interesante, continuar con una que cambie la experiencia y llegar a la diferencia que realmente determina el veredicto.</p><small>Aplicable directamente.</small></div>
+      <button class="pattern-link" type="button" data-pattern="16">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">17</span>
+        <div><strong>Economía narrativa</strong><small>Eliminar lo que no contribuye al recorrido.</small></div>
+      </div>
+      <div><span class="status direct">Directa</span></div>
+      <div><p>Una adaptación puede tener decenas de diferencias; solo se muestran las que ayudan a decidir qué versión cuenta mejor la historia.</p><small>Aplicable directamente y fundamental.</small></div>
+      <button class="pattern-link" type="button" data-pattern="17">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">18</span>
+        <div><strong>Transformación personal</strong><small>Mostrar un cambio en la percepción o comprensión de quien analiza.</small></div>
+      </div>
+      <div><span class="status need">Según caso</span></div>
+      <div><p>Puede aparecer si la comparación cambia la percepción de Vero, por ejemplo si descubre por qué la serie hizo un cambio que inicialmente esperaba que perjudicara la historia.</p><small>Aplicable según el caso.</small></div>
+      <button class="pattern-link" type="button" data-pattern="18">Ver aplicación →</button>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">19</span>
+        <div><strong>Del conocimiento a la acción</strong><small>Convertir la comprensión en una decisión.</small></div>
+      </div>
+      <div><span class="status dependent">Según resolución</span></div>
+      <div><p>Puede terminar en una recomendación segmentada: serie para descubrir la historia; libro para profundizar en personajes. También puede terminar simplemente con un veredicto.</p><small>Aplicable si la comparación puede traducirse naturalmente en una decisión para el espectador.</small></div>
+      <button class="pattern-link" type="button" data-pattern="19">Ver aplicación →</button>
+    </div>
+  </div>
+</section>
+
+<div class="pattern-modal" id="patternModal" aria-hidden="true">
+  <div class="pattern-modal-backdrop" data-close-modal></div>
+  <div class="pattern-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="patternModalTitle">
+    <button class="pattern-modal-close" type="button" aria-label="Cerrar" data-close-modal>×</button>
+    <div class="pattern-modal-kicker" id="patternModalKicker">PATRÓN</div>
+    <h2 id="patternModalTitle">Aplicación del patrón</h2>
+    <div class="modal-field"><h4>FUNCIÓN ORIGINAL</h4><p id="patternModalFunction"></p></div>
+    <div class="modal-field"><h4>DECISIÓN DE DISEÑO</h4><p id="patternModalDecision"></p></div>
+    <div class="modal-application"><h4>APLICACIÓN EN HARTUNG</h4><p id="patternModalApplication"></p></div>
+    <div class="modal-field"><h4>POR QUÉ FUNCIONA AQUÍ</h4><p id="patternModalWhy"></p></div>
+    <div class="modal-field"><h4>RESULTADO EN ESTE CASO</h4><span class="modal-result" id="patternModalResult"></span></div>
+  </div>
+</div>
+
+<div class="pattern-modal" id="patternModal" aria-hidden="true">
+  <div class="pattern-modal-backdrop" data-close-modal></div>
+  <div class="pattern-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="patternModalTitle">
+    <button class="pattern-modal-close" type="button" aria-label="Cerrar" data-close-modal>×</button>
+    <div class="pattern-modal-kicker" id="patternModalKicker">PATRÓN</div>
+    <h2 id="patternModalTitle">Aplicación del patrón</h2>
+    <div class="modal-field"><h4>FUNCIÓN ORIGINAL</h4><p id="patternModalFunction">Pendiente de la información específica del patrón.</p></div>
+    <div class="modal-field"><h4>DECISIÓN DE DISEÑO</h4><p id="patternModalDecision">Pendiente de la información específica del patrón.</p></div>
+    <div class="modal-application"><h4>APLICACIÓN EN HARTUNG</h4><p id="patternModalApplication">Aquí irá la aplicación concreta proporcionada para este caso.</p></div>
+    <div class="modal-field"><h4>POR QUÉ FUNCIONA AQUÍ</h4><p id="patternModalWhy">Pendiente de la información específica del patrón.</p></div>
+    <div class="modal-field"><h4>RESULTADO EN ESTE CASO</h4><span class="modal-result" id="patternModalResult">Pendiente</span></div>
+  </div>
+</div>
+
+
+<section class="hallazgo"><div class="wrap"><div class="kicker">Resultado del Caso 02</div><h2>Los patrones sobreviven.<br>Su función cambia.</h2><p class="lead">El segundo caso vuelve a poner a prueba el sistema bajo una experiencia distinta: comparar dos representaciones de una misma historia.</p><div class="finding"><div class="finding-card"><h3>Caso 01 · Quicksilver</h3><strong>Evaluación progresiva.</strong><p>Los patrones ayudan a construir criterio y avanzar hacia un veredicto sobre un objeto.</p></div><div class="finding-card accent"><h3>Caso 02 · Hartung</h3><strong>Comparación con resultado abierto.</strong><p>Los patrones ayudan a observar cómo cambia el balance entre dos versiones hasta llegar a una conclusión.</p></div></div><div class="principle"><strong>Hallazgo provisional H2:</strong> los patrones parecen ser independientes del tipo de contenido, pero su función concreta cambia según el tipo de experiencia que estamos diseñando.</div></div></section>
+
+<section class="bridge"><div class="wrap"><div class="kicker" style="color:#aaa5e8">Siguiente experimento</div><h2>Evaluar → Comparar → Interpretar</h2><p>El Caso 03 cambiará nuevamente el mecanismo. Ya no necesitaremos decidir quién gana ni cuál opción es mejor. Tendremos que construir y sostener una interpretación alrededor de una posición fuerte: <strong>“Cumbres borrascosas no es una historia de amor.”</strong></p></div></section>
+</main>
+
+<div class="modal-backdrop" id="modal"><div class="modal" role="dialog" aria-modal="true"><div class="modal-head"><div><div class="modal-kicker" id="mk"></div><h2 id="mt"></h2></div><button class="close" id="mc">×</button></div><div class="modal-body" id="mb"></div></div></div>
+<script>
+const data={
+"08":{n:"08",name:"Construcción de comprensión",fn:"Hacer que las piezas formen una explicación.",dec:"Conectar versión, diferencia y consecuencia en lugar de acumular observaciones.",app:"Libro → Serie → Diferencia → ¿Por qué importa?",why:"El espectador necesita comprender simultáneamente las dos versiones y el efecto del cambio."},
+"09":{n:"09",name:"Evidencia y ejemplificación",fn:"Permitir que una afirmación pueda comprobarse.",dec:"Mostrar qué cambió y después explicar por qué ese cambio importa.",app:"LIBRO: ¿qué ocurre? · SERIE: ¿qué cambia? · CONSECUENCIA: ¿qué produce?",why:"Sin evidencia, la comparación se convierte rápidamente en una preferencia personal."},
+"13":{n:"13",name:"Gestión de la complejidad",fn:"Distribuir criterios para evitar sobrecarga.",dec:"Comparar una dimensión a la vez y cerrar esa comparación antes de pasar a la siguiente.",app:"Una dimensión → dos versiones → diferencia → consecuencia.",why:"Hay dos versiones, múltiples criterios, diferencias, ejemplos y consecuencias."},
+"14":{n:"14",name:"Recursos visuales",fn:"Usar lo visual cuando mejora la comprensión.",dec:"Mostrar las dos versiones lado a lado cuando el contraste visual ayude a identificar la diferencia.",app:"Portadas, imágenes de la adaptación, fragmentos, citas y diagramas comparativos.",why:"En Hartung los recursos no solo demuestran: también permiten comparar."},
+"05":{n:"05",name:"Cadena de expectativas",fn:"Hacer que cada descubrimiento genere la necesidad del siguiente.",dec:"Usar los cambios de ventaja entre dimensiones para mantener abierta la comparación.",app:"“En personajes gana la serie. Pero en el siguiente aspecto ocurre lo contrario.”",why:"La incertidumbre surge naturalmente de un resultado que todavía puede cambiar."},
+"16":{n:"16",name:"Valor creciente del recorrido",fn:"Hacer que lo que viene parezca progresivamente más relevante.",dec:"Reservar para después la diferencia que realmente puede determinar el veredicto.",app:"Diferencia interesante → diferencia importante → diferencia decisiva.",why:"No todas las diferencias tienen el mismo peso para responder la pregunta central."},
+"17":{n:"17",name:"Economía narrativa",fn:"Eliminar aquello que no contribuye al avance.",dec:"Preguntar si cada diferencia ayuda a decidir qué versión cuenta mejor la historia.",app:"Si una diferencia no cambia la respuesta, queda fuera.",why:"Una adaptación puede contener decenas de cambios y mostrarlos todos diluiría el recorrido."},
+"01":{n:"01",name:"Promesa inicial",fn:"Dar una razón para comenzar.",dec:"Abrir con el conflicto: existen libro y serie y la comparación está pendiente.",app:"“Tengo el libro y la serie. ¿Cuál cuenta mejor esta historia?”",why:"El espectador entiende inmediatamente qué está en juego."},
+"02":{n:"02",name:"Pregunta central",fn:"Organizar el recorrido alrededor de una pregunta.",dec:"Mantener la comparación como filtro de relevancia.",app:"“¿Qué versión cuenta mejor esta historia y por qué?”",why:"Evita convertir el video en dos reseñas independientes."},
+"03":{n:"03",name:"Revelación progresiva",fn:"Construir la respuesta sin entregarla de inmediato.",dec:"Mostrar diferencias y resultados parciales mientras se reserva la conclusión global.",app:"Una versión gana en un aspecto, pero todavía queda abierta la comparación completa.",why:"Permite actualizar la interpretación sin cerrar prematuramente el resultado."},
+"04":{n:"04",name:"Organización en bloques",fn:"Dividir la experiencia en unidades con función propia.",dec:"Construir bloques alrededor de aspectos comparables, no alrededor de libro completo y serie completa.",app:"Dimensión → libro → serie → diferencia → consecuencia.",why:"Reduce la carga de recordar información entre dos reseñas consecutivas."},
+"06":{n:"06",name:"Cierre transformador",fn:"Cerrar modificando la comprensión inicial.",dec:"Explicar qué ganó y perdió la adaptación y qué consecuencias tienen sus decisiones.",app:"“Ahora entiendo qué priorizó la serie, qué sacrificó y cómo eso cambia la experiencia.”",why:"El espectador no solo sabe quién ganó; entiende por qué."},
+"07":{n:"07",name:"Cambio de estado",fn:"Mover al espectador hacia una comprensión más útil.",dec:"Pasar de saber que existe una adaptación a comprender sus decisiones y consecuencias.",app:"Adaptación → cambios deliberados → ganancias/pérdidas → decisión.",why:"Hace visible el aprendizaje producido por la comparación."},
+"10":{n:"10",name:"Recompensas parciales",fn:"Entregar valor antes del resultado final.",dec:"Cada dimensión puede producir una conclusión parcial sin cerrar el veredicto global.",app:"Personajes → gana una versión. Tensión → gana la otra. La pregunta sigue abierta.",why:"Cada comparación entrega valor mientras conserva la incertidumbre final."},
+"11":{n:"11",name:"Progreso visible",fn:"Hacer perceptible que la comparación avanza.",dec:"Usar una matriz solo si ayuda a percibir el avance sin convertirlo en una competición mecánica.",app:"Criterio → resultado parcial → siguiente criterio.",why:"Puede ayudar a seguir el balance, pero es opcional."},
+"12":{n:"12",name:"Arquitectura de retención",fn:"Renovar la razón para continuar.",dec:"Mantener viva la incertidumbre real del resultado.",app:"El balance puede cambiar con cada nueva evidencia.",why:"La retención surge del resultado todavía abierto, no de suspense artificial."},
+"15":{n:"15",name:"Guía del recorrido",fn:"Mantener al espectador orientado.",dec:"Explicitar qué dimensiones se compararán y hacia dónde conduce el recorrido.",app:"“Vamos a comparar X, Y y Z. Al final veremos cuál versión gana y por qué.”",why:"Reduce la incertidumbre estructural sin revelar la respuesta."},
+"18":{n:"18",name:"Transformación personal",fn:"Cambiar la manera de interpretar el problema.",dec:"Usarlo solo si la comparación realmente cambia la percepción de Vero.",app:"“Pensaba que la serie iba a arruinar esta parte. Después entendí por qué hicieron el cambio.”",why:"Es posible, pero no debe inventarse si la experiencia no produce esa transformación."},
+"19":{n:"19",name:"Del conocimiento a la acción",fn:"Convertir la comprensión final en una decisión útil.",dec:"Traducir la comparación en una recomendación solo si emerge naturalmente.",app:"“Si quieres profundizar en personajes → libro. Si buscas X → serie.”",why:"Puede ser útil, pero el caso también puede cerrarse sin llamada a la acción."}
+};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-p]');if(!b)return;const p=data[b.dataset.p];if(!p)return;document.getElementById('mk').textContent=p.n+' · Patrón';document.getElementById('mt').textContent=p.name;document.getElementById('mb').innerHTML=`<div class="detail"><h4>Función</h4><p>${p.fn}</p></div><div class="detail"><h4>Decisión de diseño</h4><p>${p.dec}</p></div><div class="detail"><h4>Aplicación en Hartung</h4><blockquote>${p.app}</blockquote></div><div class="detail"><h4>Por qué importa aquí</h4><p>${p.why}</p></div>`;document.getElementById('modal').classList.add('open');document.body.style.overflow='hidden'});
+function closeModal(){document.getElementById('modal').classList.remove('open');document.body.style.overflow=''}document.getElementById('mc').onclick=closeModal;document.getElementById('modal').onclick=e=>{if(e.target.id==='modal')closeModal()};document.onkeydown=e=>{if(e.key==='Escape')closeModal()};
+</script>
+
+
+
+<script>
+(function(){
+  const modal=document.getElementById('patternModal');
+  if(!modal)return;
+  const data={"01": {"name": "Promesa inicial", "status": "Directa", "cls": "direct", "desc": "Dar una razón para comenzar.", "application": "Abrir con el conflicto: existen el libro y la serie y todavía hay una comparación pendiente.", "function": "Dar una razón para comenzar.", "decision": "La entrada debe comunicar inmediatamente que existen dos versiones, que vamos a compararlas y que todavía hay una pregunta por resolver.", "why": "El espectador entiende desde el inicio que no verá una reseña del libro ni de la serie por separado, sino una comparación con resultado abierto.", "result": "Aplicable directamente."}, "02": {"name": "Pregunta central", "status": "Directa", "cls": "direct", "desc": "Organizar el recorrido alrededor de una pregunta.", "application": "¿Qué versión cuenta mejor esta historia y por qué? La pregunta organiza toda la comparación.", "function": "Organizar el recorrido alrededor de una pregunta.", "decision": "No organizar el video como “primero el libro y luego la serie”, sino alrededor de lo que necesitamos descubrir para responder la pregunta.", "why": "Cada diferencia y cada bloque puede evaluarse según su contribución a resolver la comparación.", "result": "Aplicable directamente."}, "03": {"name": "Revelación progresiva", "status": "Directa", "cls": "direct", "desc": "Dosificar el resultado mientras la comparación permanece abierta.", "application": "Revelar diferencias y resultados parciales sin anticipar la conclusión global.", "function": "Dosificar los descubrimientos para mantener abierta la pregunta principal.", "decision": "No decir al inicio qué versión es mejor; revelar diferencias y resultados parciales mientras se reserva el veredicto.", "why": "Cada nuevo resultado puede modificar el balance entre las dos versiones.", "result": "Aplicable directamente."}, "04": {"name": "Organización en bloques", "status": "Directa", "cls": "direct", "desc": "Dividir el recorrido en unidades comparables.", "application": "Los bloques representan aspectos comparables, no capítulos del libro y episodios de la serie.", "function": "Dividir la experiencia en etapas con función propia.", "decision": "Organizar el recorrido alrededor de aspectos comparables: entrada → definición de la comparación → dimensiones → diferencia decisiva → síntesis → veredicto.", "why": "Evita obligar al espectador a recordar primero un objeto completo y después otro para compararlos al final.", "result": "Aplicable directamente."}, "05": {"name": "Cadena de expectativas", "status": "Directa", "cls": "direct", "desc": "Hacer que cada descubrimiento genere la necesidad del siguiente.", "application": "El resultado de una comparación modifica la expectativa sobre la siguiente: si el libro gana en un aspecto, queremos saber si la serie gana en otro y qué significa el balance.", "function": "Hacer que cada descubrimiento genere la necesidad del siguiente.", "decision": "Usar los cambios de ventaja como motor de transición entre dimensiones.", "why": "La cadena surge naturalmente de la incertidumbre real del resultado; no necesita suspense artificial.", "result": "Aplicable directamente."}, "06": {"name": "Cierre transformador", "status": "Directa", "cls": "direct", "desc": "Resolver la pregunta y transformar la comprensión.", "application": "El cierre no se limita a declarar un ganador; explica qué revela la comparación sobre las decisiones de adaptación.", "function": "Cerrar la experiencia transformando la comprensión.", "decision": "Pasar de “quién ganó” a comprender qué priorizó la adaptación, qué sacrificó y cómo eso cambia la experiencia.", "why": "El espectador no solo conoce un resultado: entiende por qué la adaptación tomó determinadas decisiones y sus consecuencias.", "result": "Aplicable directamente."}, "07": {"name": "Cambio de estado", "status": "Directa", "cls": "direct", "desc": "Mover al espectador de una comprensión inicial a una nueva capacidad de decisión.", "application": "De “la serie adapta el libro” a “entiendo qué ganó y perdió con sus cambios” y puedo decidir qué versión prefiero según lo que busco.", "function": "Producir un cambio reconocible entre el estado inicial y el final.", "decision": "Diseñar la comparación para que el espectador pase de reconocer una adaptación a comprender sus decisiones y consecuencias.", "why": "La comparación transforma una percepción general en un criterio para elegir entre las dos versiones.", "result": "Aplicable directamente."}, "08": {"name": "Construcción de comprensión", "status": "Directa", "cls": "direct", "desc": "Hacer que las piezas formen una explicación.", "application": "La estructura de cada comparación es: Libro → Serie → Diferencia → ¿Por qué importa?", "function": "Conectar evidencias y hallazgos hasta construir una comprensión progresiva.", "decision": "Cada dimensión debe relacionar las dos versiones y cerrar con la consecuencia del cambio, en lugar de acumular observaciones separadas.", "why": "El espectador necesita procesar simultáneamente versión A, versión B, diferencia y consecuencia.", "result": "Aplicable directamente y con mayor relevancia que en Caso 01."}, "09": {"name": "Evidencia y ejemplificación", "status": "Directa", "cls": "direct", "desc": "Permitir que una afirmación pueda comprobarse.", "application": "Mostrar qué cambió entre el libro y la serie y después explicar por qué ese cambio importa.", "function": "Permitir que una afirmación pueda comprobarse.", "decision": "Cada afirmación comparativa debe apoyarse en un ejemplo concreto de ambas versiones y en su consecuencia.", "why": "Sin evidencia, la comparación se convierte rápidamente en una preferencia personal: “yo prefiero el libro”.", "result": "Aplicable directamente y fundamental."}, "10": {"name": "Recompensas parciales", "status": "Directa", "cls": "direct", "desc": "Entregar valor antes del resultado final.", "application": "Cada dimensión produce una pequeña conclusión: por ejemplo, personajes → gana el libro; tensión → gana la serie, mientras la pregunta global permanece abierta.", "function": "Entregar pequeñas resoluciones a lo largo del recorrido.", "decision": "No esperar al veredicto para producir conclusiones; cerrar cada comparación con un resultado parcial.", "why": "Cada comparación entrega valor y, al mismo tiempo, mantiene abierta la resolución global.", "result": "Aplicable directamente."}, "11": {"name": "Progreso visible", "status": "Opcional", "cls": "optional", "desc": "Hacer perceptible cómo avanza la comparación.", "application": "Una matriz de comparación puede mostrar cómo evoluciona el balance entre libro y serie, pero no necesariamente debe utilizar puntuaciones.", "function": "Hacer visible el avance del recorrido.", "decision": "Aplicar solo si la matriz ayuda a percibir el progreso; descartarla si convierte la experiencia en una competición mecánica.", "why": "El progreso puede ayudar a seguir la comparación, pero un marcador artificial puede simplificar demasiado el análisis.", "result": "Aplicable, pero opcional."}, "12": {"name": "Arquitectura de retención", "status": "Directa", "cls": "direct", "desc": "Sostener la incertidumbre mediante cambios en el balance.", "application": "El balance puede moverse: Libro 1–Serie 0 → Libro 1–Serie 1 → Libro 2–Serie 1. La pregunta es quién terminará ganando.", "function": "Sostener la atención mediante una incertidumbre relevante.", "decision": "Hacer que cada nueva evidencia pueda modificar el resultado, sin convertir la comparación en un marcador deportivo artificial.", "why": "La retención surge de la incertidumbre real sobre el resultado.", "result": "Aplicable directamente."}, "13": {"name": "Gestión de la complejidad", "status": "Directa", "cls": "direct", "desc": "Distribuir criterios para no acumular información.", "application": "Comparar una dimensión cada vez y cerrar esa comparación antes de pasar a la siguiente.", "function": "Distribuir criterios para no acumular información.", "decision": "No presentar simultáneamente dos versiones, múltiples personajes, cambios, contexto y opinión; cada comparación debe aislar una dimensión.", "why": "Aquí el riesgo de sobrecarga aumenta porque deben procesarse dos versiones más criterios, ejemplos y consecuencias.", "result": "Aplicable directamente y más relevante que en Caso 01."}, "14": {"name": "Recursos visuales", "status": "Directa", "cls": "direct", "desc": "Usar lo visual cuando mejora la comprensión.", "application": "Portadas, imágenes de la adaptación, fragmentos visuales, comparaciones lado a lado, diagramas y citas breves pueden identificar diferencias.", "function": "Usar lo visual cuando mejora la comprensión.", "decision": "Utilizar recursos que permitan demostrar y comparar una diferencia concreta.", "why": "En Hartung los recursos visuales no solo ayudan a demostrar evidencia; también ayudan a poner dos objetos frente a frente.", "result": "Aplicable directamente."}, "15": {"name": "Guía del recorrido", "status": "Directa", "cls": "direct", "desc": "Hacer visible cómo se desarrollará la comparación.", "application": "Explicar al inicio qué dimensiones se compararán y que al final se determinará cuál versión gana y por qué.", "function": "Reducir la incertidumbre sobre cómo se desarrollará el recorrido.", "decision": "Nombrar los criterios de comparación antes de comenzar el análisis.", "why": "El espectador sabe qué observar y qué respuesta se está construyendo.", "result": "Aplicable directamente."}, "16": {"name": "Valor creciente del recorrido", "status": "Directa", "cls": "direct", "desc": "Incrementar el peso de los descubrimientos.", "application": "Comenzar con una diferencia interesante, continuar con una que cambie la experiencia y llegar a la diferencia que realmente determina el veredicto.", "function": "Aumentar progresivamente el peso de lo descubierto.", "decision": "Reservar la diferencia decisiva para después de las comparaciones previas.", "why": "La pregunta no es ordenar arbitrariamente de pequeño a grande, sino determinar qué descubrimiento tiene mayor peso para resolver la pregunta central.", "result": "Aplicable directamente."}, "17": {"name": "Economía narrativa", "status": "Directa", "cls": "direct", "desc": "Eliminar lo que no contribuye al recorrido.", "application": "Una adaptación puede tener decenas de diferencias; solo se muestran las que ayudan a decidir qué versión cuenta mejor la historia.", "function": "Eliminar información que no aporta al objetivo del recorrido.", "decision": "Preguntar ante cada diferencia: ¿ayuda a responder qué versión cuenta mejor la historia? Si no, se elimina.", "why": "Evita que la comparación se convierta en una lista de cambios curiosos sin función narrativa.", "result": "Aplicable directamente y fundamental."}, "18": {"name": "Transformación personal", "status": "Según caso", "cls": "need", "desc": "Mostrar un cambio en la percepción o comprensión de quien analiza.", "application": "Puede aparecer si la comparación cambia la percepción de Vero, por ejemplo si descubre por qué la serie hizo un cambio que inicialmente esperaba que perjudicara la historia.", "function": "Mostrar una transformación en la comprensión personal.", "decision": "Solo utilizarla si la comparación produce realmente un cambio de percepción; no inventarlo.", "why": "Cuando existe, aporta una transformación auténtica. Si no existe, añadirla artificialmente debilitaría el análisis.", "result": "Aplicable según el caso."}, "19": {"name": "Del conocimiento a la acción", "status": "Según resolución", "cls": "dependent", "desc": "Convertir la comprensión en una decisión.", "application": "Puede terminar en una recomendación segmentada: serie para descubrir la historia; libro para profundizar en personajes. También puede terminar simplemente con un veredicto.", "function": "Convertir la comprensión obtenida en una decisión o recomendación.", "decision": "Usarlo solo si la comparación puede traducirse naturalmente en una decisión para el espectador.", "why": "No toda comparación necesita una llamada a la acción; la recomendación debe surgir de forma natural del resultado.", "result": "Aplicable si la comparación puede traducirse naturalmente en una decisión para el espectador."}};
+  const title=document.getElementById('patternModalTitle');
+  const kicker=document.getElementById('patternModalKicker');
+  const fn=document.getElementById('patternModalFunction');
+  const decision=document.getElementById('patternModalDecision');
+  const application=document.getElementById('patternModalApplication');
+  const why=document.getElementById('patternModalWhy');
+  const result=document.getElementById('patternModalResult');
+
+  function openModal(id){
+    const p=data[id];
+    kicker.textContent=id+' · PATRÓN';
+    title.textContent=p.name;
+    fn.textContent=p.function;
+    decision.textContent=p.decision;
+    application.textContent=p.application;
+    why.textContent=p.why;
+    result.textContent=p.result;
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+  }
+  function closeModal(){
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+  }
+  document.querySelectorAll('.pattern-link').forEach(btn=>btn.addEventListener('click',()=>openModal(btn.dataset.pattern)));
+  modal.querySelectorAll('[data-close-modal]').forEach(el=>el.addEventListener('click',closeModal));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('is-open'))closeModal();});
+})();
+</script>
+</body></html>

@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fase 3 · Caso 03 · Cómo construimos una interpretación</title>
+
+<style>
+:root{
+  --purple:#695CFF;
+  --purple-dark:#5140c5;
+  --purple-soft:#eeeaff;
+  --page:#f1f1f2;
+  --white:#fff;
+  --text:#1d2133;
+  --muted:#5d6478;
+  --border:#dedee5;
+  --soft:#f7f3ff;
+  --dark:#0e132b;
+  --green:#23734b;
+  --yellow:#a36a0b;
+  --blue:#3c6da9;
+  --red:#a33b3b;
+  --serif:Georgia,"Times New Roman",serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{
+  font-family:Inter,system-ui,-apple-system,sans-serif;
+  color:var(--text);
+  background:var(--page);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body.modal-open{overflow:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{font:inherit}
+
+.progress{
+  position:fixed;top:0;left:0;width:100%;height:3px;
+  background:linear-gradient(90deg,#695CFF,#4A78FF);
+  transform:scaleX(0);transform-origin:left;z-index:9999;pointer-events:none;
+}
+@supports(animation-timeline:scroll()){
+  .progress{animation:progress linear;animation-timeline:scroll(root)}
+}
+@keyframes progress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+.wrap{max-width:1280px;margin:auto;padding:0 56px}
+
+/* NAV */
+.topbar{
+  position:sticky;top:0;z-index:100;height:64px;
+  background:rgba(255,255,255,.97);
+  backdrop-filter:blur(10px);border-bottom:1px solid #dfdfe5;
+}
+.topbar-inner{
+  height:64px;max-width:1280px;margin:auto;padding:0 56px;
+  display:flex;align-items:center;overflow-x:auto;scrollbar-width:none;
+}
+.topbar-inner::-webkit-scrollbar{display:none}
+.phase-nav{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.phase-tab{
+  padding:11px 16px;border-radius:24px;color:#6b6e7b;
+  text-transform:uppercase;font-size:13px;font-weight:700;
+  letter-spacing:.04em;white-space:nowrap;
+}
+.phase-tab.active{
+  color:#4f42cf;background:#eeeaff;
+  box-shadow:inset 0 0 0 1.5px #1d2133;
+}
+
+/* HERO */
+.hero{padding:68px 0 62px}
+.hero-grid{
+  display:grid;grid-template-columns:46% 54%;gap:24px;
+  align-items:center;min-height:330px;
+}
+.eyebrow{
+  color:#5e6376;font-size:13px;font-weight:800;
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:28px;
+}
+.hero h1{
+  font-family:var(--serif);font-size:clamp(48px,5.2vw,72px);
+  line-height:.96;letter-spacing:-.035em;font-weight:600;margin-bottom:22px;
+}
+.hero h1 span{color:var(--purple)}
+.hero-desc{max-width:560px;color:var(--muted);font-size:17px;line-height:1.6}
+.hero-visual{display:flex;justify-content:flex-end}
+.hero-art{width:min(100%,650px);border-radius:18px;overflow:hidden}
+.hero-art img{width:100%;height:auto;object-fit:cover}
+
+/* MARQUEE */
+.marquee{
+  background:linear-gradient(90deg,#695CFF,#5A4DF5);
+  overflow:hidden;white-space:nowrap;padding:13px 0;
+}
+.marquee-track{
+  display:inline-flex;width:max-content;
+  animation:marquee 26s linear infinite;
+}
+.marquee:hover .marquee-track{animation-play-state:paused}
+.marquee-item{
+  display:inline-flex;align-items:center;color:#fff;font-size:11px;
+  font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:0 22px;
+}
+.dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.65);margin-left:22px}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* GENERAL */
+.section{padding:76px 0}
+.kicker{
+  color:var(--purple);font-size:12px;font-weight:850;
+  letter-spacing:.13em;text-transform:uppercase;margin-bottom:13px;
+}
+.section h2{
+  font-family:var(--serif);font-size:48px;line-height:1.03;
+  font-weight:600;letter-spacing:-.025em;
+}
+.lead{max-width:850px;color:var(--muted);font-size:16px;line-height:1.65;margin-top:18px}
+.principle{
+  margin-top:24px;padding:18px 20px;background:#eeeaff;
+  border-left:2px solid var(--purple);color:#5f6071;font-size:13px;line-height:1.55;
+}
+
+/* CASE */
+.case-grid{
+  display:grid;grid-template-columns:1fr 1.2fr;border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;background:#fff;margin-top:34px;
+}
+.case-side{padding:30px 34px}
+.case-side+.case-side{background:var(--soft);border-left:1px solid #e4e0f2}
+.label{
+  font-size:10px;font-weight:850;letter-spacing:.09em;
+  text-transform:uppercase;color:#666b7d;margin-bottom:13px;
+}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{
+  padding:9px 12px;border:1px solid #dedde7;border-radius:999px;
+  background:#f8f8fb;font-size:11px;font-weight:750;
+}
+.big-question{font-family:var(--serif);font-size:30px;line-height:1.2;font-style:italic}
+
+/* COMPARISON */
+.compare{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+.compare-card{border:1px solid var(--border);border-radius:14px;background:#fff;padding:22px}
+.compare-card.accent{background:#f7f3ff;border-color:#ddd5f6}
+.compare-card h3{font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+.compare-card strong{display:block;font-family:var(--serif);font-size:26px;line-height:1.15}
+.compare-card p{color:var(--muted);font-size:12px;line-height:1.55;margin-top:8px}
+
+/* EDITORIAL */
+.editorial{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch;margin-top:36px}
+.thumb-card{border:1px solid var(--border);border-radius:16px;background:#fff;padding:14px;display:flex}
+.thumb-card img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.editorial-copy{border:1px solid var(--border);border-radius:16px;background:#fff;padding:28px}
+.editorial-copy h3{font-size:20px;margin-bottom:8px}
+.editorial-copy p{color:var(--muted);font-size:13px;line-height:1.65}
+.editorial-title{
+  margin-top:20px;padding:16px 18px;border:1px dashed #cfcfd8;
+  border-radius:12px;background:#faf9ff;
+}
+.editorial-title span{
+  display:block;color:#7a7d8c;font-size:10px;text-transform:uppercase;
+  letter-spacing:.08em;font-weight:800;margin-bottom:7px;
+}
+.editorial-title strong{font-family:var(--serif);font-size:22px;line-height:1.25;font-weight:600}
+
+/* PROCESS */
+.process-head{margin-bottom:36px}
+.process-grid{position:relative;display:grid;grid-template-columns:39% 61%;column-gap:42px}
+.process-grid:before{
+  content:"";position:absolute;left:16px;top:17px;bottom:18px;
+  border-left:1px dashed #c9cad3;
+}
+.step{display:contents}
+.step-left{position:relative;padding:0 10px 42px 52px;min-height:158px}
+.num{
+  position:absolute;left:0;top:0;width:34px;height:34px;border-radius:50%;
+  display:grid;place-items:center;background:var(--purple);color:#fff;font-size:10px;font-weight:850;
+}
+.step-left h3{font-size:17px;line-height:1.3;font-weight:800;margin:3px 0 11px}
+.step-left p{color:var(--muted);font-size:12px;line-height:1.65;max-width:370px}
+.step-right{min-height:158px;padding:0 0 42px}
+.evidence{border:1px solid var(--border);border-radius:12px;background:#fff;padding:20px 22px}
+.evidence.purple{background:#f6f2ff;border-color:#ddd5f6}
+.evidence.yellow{background:#fff9eb;border-color:#f0dfb7}
+.evidence.blue{background:#f2f7ff;border-color:#d9e3f2}
+.evidence.green{background:#eff9f2;border-color:#d2e5d7}
+.evidence.red{background:#fff3f3;border-color:#efd3d3}
+.evidence-title{font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.06em;margin-bottom:17px}
+
+/* FLOW */
+.flow{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;align-items:start}
+.flow-item{text-align:center;position:relative}
+.flow-item:not(:last-child):after{
+  content:"→";position:absolute;right:-7px;top:7px;color:#7565d6
+}
+.flow-num{
+  width:30px;height:30px;margin:0 auto 9px;border:1px solid #8d7ce2;
+  border-radius:50%;display:grid;place-items:center;background:#fff;color:#4e3ac7;
+  font-size:10px;font-weight:850
+}
+.flow-title{font-size:8.5px;line-height:1.35;font-weight:800}
+
+/* CRITERIA */
+.criterion-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.criterion{
+  padding:12px;border:1px solid #e0e0e6;border-radius:9px;
+  background:#fff;font-size:10px;font-weight:750;
+}
+.criterion small{display:block;color:#777987;font-size:9px;font-weight:500;line-height:1.4;margin-top:4px}
+
+/* INTERPRETATION */
+.interpretation-visual{
+  display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center
+}
+.interpretation-box{
+  padding:18px;border:1px solid #dddde5;border-radius:10px;background:#fff;text-align:center
+}
+.interpretation-box strong{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.interpretation-box span{display:block;font-family:var(--serif);font-size:22px;margin-top:7px}
+.interpretation-box small{display:block;color:var(--muted);font-size:9px;line-height:1.45;margin-top:8px}
+.arrow{font-size:20px;color:var(--purple)}
+.analysis-row{
+  display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:9px;
+  align-items:stretch;margin-top:10px
+}
+.analysis-row>div:not(.analysis-arrow){
+  background:#faf9ff;border:1px solid #e3dff4;border-radius:10px;padding:12px
+}
+.analysis-row b{display:block;color:#5147d9;font-size:8px;line-height:1.25;margin-bottom:5px}
+.analysis-row span{display:block;color:var(--muted);font-size:9px;line-height:1.4}
+.analysis-arrow{display:flex;align-items:center;color:#695cff;font-size:15px}
+
+/* GOLD */
+.gold{
+  margin-top:4px;border:1px solid var(--border);border-radius:12px;background:#fff;
+  padding:19px 20px;display:grid;grid-template-columns:200px repeat(3,1fr);gap:0
+}
+.gold-title{font-size:12px;font-weight:850}
+.gold-cell{padding:0 16px;border-left:1px solid #e4e3e8;font-size:9px;line-height:1.55;color:#5e6070}
+.gold-cell strong{display:block;color:#2a2c40;margin-bottom:3px}
+
+/* BLOCK / TOPICS */
+.block-result{margin:-4px 0 17px;padding:11px 13px;border:1px solid rgba(30,32,48,.10);border-radius:9px;background:rgba(255,255,255,.72);color:#5e6070;font-size:10px;line-height:1.5}.block-result strong{color:#292c40;font-weight:800}.topic-label{color:#6c6e7d;font-size:8px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}.topic-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.topic{padding:11px 12px;border:1px solid #e0e0e6;border-radius:9px;background:#fff;color:#343747;font-size:10px;font-weight:700;line-height:1.35}
+
+/* SCRIPT */
+.content-section{max-width:1280px;margin:0 auto;padding:76px 56px}
+.section-kicker{color:#5e6376;font-size:11px;font-weight:850;letter-spacing:.13em;text-transform:uppercase;margin-bottom:9px}
+.content-section>h2{font-family:var(--serif);font-size:46px;line-height:1.05;letter-spacing:-.025em;margin-bottom:12px;color:var(--text)}
+.section-intro{max-width:850px;color:var(--muted);font-size:15px;line-height:1.65;margin-bottom:24px}
+.script-section{background:#f1f1f2}
+.script-rule{
+  display:flex;gap:14px;align-items:baseline;padding:12px 16px;
+  border:1px solid #ddd8f5;background:#f7f5ff;border-radius:10px;margin:7px 0;
+  color:#4f5265;font-size:12px;line-height:1.5
+}
+.script-rule strong{font-size:9px;letter-spacing:.08em;color:#5140c5;white-space:nowrap}
+.script-block{
+  display:block;background:#fff;border:1px solid #dedee5;border-radius:14px;
+  padding:25px 28px;margin:22px 0;box-shadow:0 1px 0 rgba(20,24,40,.02)
+}
+.script-block-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:9px}
+.script-num{
+  display:inline-flex;align-items:center;justify-content:center;flex:0 0 34px;
+  width:34px;height:34px;border-radius:50%;background:#695cff;color:#fff;font-size:11px;font-weight:850
+}
+.script-time{display:block;color:#695cff;font-size:9px;font-weight:850;letter-spacing:.08em;margin-bottom:3px}
+.script-block-head h3{font-size:19px;line-height:1.25;margin:0;color:#171a2b}
+.script-meta{color:#5b5e70;font-size:10px;margin:0 0 18px 48px;line-height:1.5}
+.script-meta b{color:#5140c5;letter-spacing:.07em;font-size:9px}
+.script-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.script-grid>div{background:#faf9fc;border:1px solid #e4e1ea;border-radius:10px;padding:15px}
+.script-grid h4,.script-task b{
+  display:block;color:#676879;font-size:9px;letter-spacing:.08em;margin-bottom:8px
+}
+.script-grid p,.script-grid li{color:#535669;font-size:11px;line-height:1.55}
+.script-grid ol{padding-left:18px}
+.script-grid li+li{margin-top:4px}
+.script-quote{
+  font-family:var(--serif);font-size:17px;line-height:1.55;color:#34364a;
+  background:#f1efff;border-left:3px solid #695cff;border-radius:0 10px 10px 0;
+  padding:17px 20px;margin-top:12px
+}
+.script-output{
+  margin-top:14px;padding:11px 14px;background:#f7f7f9;border-top:1px solid #e5e4e9;
+  color:#555869;font-size:10px;line-height:1.5
+}
+.script-output b{color:#5140c5;font-size:9px;letter-spacing:.08em;margin-right:7px}
+.script-task{
+  display:flex;gap:10px;align-items:flex-start;background:#fff8e8;
+  border:1px solid #ead7a7;border-radius:9px;padding:12px 14px;margin:12px 0
+}
+.script-task b{color:#986c13;white-space:nowrap;margin:0}
+.script-task span{color:#635c4c;font-size:10px;line-height:1.5}
+.script-transition{
+  margin:24px 0;padding:17px 20px;background:#eeeaff;border:1px solid #d3cbff;
+  border-left:3px solid #695cff;border-radius:0 12px 12px 0
+}
+.script-transition>b{display:block;color:#5140c5;font-size:9px;letter-spacing:.08em;margin-bottom:5px}
+.script-transition>span{display:block;color:#5d6070;font-size:10px;margin-bottom:10px}
+.script-transition p{font-family:var(--serif);font-size:16px;line-height:1.5;color:#34364a}
+.script-layer{padding:15px 18px;margin:10px 0;border:1px solid #dcdce4;border-radius:10px;background:#fff}
+.script-layer-head{font-size:9px;font-weight:850;letter-spacing:.08em;color:#5140c5;margin-bottom:5px}
+.script-layer p{color:#5d6070;font-size:10px;line-height:1.5}
+
+/* VALIDATION */
+.pattern-validation{background:#fff;border-top:1px solid #e2e2e7}
+.legend{display:flex;gap:7px;justify-content:flex-end;flex-wrap:wrap;margin:-36px 0 15px}
+.legend span{padding:5px 9px;border-radius:999px;font-size:8px;font-weight:800}
+.legend-directa{background:#e4f5ed;color:#18835d}
+.legend-cond{background:#fff1d4;color:#a36a0b}
+.legend-unused{background:#f5e4e4;color:#a33b3b}
+.legend-notused{background:#eeeef2;color:#666a79}
+.pattern-table{border:1px solid #e0e0e6;border-radius:14px;overflow:hidden;background:#fff}
+.pattern-table-head,.pattern-row{
+  display:grid;grid-template-columns:2.2fr 1fr 3fr 105px;gap:18px;align-items:center;padding:15px 18px
+}
+.pattern-table-head{background:#f7f6fa;color:#626577;font-size:10px;font-weight:850;letter-spacing:.1em}
+.pattern-row{border-top:1px solid #e8e7ec;min-height:86px}
+.pattern-name{display:flex;align-items:center;gap:11px}
+.pattern-id{
+  display:inline-flex;align-items:center;justify-content:center;width:31px;height:31px;
+  border-radius:50%;background:#f0edff;color:#5140c5;font-size:9px;font-weight:850;flex:0 0 31px
+}
+.pattern-name strong{display:block;font-size:13px;line-height:1.3}
+.pattern-name small{display:block;color:#777a89;font-size:10px;line-height:1.35;margin-top:3px}
+.status{display:inline-flex;width:max-content;padding:6px 10px;border-radius:999px;font-size:9px;font-weight:800}
+.status.direct{background:#e4f5ed;color:#18835d}
+.status.conditional{background:#fff1d4;color:#a36a0b}
+.status.unused{background:#f5e4e4;color:#a33b3b}
+.status.notused{background:#eeeef2;color:#666a79}
+.pattern-row>div:nth-child(3) p{color:#4f5263;font-size:12px;line-height:1.5}
+.pattern-row>div:nth-child(3) small{display:block;color:#777a89;font-size:10px;line-height:1.4;margin-top:4px}
+.pattern-link{border:0;background:none;color:#5140c5;font-size:9px;font-weight:800;cursor:pointer;text-align:right;white-space:nowrap}
+.pattern-link:hover{text-decoration:underline}
+
+/* MODAL */
+.pattern-modal{display:none;position:fixed;inset:0;z-index:10000}
+.pattern-modal.is-open{display:block}
+.pattern-modal-backdrop{position:absolute;inset:0;background:rgba(16,19,35,.58);backdrop-filter:blur(3px)}
+.pattern-modal-dialog{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(760px,calc(100% - 36px));max-height:88vh;overflow:auto;background:#fff;
+  border-radius:16px;box-shadow:0 25px 70px rgba(0,0,0,.25);padding:30px 28px
+}
+.pattern-modal-close{
+  position:absolute;right:18px;top:18px;width:34px;height:34px;border:1px solid #dedde4;
+  border-radius:50%;background:#fff;font-size:21px;line-height:1;cursor:pointer
+}
+.pattern-modal-kicker{color:#695cff;font-size:9px;font-weight:850;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.pattern-modal-dialog h2{font-family:var(--serif);font-size:31px;line-height:1.1;margin:0 45px 24px 0}
+.modal-field{margin-top:19px}
+.modal-field h4,.modal-application h4{font-size:9px;color:#676879;letter-spacing:.08em;margin-bottom:7px}
+.modal-field p{font-size:12px;line-height:1.6;color:#4f5263}
+.modal-application{margin-top:19px;padding:15px 18px;background:#f0edff;border-left:3px solid #695cff}
+.modal-application p{font-family:var(--serif);font-size:17px;line-height:1.5;color:#34364a}
+.modal-result{display:inline-flex;padding:6px 10px;border-radius:999px;background:#eeeaff;color:#5140c5;font-size:9px;font-weight:800}
+.modal-result.unused{background:#f5e4e4;color:#a33b3b}
+
+/* FINDING */
+.hallazgo{background:#fff;border-top:1px solid #e3e3e8;padding:78px 0}
+.finding{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+.finding-card{padding:26px;border:1px solid var(--border);border-radius:14px;background:#fff}
+.finding-card h3{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#666b7d}
+.finding-card strong{display:block;font-family:var(--serif);font-size:28px;line-height:1.15;margin-top:9px}
+.finding-card p{color:var(--muted);font-size:12px;line-height:1.55;margin-top:9px}
+.finding-card.accent{background:#f7f3ff;border-color:#ddd5f6}
+
+/* BRIDGE */
+.bridge{background:var(--dark);color:#fff;padding:70px 0 80px}
+.bridge h2{font-family:var(--serif);font-size:48px;line-height:1.04}
+.bridge p{max-width:800px;margin-top:16px;color:rgba(255,255,255,.72);font-size:15px;line-height:1.65}
+.bridge strong{color:#fff}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .wrap,.topbar-inner{padding-left:28px;padding-right:28px}
+  .hero-grid,.editorial{grid-template-columns:1fr}
+  .hero-visual{justify-content:center;margin-top:25px}
+  .case-grid{grid-template-columns:1fr}
+  .case-side+.case-side{border-left:0;border-top:1px solid #e4e0f2}
+  .compare,.finding{grid-template-columns:1fr}
+  .process-grid{grid-template-columns:1fr}
+  .process-grid:before{display:none}
+  .script-grid{grid-template-columns:1fr}
+  .legend{justify-content:flex-start;margin:0 0 15px}
+  .pattern-table{overflow-x:auto}
+  .pattern-table-head,.pattern-row{min-width:920px}
+}
+@media(max-width:620px){
+  .topbar,.topbar-inner{height:58px}
+  .topbar-inner{padding:0 12px}
+  .phase-tab{font-size:10px;padding:8px 10px}
+  .wrap{padding-left:18px;padding-right:18px}
+  .hero{padding:46px 0}
+  .hero h1{font-size:44px}
+  .section h2{font-size:40px}
+  .flow{grid-template-columns:repeat(2,1fr);row-gap:18px}
+  .flow-item:not(:last-child):after{display:none}
+  .criterion-grid{grid-template-columns:1fr 1fr}
+  .topic-grid{grid-template-columns:1fr 1fr}
+  .interpretation-visual{grid-template-columns:1fr}
+  .arrow{transform:rotate(90deg);justify-self:center}
+  .analysis-row{grid-template-columns:1fr}
+  .analysis-arrow{justify-content:center;transform:rotate(90deg)}
+  .gold{grid-template-columns:1fr}
+  .gold-cell{border-left:0;border-top:1px solid #e4e3e8;padding:13px 0 0}
+  .script-block{padding:20px 16px}
+  .script-meta{margin-left:0}
+  .script-quote{font-size:15px}
+  .pattern-modal-dialog{padding:25px 20px}
+}
+
+/* CASE 03 — CORRECT ARCHITECTURE */
+.architecture{display:flex;flex-direction:column;gap:14px;margin-top:38px}
+.arch-stage{
+  display:grid;grid-template-columns:52px 1fr;gap:18px;
+  border:1px solid var(--border);border-radius:15px;background:#fff;
+  padding:25px 26px;position:relative;
+}
+.arch-stage:not(:last-child):after{
+  content:"↓";position:absolute;bottom:-22px;left:18px;
+  width:34px;height:34px;display:grid;place-items:center;
+  color:#695cff;background:var(--page);z-index:2;font-weight:800
+}
+.arch-index{
+  width:38px;height:38px;border-radius:50%;background:#695cff;color:#fff;
+  display:grid;place-items:center;font-size:11px;font-weight:850
+}
+.arch-content{min-width:0}
+.arch-kicker{
+  color:#695cff;font-size:10px;font-weight:850;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:7px
+}
+.arch-content h3{font-size:22px;line-height:1.22;margin-bottom:8px}
+.arch-content>p{color:var(--muted);font-size:12px;line-height:1.65;max-width:900px}
+.opportunity-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px
+}
+.opportunity-grid>div{
+  border:1px solid #e0e0e6;border-radius:10px;padding:13px;background:#fafafd
+}
+.opportunity-grid span{display:block;color:#695cff;font-size:17px;margin-bottom:7px}
+.opportunity-grid strong{display:block;font-size:10px}
+.opportunity-grid small{display:block;color:#777a89;font-size:9px;line-height:1.4;margin-top:4px}
+.opportunity-grid .opportunity-accent{background:#f0edff;border-color:#d8d0fb}
+.central-question{
+  margin-top:18px;padding:20px 22px;background:#f0edff;
+  border-left:3px solid #695cff;border-radius:0 12px 12px 0
+}
+.central-question span{
+  display:block;color:#695cff;font-size:9px;font-weight:850;
+  text-transform:uppercase;letter-spacing:.09em;margin-bottom:8px
+}
+.central-question strong{
+  display:block;font-family:var(--serif);font-size:25px;line-height:1.35;font-weight:600
+}
+.blocks-map{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:20px}
+.block-card{
+  display:grid;grid-template-columns:34px 1fr;gap:11px;align-items:start;
+  border:1px solid #dedee5;border-radius:11px;padding:13px;background:#fff
+}
+.block-number{
+  width:30px;height:30px;border-radius:50%;background:#eeeaff;color:#5140c5;
+  display:grid;place-items:center;font-size:10px;font-weight:850
+}
+.block-card strong{display:block;font-size:11px;line-height:1.35}
+.block-card small{display:block;color:#777a89;font-size:9px;line-height:1.4;margin-top:4px}
+.block-chain{
+  display:flex;flex-wrap:wrap;gap:7px;align-items:center;
+  margin-top:15px;padding:12px 14px;background:#f7f6fa;border-radius:9px;
+  color:#5f6170;font-size:9px;font-weight:750
+}
+.block-chain b{color:#695cff}
+.topic-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:20px}
+.topic-card{border:1px solid #e0e0e6;border-radius:11px;padding:15px;background:#fafafd}
+.topic-head span{
+  display:block;color:#695cff;font-size:8px;font-weight:850;letter-spacing:.08em;margin-bottom:5px
+}
+.topic-head strong{display:block;font-size:11px;line-height:1.35}
+.topic-card ul{list-style:none;margin-top:11px;display:flex;flex-wrap:wrap;gap:5px}
+.topic-card li{
+  padding:5px 7px;background:#fff;border:1px solid #e1e0e7;border-radius:999px;
+  color:#626575;font-size:8.5px
+}
+.topic-return{background:#f7f3ff;border-color:#ddd5f6}
+.topic-return em{display:block;color:#695cff;font-size:9px;line-height:1.4;margin-top:11px}
+.topic-return-note{
+  margin-top:12px;padding:13px 15px;background:#eeeaff;border-left:3px solid #695cff;
+  border-radius:0 9px 9px 0;color:#5b5d70;font-size:10px;line-height:1.5
+}
+.topic-return-note strong{color:#5140c5}
+.pattern-by-block{margin-top:20px;border:1px solid #e0e0e6;border-radius:11px;overflow:hidden}
+.pb-row{
+  display:grid;grid-template-columns:48px 1fr 1fr;gap:12px;
+  padding:13px 14px;border-top:1px solid #e6e5ea
+}
+.pb-row:first-child{border-top:0}
+.pb-block{
+  width:32px;height:32px;border-radius:50%;background:#eeeaff;color:#5140c5;
+  display:grid;place-items:center;font-size:9px;font-weight:850
+}
+.pb-row strong{display:block;font-size:10px;line-height:1.35}
+.pb-row small{display:block;color:#737685;font-size:9px;line-height:1.45;margin-top:3px}
+.pattern-result{
+  margin-top:14px;padding:14px 16px;background:#f0edff;border-left:3px solid #695cff;
+  border-radius:0 10px 10px 0
+}
+.pattern-result span{display:block;color:#695cff;font-size:8px;font-weight:850;letter-spacing:.09em;margin-bottom:5px}
+.pattern-result strong{display:block;font-family:var(--serif);font-size:16px;line-height:1.4}
+.continuity{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:8px;align-items:stretch;margin-top:20px}
+.continuity.second{margin-top:10px}
+.continuity-block{
+  padding:16px;border:1px solid #dedee5;border-radius:10px;background:#fff;
+  display:flex;flex-direction:column;justify-content:center
+}
+.continuity-block.next{background:#f7f3ff;border-color:#ddd5f6}
+.continuity-block span{color:#695cff;font-size:8px;font-weight:850;letter-spacing:.08em;margin-bottom:7px}
+.continuity-block strong{font-size:11px;line-height:1.4}
+.continuity-pattern{
+  padding:14px;border:1px dashed #bdb5e8;border-radius:10px;background:#faf9ff;
+  display:flex;flex-direction:column;justify-content:center;text-align:center
+}
+.continuity-pattern b{color:#5140c5;font-size:8px;letter-spacing:.08em}
+.continuity-pattern>span{color:#695cff;font-size:16px;line-height:1;margin:5px}
+.continuity-pattern em{font-family:var(--serif);font-size:12px;line-height:1.4;color:#4f5263}
+.transverse-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:20px}
+.transverse-card{padding:17px;border:1px solid #dedee5;border-radius:11px;background:#fff}
+.transverse-card.conditional{background:#fff9eb;border-color:#f0dfb7}
+.transverse-card>span{display:block;color:#695cff;font-size:18px;margin-bottom:8px}
+.transverse-card strong{display:block;font-size:11px}
+.transverse-card p{color:#626575;font-size:10px;line-height:1.5;margin-top:6px}
+.transverse-note{
+  margin-top:12px;padding:14px 16px;background:#fff3f3;border:1px solid #efd3d3;
+  border-radius:10px;color:#62565a;font-size:10px;line-height:1.5
+}
+.transverse-note strong{color:#a33b3b}
+.resolution-visual{
+  display:grid;grid-template-columns:1fr 30px 1fr 30px 1fr;gap:8px;align-items:center;margin-top:20px
+}
+.resolution-visual>div{
+  padding:16px;border:1px solid #dedee5;border-radius:10px;background:#fff
+}
+.resolution-visual>div.resolution-final{background:#f0edff;border-color:#d7cffb}
+.resolution-visual span{
+  display:block;color:#695cff;font-size:8px;font-weight:850;letter-spacing:.08em;margin-bottom:7px
+}
+.resolution-visual strong{display:block;font-family:var(--serif);font-size:15px;line-height:1.35}
+.resolution-visual>b{color:#695cff;text-align:center}
+.resolution-patterns{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+.resolution-patterns span{
+  padding:7px 10px;border-radius:999px;background:#eeeaff;color:#5140c5;
+  font-size:9px;font-weight:800
+}
+.resolution-note{
+  margin-top:13px;padding:14px 16px;background:#f7f7f9;border-top:1px solid #e5e4e9;
+  color:#5b5e70;font-size:10px;line-height:1.5
+}
+.resolution-note strong{color:#5140c5}
+
+@media(max-width:900px){
+  .opportunity-grid,.topic-grid,.transverse-grid{grid-template-columns:1fr 1fr}
+  .pb-row{grid-template-columns:44px 1fr}
+  .pb-row>div:last-child{grid-column:2}
+  .continuity{grid-template-columns:1fr}
+  .continuity-pattern>span{transform:none}
+  .resolution-visual{grid-template-columns:1fr}
+  .resolution-visual>b{transform:rotate(90deg)}
+}
+@media(max-width:620px){
+  .arch-stage{grid-template-columns:1fr;padding:20px}
+  .arch-index{margin-bottom:3px}
+  .opportunity-grid,.blocks-map,.topic-grid,.transverse-grid{grid-template-columns:1fr}
+  .block-chain{display:none}
+  .pb-row{grid-template-columns:1fr}
+  .pb-row>div:last-child{grid-column:auto}
+  .central-question strong{font-size:20px}
+}
+
+
+.pattern-link{
+  display:inline-block;margin-top:7px;border:0;background:none;padding:0;
+  color:#695cff;font:700 8px/1.2 Inter,system-ui,sans-serif;cursor:pointer
+}
+.pattern-link:hover{text-decoration:underline}
+.pattern-chip{
+  border:1px solid #d7cffb;background:#eeeaff;color:#5140c5;
+  padding:7px 10px;border-radius:999px;font:800 9px/1 Inter,system-ui,sans-serif;cursor:pointer
+}
+.pattern-chip:hover{background:#e5e0ff}
+
+
+.case-difference{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px
+}
+.case-difference>div{
+  padding:12px 14px;border:1px solid var(--border);border-radius:9px;background:#fff
+}
+.case-difference strong{
+  display:block;font-size:8px;letter-spacing:.08em;color:#695cff;margin-bottom:4px
+}
+.case-difference span{display:block;color:#626575;font-size:9px;line-height:1.4}
+.case-difference-current{background:#f0edff!important;border-color:#d7cffb!important}
+@media(max-width:620px){.case-difference{grid-template-columns:1fr}}
+
+
+/* === REFERENCE STRUCTURE: 01–08 TIMELINE === */
+.reference-timeline{
+  position:relative;
+  margin-top:34px;
+  padding-left:0;
+}
+.reference-timeline:before{
+  content:"";
+  position:absolute;
+  left:17px;
+  top:16px;
+  bottom:30px;
+  border-left:1px dashed #c9c9d2;
+}
+.reference-step{
+  display:grid;
+  grid-template-columns:42px minmax(280px, 390px) minmax(0, 1fr);
+  column-gap:16px;
+  align-items:start;
+  position:relative;
+  margin-bottom:34px;
+}
+.step-marker{
+  width:34px;height:34px;border-radius:50%;
+  background:#695cff;color:#fff;
+  display:grid;place-items:center;
+  font:800 10px/1 Inter,system-ui,sans-serif;
+  z-index:2;
+}
+.step-copy{
+  padding-top:4px;
+}
+.step-copy h3{
+  font-size:18px;line-height:1.25;margin:0 0 9px;
+}
+.step-copy p{
+  margin:0;color:var(--muted);
+  font-size:11px;line-height:1.65;
+}
+.step-panel{
+  border:1px solid #dedee6;
+  border-radius:12px;
+  background:#fff;
+  padding:17px 18px;
+  min-width:0;
+}
+.panel-label{
+  color:#11132a;
+  font:850 8px/1.2 Inter,system-ui,sans-serif;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+.question-panel{background:#fff4f3;border-color:#efd6d4}
+.blocks-panel{background:#f5f1ff;border-color:#dcd2f8}
+.patterns-panel{background:#fff9eb;border-color:#efdcae}
+.continuity-panel{background:#f2f7ff;border-color:#d3e0f5}
+.transverse-panel{background:#f1faf5;border-color:#cde4d6}
+.resolution-panel{background:#f7f2ff;border-color:#ddd3f6}
+.mini-cards{display:grid;gap:8px}
+.mini-cards.three{grid-template-columns:repeat(3,1fr)}
+.mini-cards>div{
+  border:1px solid #dedee6;border-radius:9px;padding:12px;background:#fff;
+}
+.mini-cards b,.content-grid b,.pattern-grid b,.transverse-grid b{
+  display:block;color:#695cff;font-size:7px;letter-spacing:.07em;margin-bottom:5px;
+}
+.mini-cards span{font-size:10px;line-height:1.35;color:#555866}
+.question-box{
+  padding:19px 15px;
+  text-align:center;
+  font-family:var(--serif);
+  font-size:22px;line-height:1.35;
+}
+.block-flow{
+  display:flex;align-items:stretch;gap:5px;min-width:0;
+}
+.flow-block,.flow-verdict{
+  flex:1;min-width:70px;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+}
+.flow-block b,.flow-verdict b{
+  width:29px;height:29px;border-radius:50%;
+  border:1px solid #695cff;color:#5140c5;
+  display:grid;place-items:center;
+  font-size:9px;margin-bottom:7px;
+}
+.flow-block span,.flow-verdict span{
+  font-size:8px;line-height:1.35;color:#4f5261;
+}
+.flow-block span{font-weight:700}
+.flow-verdict b{background:#695cff;color:#fff}
+.flow-verdict span{font-weight:700}
+.block-flow>i{
+  color:#695cff;font-style:normal;font-size:13px;align-self:center;
+}
+.content-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:7px;
+}
+.content-grid>div{
+  border:1px solid #dedee6;border-radius:8px;padding:10px;background:#fff;
+}
+.content-grid strong{
+  display:block;font-size:9px;line-height:1.3;margin-bottom:4px;
+}
+.content-grid span{
+  display:block;color:#666a79;font-size:8px;line-height:1.45;
+}
+.content-note,.panel-footnote{
+  margin-top:9px;padding:9px 10px;
+  border:1px solid #dedee6;border-radius:8px;
+  background:#fff;color:#626575;font-size:8px;line-height:1.45;
+}
+.content-note strong,.panel-footnote strong{color:#5140c5}
+.pattern-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:7px;
+}
+.pattern-grid>div{
+  border:1px solid #dedee6;border-radius:8px;padding:10px;background:#fff;
+}
+.pattern-grid strong{
+  display:block;font-size:9px;line-height:1.3;
+}
+.pattern-grid small{
+  display:block;color:#666a79;font-size:8px;line-height:1.4;margin-top:4px;
+}
+.pattern-link{
+  display:block;border:0;background:none;padding:6px 0 0;
+  color:#695cff;font:800 7px/1 Inter,system-ui,sans-serif;
+  cursor:pointer;text-align:left;
+}
+.pattern-link:hover{text-decoration:underline}
+.continuity-flow{
+  display:grid;
+  grid-template-columns:1fr 24px 1.35fr 24px 1fr;
+  gap:6px;align-items:stretch;
+}
+.continuity-flow>div{
+  border:1px solid #dedee6;border-radius:8px;padding:11px;background:#fff;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.continuity-flow>div>b{
+  display:block;color:#695cff;font-size:7px;letter-spacing:.06em;margin-bottom:5px;
+}
+.continuity-flow>div>strong{
+  font-size:9px;line-height:1.4;
+}
+.continuity-flow>span{
+  display:grid;place-items:center;color:#695cff;font-weight:800;
+}
+.continuity-pattern{
+  background:#f9f9ff!important;border-color:#d4cef1!important;
+}
+.continuity-pattern b{
+  color:#5140c5!important;
+}
+.continuity-pattern em{
+  display:block;font-family:var(--serif);font-size:10px;line-height:1.4;color:#525565;margin-top:6px;
+}
+.continuity-flow.second{margin-top:8px}
+.transverse-grid.reference{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:7px;
+}
+.transverse-grid.reference>div{
+  border:1px solid #dedee6;border-radius:8px;padding:11px;background:#fff;
+}
+.transverse-grid.reference>div.conditional{
+  background:#fff9eb;border-color:#eedcb8;
+}
+.transverse-grid.reference>div>b{
+  color:#111;font-size:17px;margin-bottom:7px;
+}
+.transverse-grid.reference strong{
+  display:block;font-size:9px;line-height:1.3;color:#202236;
+}
+.transverse-grid.reference small{
+  display:block;color:#666a79;font-size:8px;line-height:1.4;margin-top:5px;
+}
+.discarded-note{
+  margin-top:9px;padding:10px 11px;
+  border:1px solid #efd3d3;border-radius:8px;background:#fff4f4;
+  color:#62565a;font-size:8px;line-height:1.45;
+}
+.discarded-note strong{color:#a33b3b}
+.resolution-quote{
+  padding:16px 17px;background:#f0ebff;border:1px solid #d8cff7;border-radius:9px;
+  font-family:var(--serif);font-size:18px;line-height:1.4;
+}
+.resolution-path{
+  display:grid;grid-template-columns:1fr 20px 1fr 20px 1fr;
+  gap:6px;align-items:center;margin-top:10px;
+}
+.resolution-path>div{
+  border:1px solid #dedee6;border-radius:8px;padding:10px;background:#fff;
+}
+.resolution-path b{
+  display:block;color:#695cff;font-size:7px;letter-spacing:.06em;margin-bottom:5px;
+}
+.resolution-path span{display:block;font-size:9px;line-height:1.35}
+.resolution-path i{
+  text-align:center;color:#695cff;font-style:normal;font-weight:800;
+}
+.resolution-patterns{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.pattern-chip{
+  border:1px solid #d6cff4;background:#eee9ff;color:#5140c5;
+  padding:7px 9px;border-radius:999px;
+  font:800 8px/1 Inter,system-ui,sans-serif;cursor:pointer;
+}
+.pattern-chip:hover{background:#e3dcff}
+.resolution-note{
+  margin-top:9px;padding:10px 11px;border:1px solid #dedee6;border-radius:8px;
+  background:#fff;color:#626575;font-size:8px;line-height:1.45;
+}
+.resolution-note strong{color:#5140c5}
+.golden-rule{
+  display:grid;grid-template-columns:48px 1.1fr 1fr 1fr 1fr 1.25fr;
+  align-items:stretch;border:1px solid #dedee6;border-radius:12px;
+  background:#fff;overflow:hidden;margin-top:4px;
+}
+.golden-rule>div{
+  padding:15px 12px;border-left:1px solid #e1e0e6;
+}
+.golden-rule>div:first-child{border-left:0}
+.golden-mark{
+  display:grid;place-items:center;color:#695cff;font-size:19px;
+}
+.golden-title strong{
+  display:block;font-size:10px;line-height:1.35;
+}
+.golden-rule b{
+  display:block;font-size:8px;line-height:1.3;margin-bottom:4px;
+}
+.golden-rule span{
+  display:block;color:#666a79;font-size:7px;line-height:1.4;
+}
+.golden-last{background:#fafafd}
+@media(max-width:1100px){
+  .reference-step{grid-template-columns:38px minmax(230px,310px) minmax(0,1fr)}
+  .block-flow{flex-wrap:wrap}
+  .flow-block,.flow-verdict{min-width:85px}
+  .block-flow>i{display:none}
+  .content-grid{grid-template-columns:repeat(2,1fr)}
+  .pattern-grid{grid-template-columns:repeat(2,1fr)}
+  .transverse-grid.reference{grid-template-columns:repeat(2,1fr)}
+  .golden-rule{grid-template-columns:48px 1.2fr 1fr 1fr 1fr}
+  .golden-last{grid-column:2/-1}
+}
+@media(max-width:760px){
+  .reference-timeline:before{left:15px}
+  .reference-step{grid-template-columns:32px 1fr;gap:12px;margin-bottom:25px}
+  .step-panel{grid-column:2}
+  .step-copy{grid-column:2}
+  .step-marker{width:30px;height:30px;font-size:9px}
+  .mini-cards.three,.content-grid,.pattern-grid,.transverse-grid.reference{grid-template-columns:1fr}
+  .continuity-flow,.resolution-path{grid-template-columns:1fr}
+  .continuity-flow>span,.resolution-path>i{display:none}
+  .golden-rule{grid-template-columns:42px 1fr}
+  .golden-rule>div{border-left:0;border-top:1px solid #e1e0e6}
+  .golden-rule>div:nth-child(1),.golden-rule>div:nth-child(2){border-top:0}
+  .golden-rule>div:nth-child(n+3){grid-column:2}
+  .golden-last{grid-column:2!important}
+}
+
+</style>
+</head>
+
+<body>
+<div class="progress" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <nav class="phase-nav" aria-label="Fases">
+      <a class="phase-tab" href="index.html#fase-1">FASE 1 · INVESTIGACIÓN</a>
+      <a class="phase-tab" href="index.html#fase-2">FASE 2 · AUDITORÍA VERO</a>
+      <a class="phase-tab" href="fase-3-caso-1.html">FASE 3 · CASO 1 · APLICACIÓN</a>
+      <a class="phase-tab" href="fase-3-caso-2.html">FASE 3 · CASO 2 · APLICACIÓN</a>
+      <a class="phase-tab active" aria-current="page" href="fase-3-caso-3.html">FASE 3 · CASO 3 · APLICACIÓN</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">Fase 3 → Construcción del recorrido</div>
+        <h1>Cómo construimos<br>una <span>interpretación.</span></h1>
+        <p class="hero-desc">
+          En el tercer caso cambia nuevamente la experiencia:
+          ya no evaluamos un objeto ni comparamos dos versiones.
+          Construimos un recorrido que lleva al espectador desde
+          una lectura conocida de una obra hacia una interpretación
+          más compleja de lo que está viendo.
+        </p>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-art">
+          <img src="https://i.postimg.cc/KjcpnBQS/Caso-3.webp"
+               alt="Ilustración editorial del Caso 03: Cumbres borrascosas">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span class="marquee-item">DE HALLAZGOS A DECISIONES <span class="dot"></span></span>
+    <span class="marquee-item">UNA INTERPRETACIÓN SE CONSTRUYE <span class="dot"></span></span>
+    <span class="marquee-item">CADA EVIDENCIA DEBE CAMBIAR LO QUE ENTENDEMOS <span class="dot"></span></span>
+    <span class="marquee-item">DE HALLAZGOS A DECISIONES <span class="dot"></span></span>
+    <span class="marquee-item">UNA INTERPRETACIÓN SE CONSTRUYE <span class="dot"></span></span>
+    <span class="marquee-item">CADA EVIDENCIA DEBE CAMBIAR LO QUE ENTENDEMOS <span class="dot"></span></span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="wrap">
+    <div class="kicker">Caso 03 · Cumbres borrascosas</div>
+    <h2>Una obra.<br>Una lectura conocida.</h2>
+    <p class="lead">
+      En este caso Vero parte de una posición fuerte:
+      <em>Cumbres borrascosas</em> no es, para ella, simplemente
+      una historia de amor. La oportunidad consiste en convertir
+      esa posición en una experiencia que permita al espectador
+      comprobarla, cuestionarla y construir una comprensión más
+      compleja de la obra.
+    </p>
+
+    <div class="case-grid">
+      <div class="case-side">
+        <div class="label">La oportunidad</div>
+        <div class="pills">
+          <span class="pill">Obra</span>
+          <span class="pill">Interpretar</span>
+          <span class="pill">Cumbres borrascosas</span>
+        </div>
+      </div>
+      <div class="case-side">
+        <div class="label">Pregunta central</div>
+        <div class="big-question">
+          ¿Qué estamos dejando fuera cuando leemos
+          Cumbres borrascosas principalmente como una historia de amor?
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="kicker">Selección editorial</div>
+    <h2>Antes del recorrido,<br>definimos la promesa.</h2>
+    <p class="lead">
+      En este caso la promesa no necesita anunciar una respuesta
+      cerrada. Necesita comunicar que existe una lectura reconocible
+      de la obra y que el video va a ponerla a prueba.
+    </p>
+
+    <div class="editorial">
+      <div class="thumb-card">
+        <img src="https://i.postimg.cc/t49QBnTX/Caso-03.webp"
+             alt="Miniatura seleccionada para el Caso 03">
+      </div>
+      <div class="editorial-copy">
+        <h3>Miniatura seleccionada</h3>
+        <p>
+          La propuesta visual debe hacer reconocible la obra,
+          pero introducir inmediatamente una tensión sobre la
+          interpretación que normalmente hacemos de ella.
+        </p>
+        <div class="editorial-title">
+          <span>Concepto editorial</span>
+          <strong>Cumbres borrascosas no es una historia de amor.</strong>
+        </div>
+        <p style="margin-top:18px">
+          La formulación funciona como una posición que el video
+          tendrá que demostrar y desarrollar, no como una conclusión
+          que deba darse por cierta desde el primer segundo.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="kicker">El cambio de experiencia</div>
+    <h2>Los mismos patrones.<br>Un mecanismo diferente.</h2>
+
+    <div class="compare">
+      <div class="compare-card">
+        <h3>Caso 01 · Quicksilver</h3>
+        <strong>Evaluar un objeto.</strong>
+        <p>El recorrido construye criterio progresivamente hasta llegar a un veredicto.</p>
+      </div>
+      <div class="compare-card">
+        <h3>Caso 02 · Hartung</h3>
+        <strong>Comparar dos versiones.</strong>
+        <p>El recorrido mantiene abierto el balance entre dos representaciones de una misma historia.</p>
+      </div>
+      <div class="compare-card accent">
+        <h3>Caso 03 · Cumbres borrascosas</h3>
+        <strong>Construir una interpretación.</strong>
+        <p>
+          El recorrido parte de una lectura reconocible, encuentra lo que
+          explica y lo que deja fuera, y conduce hacia una interpretación
+          con mayor poder explicativo.
+        </p>
+      </div>
+    </div>
+
+    <div class="principle">
+      El cambio de experiencia no elimina los patrones.
+      <strong>Cambia la decisión que cada patrón debe producir.</strong>
+    </div>
+  </div>
+</section>
+
+<section class="section recorrido-section" id="construccion-recorrido">
+  <div class="wrap">
+    <div class="process-head">
+      <div class="kicker">Cómo se construye el recorrido</div>
+      <h2>Primero resolvemos qué debe descubrir el espectador.</h2>
+      <p class="lead">
+        Después decidimos qué contenido necesita cada bloque y solo entonces seleccionamos
+        las decisiones de diseño que hacen que ese contenido funcione.
+      </p>
+      <div class="principle">
+        <strong>La estructura es la misma. El problema que resolvemos, no.</strong>
+        Los tres casos siguen la misma lógica de construcción, pero cada uno exige resolver
+        una necesidad diferente antes de llegar al diseño.
+        <br><br>
+        <strong>Quicksilver</strong> construye un recorrido para llegar a un veredicto.
+        <strong>Hartung</strong> necesita primero establecer qué criterios permiten comparar
+        las dos versiones. <strong>Cumbres borrascosas</strong> construye una reinterpretación
+        progresiva: parte de una lectura que el espectador ya reconoce, encuentra lo que esa
+        lectura no consigue explicar y construye otra que permita comprender más.
+        <br><br>
+        <strong>Por eso los tres recorridos no tienen la misma forma.</strong>
+        La estructura de construcción se mantiene; lo que cambia es aquello que el usuario
+        necesita descubrir para poder llegar a la respuesta.
+      </div>
+    </div>
+
+    <div class="reference-timeline">
+
+      <!-- 01 -->
+      <article class="reference-step">
+        <div class="step-marker">01</div>
+        <div class="step-copy">
+          <h3>Tenemos una oportunidad</h3>
+          <p>
+            Partimos de una obra conocida y de una interpretación que el público ya reconoce.
+            La oportunidad no está en explicar la novela desde cero, sino en poner a prueba
+            qué consigue explicar esa lectura y qué deja fuera.
+          </p>
+        </div>
+        <div class="step-panel opportunity-panel">
+          <div class="panel-label">OPORTUNIDAD</div>
+          <div class="mini-cards three">
+            <div><b>OBRA</b><span><em>Cumbres borrascosas</em></span></div>
+            <div><b>LECTURA INSTALADA</b><span>Historia de amor trágica</span></div>
+            <div><b>OPORTUNIDAD</b><span>Poner a prueba qué deja fuera esa lectura</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 02 -->
+      <article class="reference-step">
+        <div class="step-marker">02</div>
+        <div class="step-copy">
+          <h3>Convertimos la oportunidad en una pregunta central</h3>
+          <p>
+            La pregunta evita que el video se convierta en una opinión sobre si la lectura
+            romántica es correcta o incorrecta. Organiza la investigación y define qué debe
+            descubrir el espectador.
+          </p>
+        </div>
+        <div class="step-panel question-panel">
+          <div class="panel-label">PREGUNTA CENTRAL</div>
+          <div class="question-box">
+            <em>¿Qué estamos dejando fuera cuando leemos <em>Cumbres borrascosas</em> principalmente como una historia de amor?</em>
+          </div>
+        </div>
+      </article>
+
+      <!-- 03 -->
+      <article class="reference-step">
+        <div class="step-marker">03</div>
+        <div class="step-copy">
+          <h3>Determinamos qué necesitamos resolver</h3>
+          <p>
+            Descomponemos la pregunta central en las preguntas que el espectador necesita
+            resolver para pasar de una lectura instalada a una interpretación más completa.
+          </p>
+        </div>
+        <div class="step-panel blocks-panel">
+          <div class="panel-label">BLOQUES DEL RECORRIDO</div>
+          <div class="block-flow">
+            <div class="flow-block"><b>1</b><span>¿Por qué resulta tan fácil leerla como una historia de amor?</span></div>
+            <i>→</i>
+            <div class="flow-block"><b>2</b><span>¿Qué elementos sostienen esa lectura?</span></div>
+            <i>→</i>
+            <div class="flow-block"><b>3</b><span>¿Qué no consigue explicar esa lectura?</span></div>
+            <i>→</i>
+            <div class="flow-block"><b>4</b><span>¿Qué otra lectura explica esos elementos?</span></div>
+            <i>→</i>
+            <div class="flow-block"><b>5</b><span>¿Qué cambia con esta lectura?</span></div>
+            <i>→</i>
+            <div class="flow-block"><b>6</b><span>¿Qué entendemos ahora?</span></div>
+            <i>→</i>
+            <div class="flow-verdict"><b>☆</b><span>RESOLUCIÓN<br><strong>La lectura romántica existe, pero no explica todo.</strong></span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 04 -->
+      <article class="reference-step">
+        <div class="step-marker">04</div>
+        <div class="step-copy">
+          <h3>Dentro de cada bloque, seleccionamos el contenido</h3>
+          <p>
+            Los temas nos dicen de qué necesitamos hablar para conseguir el objetivo de cada
+            bloque. Seleccionamos evidencia, argumentos y elementos concretos; no todo lo que
+            sabemos sobre la novela.
+          </p>
+        </div>
+        <div class="step-panel content-panel">
+          <div class="panel-label">CONTENIDO QUE ALIMENTA CADA BLOQUE</div>
+          <div class="content-grid">
+            <div><b>BLOQUE 1</b><strong>La lectura romántica</strong><span>Amor trágico · Catherine + Heathcliff · “Yo soy Heathcliff” · romance eterno</span></div>
+            <div><b>BLOQUE 2</b><strong>La evidencia que la sostiene</strong><span>Infancia compartida · identidad fusionada · muerte · entierro · desentierro</span></div>
+            <div><b>BLOQUE 3</b><strong>Lo que deja fuera</strong><span>Isabella · matrimonio · propiedad · Linton · Hareton · educación</span></div>
+            <div><b>BLOQUE 4</b><strong>La explicación alternativa</strong><span>Origen social · degradación · clase · decisión de Catherine · estatus · propiedades</span></div>
+            <div><b>BLOQUE 5</b><strong>La reinterpretación</strong><span>Entierro ↻ · Isabella ↻ · Linton ↻ · Hareton ↻ · ciclo · exclusión</span></div>
+            <div><b>BLOQUE 6</b><strong>La comprensión final</strong><span>Amor · clase · poder · ciclo intergeneracional · educación · ruptura</span></div>
+          </div>
+          <div class="content-note">
+            <strong>↻ Los temas pueden regresar.</strong>
+            Hareton aparece primero como víctima del ciclo y después como quien ayuda a romperlo.
+            El tema permanece; cambia la función que cumple dentro del recorrido.
+          </div>
+        </div>
+      </article>
+
+      <!-- 05 -->
+      <article class="reference-step">
+        <div class="step-marker">05</div>
+        <div class="step-copy">
+          <h3>Organizamos la información dentro del bloque</h3>
+          <p>
+            <strong>Aquí aplicamos los patrones de diseño.</strong>
+            No para “llenar” el guion, sino para decidir cómo debe funcionar cada contenido
+            dentro del bloque.
+          </p>
+        </div>
+        <div class="step-panel patterns-panel">
+          <div class="panel-label">PATRONES APLICADOS · CASO 03</div>
+          <div class="pattern-grid">
+            <div><b>BLOQUE 1</b><strong>01 · Promesa inicial</strong><small>Reconoce la lectura instalada y abre la tensión.</small><button type="button" class="pattern-link" data-pattern="01">Ver aplicación →</button></div>
+            <div><b>BLOQUE 1</b><strong>02 · Pregunta central</strong><small>Convierte la oportunidad en la pregunta que guía el recorrido.</small><button type="button" class="pattern-link" data-pattern="02">Ver aplicación →</button></div>
+            <div><b>BLOQUE 2</b><strong>09 · Evidencia y ejemplificación</strong><small>Hace concretos los elementos que sostienen la lectura romántica.</small><button type="button" class="pattern-link" data-pattern="09">Ver aplicación →</button></div>
+            <div><b>BLOQUE 2</b><strong>17 · Economía narrativa</strong><small>Evita convertir el bloque en un resumen de la relación.</small><button type="button" class="pattern-link" data-pattern="17">Ver aplicación →</button></div>
+            <div><b>BLOQUE 3</b><strong>09 · Evidencia y ejemplificación</strong><small>Convierte la acusación en hechos observables.</small><button type="button" class="pattern-link" data-pattern="09">Ver aplicación →</button></div>
+            <div><b>BLOQUE 3</b><strong>07 · Cambio de estado</strong><small>Convierte la evidencia incómoda en una insuficiencia interpretativa.</small><button type="button" class="pattern-link" data-pattern="07">Ver aplicación →</button></div>
+            <div><b>BLOQUE 4</b><strong>08 · Construcción de comprensión</strong><small>Conecta origen → degradación → decisión → regreso → propiedades.</small><button type="button" class="pattern-link" data-pattern="08">Ver aplicación →</button></div>
+            <div><b>BLOQUE 4</b><strong>03 · Revelación progresiva</strong><small>Reserva la pieza que reencuadra lo visto.</small><button type="button" class="pattern-link" data-pattern="03">Ver aplicación →</button></div>
+            <div><b>BLOQUE 5</b><strong>16 · Valor creciente</strong><small>La evidencia anterior alcanza aquí su mayor peso interpretativo.</small><button type="button" class="pattern-link" data-pattern="16">Ver aplicación →</button></div>
+            <div><b>BLOQUE 5</b><strong>07 · Cambio de estado</strong><small>La nueva lectura explica mejor lo que parecía contradictorio.</small><button type="button" class="pattern-link" data-pattern="07">Ver aplicación →</button></div>
+            <div><b>BLOQUE 6</b><strong>06 · Cierre transformador</strong><small>Resuelve sin sustituir una simplificación por otra.</small><button type="button" class="pattern-link" data-pattern="06">Ver aplicación →</button></div>
+            <div><b>BLOQUE 6</b><strong>07 · Cambio de estado</strong><small>Consolida la transformación interpretativa.</small><button type="button" class="pattern-link" data-pattern="07">Ver aplicación →</button></div>
+          </div>
+          <div class="panel-footnote">
+            <strong>¿Qué hacen aquí los patrones?</strong>
+            Transforman el contenido seleccionado para que el espectador pueda observarlo,
+            comprenderlo y cambiar de interpretación.
+          </div>
+        </div>
+      </article>
+
+      <!-- 06 -->
+      <article class="reference-step">
+        <div class="step-marker">06</div>
+        <div class="step-copy">
+          <h3>Conectamos un bloque con otro</h3>
+          <p>
+            <strong>Aquí aplicamos patrones de continuidad.</strong>
+            Diseñamos la transición para que la siguiente pieza sea necesaria, no simplemente
+            consecutiva.
+          </p>
+        </div>
+        <div class="step-panel continuity-panel">
+          <div class="panel-label">PATRONES ENTRE BLOQUES</div>
+          <div class="continuity-flow">
+            <div><b>BLOQUE 2</b><strong>La lectura romántica tiene evidencia real.</strong></div>
+            <span class="continuity-arrow">→</span>
+            <div class="continuity-pattern"><b>05 · Cadena de expectativas</b><button type="button" class="pattern-link" data-pattern="05">Ver aplicación →</button><em>“Pero si esto es realmente amor... ¿por qué nada de lo que rodea a esta relación se comporta como amor?”</em></div>
+            <span class="continuity-arrow">→</span>
+            <div><b>BLOQUE 3</b><strong>¿Qué no consigue explicar esa lectura?</strong></div>
+          </div>
+          <div class="continuity-flow second">
+            <div><b>BLOQUE 3</b><strong>La lectura romántica deja elementos sin explicar.</strong></div>
+            <span class="continuity-arrow">→</span>
+            <div class="continuity-pattern"><b>05 · Cadena de expectativas</b><button type="button" class="pattern-link" data-pattern="05">Ver aplicación →</button><em>“Entonces, si no se está comportando como alguien enamorado... ¿qué es exactamente lo que estamos viendo?”</em></div>
+            <span class="continuity-arrow">→</span>
+            <div><b>BLOQUE 4</b><strong>¿Qué otra lectura explica esos elementos?</strong></div>
+          </div>
+          <div class="panel-footnote">
+            <strong>¿Qué hace el patrón?</strong>
+            Gestiona la expectativa que queda abierta al terminar un bloque. La frase no cierra:
+            abre la necesidad del siguiente descubrimiento.
+          </div>
+        </div>
+      </article>
+
+      <!-- 07 -->
+      <article class="reference-step">
+        <div class="step-marker">07</div>
+        <div class="step-copy">
+          <h3>Revisamos todo el recorrido</h3>
+          <p>
+            <strong>Aquí aplicamos patrones transversales.</strong>
+            Evaluamos el sistema completo y comprobamos dónde esos patrones aportan valor
+            a más de un bloque.
+          </p>
+        </div>
+        <div class="step-panel transverse-panel">
+          <div class="panel-label">PATRONES TRANSVERSALES · TODO EL RECORRIDO</div>
+          <div class="transverse-grid reference">
+            <div><b>◷</b><strong>17 · Economía</strong><small>Filtra qué información de la novela realmente necesita entrar.</small><button type="button" class="pattern-link" data-pattern="17">Ver aplicación →</button></div>
+            <div><b>↗</b><strong>07 · Cambio de estado</strong><small>Atraviesa varios momentos porque la transformación interpretativa es el motor del caso.</small><button type="button" class="pattern-link" data-pattern="07">Ver aplicación →</button></div>
+            <div><b>☆</b><strong>16 · Valor creciente</strong><small>La evidencia aumenta de valor al ser reinterpretada.</small><button type="button" class="pattern-link" data-pattern="16">Ver aplicación →</button></div>
+            <div class="conditional"><b>▱</b><strong>14 · Recursos visuales</strong><small>Condicional: árbol genealógico si facilita relaciones de familia, herencia y poder.</small><button type="button" class="pattern-link" data-pattern="14">Ver aplicación →</button></div>
+          </div>
+          <div class="discarded-note">
+            <strong>19 · Del conocimiento a la acción — descartado.</strong>
+            No existe una acción necesaria al final de esta experiencia. Forzar “ahora ve y relee
+            Cumbres borrascosas” sería artificial.
+          </div>
+          <div class="panel-footnote">
+            <strong>¿Qué significa “transversal”?</strong>
+            Estos patrones no pertenecen a un único bloque: funcionan como criterios que pueden
+            repetirse y afectar el recorrido completo.
+          </div>
+        </div>
+      </article>
+
+      <!-- 08 -->
+      <article class="reference-step">
+        <div class="step-marker">08</div>
+        <div class="step-copy">
+          <h3>Diseñamos la resolución</h3>
+          <p>
+            <strong>Aquí aplicamos los patrones de cierre y resolución.</strong>
+            La respuesta final debe cerrar la pregunta y transformar la comprensión, sin
+            convertir la interpretación inicial en una simple respuesta correcta/incorrecta.
+          </p>
+        </div>
+        <div class="step-panel resolution-panel">
+          <div class="panel-label">RESOLUCIÓN</div>
+          <div class="resolution-quote">
+            <em>La lectura romántica existe y tiene evidencia real, pero no consigue explicar
+            todo lo que ocurre. La lectura de clase, poder y ciclo intergeneracional permite
+            comprender más.</em>
+          </div>
+          <div class="resolution-path">
+            <div><b>INICIO</b><span>“Es una historia de amor.”</span></div>
+            <i>→</i>
+            <div><b>RECORRIDO</b><span>“Hay elementos que esa lectura no explica.”</span></div>
+            <i>→</i>
+            <div><b>RESOLUCIÓN</b><span>“Ahora puedo leer la obra desde un marco más completo.”</span></div>
+          </div>
+          <div class="resolution-patterns">
+            <button type="button" class="pattern-chip" data-pattern="06">06 · Cierre transformador</button>
+            <button type="button" class="pattern-chip" data-pattern="07">07 · Cambio de estado</button>
+          </div>
+          <div class="resolution-note">
+            <strong>Hareton cierra el arco.</strong>
+            Primero aparece como víctima del mecanismo que Heathcliff repite. Al final,
+            junto con Cathy, participa en su ruptura. La misma evidencia vuelve, pero ahora
+            demuestra que el ciclo puede deshacerse.
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="golden-rule">
+      <div class="golden-mark">☆</div>
+      <div class="golden-title"><strong>Regla de oro<br>para todo el sistema</strong></div>
+      <div><b>Los temas responden</b><span>¿De qué necesito hablar?</span></div>
+      <div><b>Los bloques responden</b><span>¿Para qué necesito hablar de esto aquí?</span></div>
+      <div><b>Los patrones responden</b><span>¿Qué decisión de diseño necesito tomar para que esta parte funcione?</span></div>
+      <div class="golden-last"><span>No son excluyentes: un bloque puede contener varios temas y varios patrones pueden intervenir en un mismo bloque.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section script-section" id="guion">
+  <div class="section-kicker">GUION · CASO 03</div>
+  <h2>Del recorrido construido al guion</h2>
+  <p class="section-intro">
+    El guion nace después de la arquitectura. Cada bloque tiene una función, cada tema
+    tiene un motivo para estar ahí y cada patrón responde a una decisión concreta.
+    La secuencia completa está diseñada para transformar una interpretación, no para
+    entregar una opinión desde el principio.
+  </p>
+
+  <div class="script-rule"><strong>PREGUNTA CENTRAL</strong><span>¿Qué estamos dejando fuera cuando leemos <em>Cumbres borrascosas</em> principalmente como una historia de amor?</span></div>
+  <div class="script-rule"><strong>TRANSFORMACIÓN</strong><span>“Es una historia de amor.” → “Entiendo por qué parece serlo.” → “Hay elementos que no explica.” → “Necesito otro marco.” → “Esta interpretación explica más.” → “Ahora puedo leer la obra de otra manera.”</span></div>
+
+  <div class="script-block">
+    <div class="script-block-head"><span class="script-num">01</span><div><span class="script-time">0:00–1:30</span><h3>¿Por qué resulta tan fácil leerla como una historia de amor?</h3></div></div>
+    <div class="script-meta"><b>PATRONES</b> 01 · Promesa inicial + 02 · Pregunta central</div>
+    <div class="script-grid">
+      <div><h4>FUNCIÓN DEL BLOQUE</h4><p>Reconocer la lectura romántica como una interpretación instalada y comprensible, sin presentarla todavía como falsa.</p></div>
+      <div><h4>CONTENIDO SELECCIONADO</h4><p>Amor trágico, Catherine y Heathcliff, “Yo soy Heathcliff”, permanencia del vínculo y mito del romance eterno.</p></div>
+    </div>
+    <div class="script-quote">“Cumbres borrascosas es, para muchísima gente, LA historia de amor trágico por excelencia. Amor que sobrevive a la muerte, que sobrevive a la separación, que sobrevive a todo. Catherine dice la frase que todo el mundo cita: ‘Yo soy Heathcliff.’ Y honestamente, es fácil entender por qué varias generaciones de lectores —y varias adaptaciones de cine— la vendieron así.<br><br>Pero cuando uno mira con cuidado lo que realmente pasa entre estos personajes, hay algo que esa lectura no logra explicar. Y eso es lo que quiero poner a prueba hoy: <b>¿qué estamos dejando fuera cuando leemos Cumbres borrascosas principalmente como una historia de amor?</b>”</div>
+    <div class="script-output"><b>CAMBIO DE ESTADO</b> Al entrar: “Es la típica historia de amor trágico.” Al salir: “Existe una pregunta legítima sobre qué se nos queda fuera de esa lectura.”</div>
+  </div>
+
+  <div class="script-block">
+    <div class="script-block-head"><span class="script-num">02</span><div><span class="script-time">1:30–3:30</span><h3>¿Qué elementos sostienen la lectura romántica?</h3></div></div>
+    <div class="script-meta"><b>PATRONES</b> 09 · Evidencia y ejemplificación + 17 · Economía narrativa</div>
+    <div class="script-grid">
+      <div><h4>FUNCIÓN DEL BLOQUE</h4><p>Demostrar que la interpretación romántica tiene evidencia real y merece ser tomada en serio antes de cuestionarla.</p></div>
+      <div><h4>CONTENIDO SELECCIONADO</h4><p>Infancia compartida, identidad fusionada, “Yo soy Heathcliff”, muerte, entierro y desentierro del ataúd.</p></div>
+    </div>
+    <div class="script-quote">“Primero, démosle su crédito a esta lectura, porque no está construida sobre nada.<br><br>Catherine y Heathcliff crecen juntos en los páramos, prácticamente como una sola persona antes de que el mundo los separe. Cuando Catherine dice ‘yo soy Heathcliff’, no es una metáfora romántica cualquiera — está describiendo una identidad fusionada, algo que va más allá de estar enamorada de alguien.<br><br>Y después de la muerte de Catherine, Heathcliff no la deja ir. Literalmente. Pide que lo entierren junto a ella, llega a desenterrar su ataúd. Ese tipo de imágenes son las que construyeron el mito del romance eterno.”</div>
+    <div class="script-output"><b>DECISIÓN</b> Economía narrativa funciona como filtro: no resumimos toda la relación; solo entran los momentos que realmente sostienen la lectura romántica.</div>
+  </div>
+
+  <div class="script-transition">
+    <b>TRANSICIÓN A BLOQUE 3 · 05 · CADENA DE EXPECTATIVAS</b>
+    <span>La transición nace directamente de la evidencia anterior.</span>
+    <p>“Pero si esto es realmente amor... ¿por qué nada de lo que rodea a esta relación se comporta como amor?”</p>
+  </div>
+
+  <div class="script-block">
+    <div class="script-block-head"><span class="script-num">03</span><div><span class="script-time">3:30–6:30</span><h3>¿Qué no consigue explicar esa lectura?</h3></div></div>
+    <div class="script-meta"><b>PATRONES</b> 09 · Evidencia y ejemplificación + 07 · Cambio de estado</div>
+    <div class="script-grid">
+      <div><h4>FUNCIÓN DEL BLOQUE</h4><p>Introducir la contradicción que convierte la lectura romántica en una explicación insuficiente.</p></div>
+      <div><h4>CONTENIDO SELECCIONADO</h4><p>Isabella, matrimonio como instrumento, propiedad, Linton, control de Thrushcross Grange, Hareton y negación deliberada de educación.</p></div>
+    </div>
+    <div class="script-quote">“Heathcliff se casa con Isabella Linton. No porque la ame — la propia novela lo deja clarísimo — sino porque casarse con ella le da un reclamo legal sobre la propiedad de los Linton. La trata con desprecio abierto desde la noche de bodas.<br><br>Tiene un hijo, Linton, enfermizo y débil, y lo usa como pieza para forzar un matrimonio con la joven Cathy —la hija de Catherine— porque eso le asegura el control de Thrushcross Grange.<br><br>Y a Hareton, el hijo de Hindley, lo cría deliberadamente sin educación, negándole todo lo que a él mismo le negaron de joven. No es un accidente ni un efecto secundario de su dolor. Es el mismo patrón de humillación que él sufrió, repetido con precisión quirúrgica sobre la siguiente generación.”</div>
+    <div class="script-output"><b>CAMBIO DE ESTADO</b> Al entrar: “La lectura romántica se sostiene con evidencia real.” Al salir: “Hay comportamientos que esa lectura no logra explicar — necesito otro marco.” Hareton entra aquí como víctima del ciclo y volverá después con una función distinta.</div>
+  </div>
+
+  <div class="script-transition">
+    <b>TRANSICIÓN A BLOQUE 4 · 05 · CADENA DE EXPECTATIVAS</b>
+    <span>La contradicción genera la necesidad de una explicación.</span>
+    <p>“Entonces, si no se está comportando como alguien enamorado... ¿qué es exactamente lo que estamos viendo?”</p>
+  </div>
+
+  <div class="script-block">
+    <div class="script-block-head"><span class="script-num">04</span><div><span class="script-time">6:30–9:00</span><h3>¿Qué otra lectura explica esos elementos?</h3></div></div>
+    <div class="script-meta"><b>PATRONES</b> 08 · Construcción de comprensión + 03 · Revelación progresiva</div>
+    <div class="script-grid">
+      <div><h4>FUNCIÓN DEL BLOQUE</h4><p>Construir una hipótesis alternativa que explique los elementos que la lectura romántica dejó abiertos.</p></div>
+      <div><h4>CONTENIDO SELECCIONADO</h4><p>Origen social de Heathcliff → degradación → decisión de Catherine → regreso → adquisición de Cumbres y Thrushcross Grange.</p></div>
+    </div>
+    <div class="script-quote">“Hay que retroceder al principio. Heathcliff llega a Cumbres borrascosas como huérfano, adoptado por el señor Earnshaw. Y en cuanto Earnshaw muere, Hindley —su hijo— lo degrada. Lo saca de la familia, lo convierte prácticamente en sirviente, le niega educación.<br><br>Catherine, mientras tanto, elige casarse con Edgar Linton. Y ella misma lo dice sin rodeos: sería ‘degradante’ casarse con Heathcliff ahora que él no tiene estatus ni fortuna. No dice que no lo ame. Dice que amarlo no alcanza frente a lo que significa socialmente casarse con él.<br><br>Heathcliff se va. Y cuando vuelve, rico y con una fortuna que nadie explica del todo, no vuelve a buscar el amor que perdió. Vuelve a comprar, matrimonio por matrimonio, deuda por deuda, las dos propiedades que alguna vez lo trataron como propiedad a él: Cumbres borrascosas y Thrushcross Grange.”</div>
+    <div class="script-output"><b>DECISIÓN</b> Construcción de comprensión conecta las piezas; revelación progresiva guarda la frase “degradante casarse con Heathcliff” para este punto porque reencuadra lo visto anteriormente.</div>
+  </div>
+
+  <div class="script-block">
+    <div class="script-block-head"><span class="script-num">05</span><div><span class="script-time">9:00–11:00</span><h3>¿Qué cambia con esta lectura?</h3></div></div>
+    <div class="script-meta"><b>PATRONES</b> 16 · Valor creciente + 07 · Cambio de estado</div>
+    <div class="script-grid">
+      <div><h4>FUNCIÓN DEL BLOQUE</h4><p>Aplicar la nueva interpretación sobre evidencia anterior y comprobar qué consigue explicar.</p></div>
+      <div><h4>CONTENIDO SELECCIONADO</h4><p>Entierro, Isabella, Linton y Hareton regresan. Ahora ya no prueban contradicción: muestran el ciclo.</p></div>
+    </div>
+    <div class="script-quote">“Con esto en mente, mira otra vez la escena del entierro. Heathcliff no solo está de duelo por Catherine. Está de duelo por la única persona que lo vio como igual antes de que el sistema de clases de esta novela decidiera que él no merecía estatus, propiedad ni amor con reciprocidad social.<br><br>Y su crueldad hacia Isabella, hacia Linton, hacia Hareton, deja de ser ‘el dolor lo volvió cruel’ de forma vaga. Es exactamente el mismo mecanismo que lo destruyó a él, aplicado ahora por él mismo, sobre la siguiente generación. Es un ciclo, no una tragedia romántica aislada.”</div>
+    <div class="script-output"><b>DECISIÓN</b> Este bloque no introduce evidencia nueva. Reutiliza deliberadamente evidencia de los bloques anteriores y le da un nuevo significado. Por eso alcanza el mayor peso interpretativo del recorrido.</div>
+  </div>
+
+  <div class="script-block">
+    <div class="script-block-head"><span class="script-num">06</span><div><span class="script-time">11:00–13:00</span><h3>¿Qué entendemos ahora? · Cierre transformador</h3></div></div>
+    <div class="script-meta"><b>PATRONES</b> 06 · Cierre transformador + 07 · Cambio de estado</div>
+    <div class="script-grid">
+      <div><h4>FUNCIÓN DEL BLOQUE</h4><p>Resolver sin reemplazar una simplificación por otra. La lectura romántica permanece, pero deja de ser suficiente como explicación total.</p></div>
+      <div><h4>CONTENIDO SELECCIONADO</h4><p>Amor, exclusión de clase, poder, ciclo intergeneracional, Hareton, Cathy, educación y ruptura del ciclo.</p></div>
+    </div>
+    <div class="script-quote">“No estoy diciendo que la lectura romántica sea falsa. Catherine y Heathcliff sí tienen algo que se parece a un amor fusional, real, intenso. Pero leer la novela SOLO desde ese amor deja fuera la mitad del libro: cómo la exclusión de clase deforma a alguien hasta convertirlo en el mismo sistema que lo destruyó.<br><br>Y hay algo más: el final de la novela no lo resuelve Heathcliff. Lo resuelven Hareton y la joven Cathy —la siguiente generación— cuando ella le enseña a leer. ¿Se acuerdan de Hareton, al que Heathcliff le negó la educación a propósito, para repetir lo que le habían hecho a él? Es el mismo Hareton. Solo que esta vez alguien decide romper el patrón en vez de heredarlo. La historia que sana el ciclo no es una historia de amor romántico. Es una historia sobre deshacer, generación tras generación, lo que la crueldad y la exclusión social dejaron atrás.”</div>
+    <div class="script-output"><b>CAMBIO DE ESTADO</b> Al entrar: “La lectura de poder/clase explica más que la romántica.” Al salir: “Ambas lecturas coexisten, pero una tiene mayor poder explicativo — y sé exactamente por qué, con evidencia, no por intuición.”</div>
+  </div>
+
+  <div class="script-layer">
+    <div class="script-layer-head">CAPA TRANSVERSAL · 17 · ECONOMÍA NARRATIVA</div>
+    <p>
+      La estructura narrativa compleja de la novela —narrador dentro de narrador, dos generaciones,
+      cronología no lineal— no necesita ser explicada. La pregunta de corte es:
+      ¿esto ayuda a sostener la reinterpretación o es trivia de estructura literaria?
+      Si es lo segundo, queda fuera.
+    </p>
+  </div>
+
+  <div class="script-layer">
+    <div class="script-layer-head">CAPA TRANSVERSAL · 14 · RECURSOS VISUALES · CONDICIONAL</div>
+    <p>
+      Puede utilizarse un árbol genealógico simplificado de Earnshaw / Linton antes del Bloque 4,
+      dado que el argumento depende de quién hereda qué. La decisión final queda para edición
+      según si la audiencia necesita esa ayuda visual.
+    </p>
+  </div>
+
+  <div class="script-layer" style="background:#fff3f3;border-color:#efd3d3">
+    <div class="script-layer-head" style="color:#a33b3b">19 · DEL CONOCIMIENTO A LA ACCIÓN · DESCARTADO</div>
+    <p>
+      No hay una acción necesaria al final. Forzar “ahora ve y relee Cumbres borrascosas”
+      sería artificial. La experiencia puede terminar en una comprensión transformada de la obra.
+    </p>
+  </div>
+</section>
+
+<section class="content-section pattern-validation" id="validacion-patrones">
+  <div class="section-kicker">CASO 03 · CUMBRES BORRASCOSAS</div>
+  <h2>Qué utilizamos y cómo se aplicó</h2>
+  <p class="section-intro">
+    Aquí no preguntamos si los 19 patrones “aplican” por obligación.
+    Registramos qué decisión concreta produjo cada patrón en este caso,
+    cuáles fueron condicionales y cuáles se descartaron deliberadamente.
+  </p>
+
+  <div class="legend">
+    <span class="legend-directa">Utilizado</span>
+    <span class="legend-cond">Condicional</span>
+    <span class="legend-unused">No utilizado</span>
+    <span class="legend-notused">No necesario en este guion</span>
+  </div>
+
+  <div class="pattern-table">
+    <div class="pattern-table-head">
+      <span>PATRÓN</span><span>ESTADO</span><span>DECISIÓN EN CASO 03</span><span></span>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">01</span><div><strong>Promesa inicial</strong><small>Abrir una razón para continuar.</small></div></div>
+      <div><span class="status direct">Utilizado</span></div>
+      <div><p>Reconocer la lectura romántica y abrir la pregunta sin entregar la conclusión.</p><small>Se aplica en el Bloque 1.</small></div>
+      <button class="pattern-link" data-pattern="01">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">02</span><div><strong>Pregunta central</strong><small>Organizar el recorrido alrededor de una pregunta.</small></div></div>
+      <div><span class="status direct">Utilizado</span></div>
+      <div><p>¿Qué estamos dejando fuera cuando leemos Cumbres borrascosas principalmente como una historia de amor?</p><small>La pregunta funciona como filtro de relevancia.</small></div>
+      <button class="pattern-link" data-pattern="02">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">03</span><div><strong>Revelación progresiva</strong><small>Dosificar la interpretación.</small></div></div>
+      <div><span class="status direct">Utilizado</span></div>
+      <div><p>Guardar la pieza de Catherine sobre lo “degradante” hasta el Bloque 4 para reencuadrar la evidencia anterior.</p><small>No anunciar la lectura alternativa antes de construirla.</small></div>
+      <button class="pattern-link" data-pattern="03">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">04</span><div><strong>Organización en bloques</strong><small>Dividir el recorrido.</small></div></div>
+      <div><span class="status notused">No necesario</span></div>
+      <div><p>La estructura de bloques existe, pero el guion no identifica este patrón como una decisión aplicada al caso.</p><small>No se debe inventar una aplicación.</small></div>
+      <button class="pattern-link" data-pattern="04">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">05</span><div><strong>Cadena de expectativas</strong><small>Hacer necesaria la siguiente pieza.</small></div></div>
+      <div><span class="status direct">Utilizado</span></div>
+      <div><p>La evidencia del Bloque 2 genera la pregunta del Bloque 3; la evidencia del Bloque 3 genera la pregunta del Bloque 4.</p><small>Dos transiciones explícitas.</small></div>
+      <button class="pattern-link" data-pattern="05">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">06</span><div><strong>Cierre transformador</strong><small>Resolver transformando la comprensión.</small></div></div>
+      <div><span class="status direct">Utilizado</span></div>
+      <div><p>El cierre mantiene la lectura romántica, pero muestra por qué es insuficiente como explicación total.</p><small>Bloque 6.</small></div>
+      <button class="pattern-link" data-pattern="06">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">07</span><div><strong>Cambio de estado</strong><small>Cambiar una interpretación.</small></div></div>
+      <div><span class="status direct">Utilizado</span></div>
+      <div><p>El estado cambia de “historia de amor” a una comprensión que incorpora exclusión de clase, poder y ciclo.</p><small>Es el patrón con mayor presencia en el caso.</small></div>
+      <button class="pattern-link" data-pattern="07">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">08</span><div><strong>Construcción de comprensión</strong><small>Conectar piezas hasta formar una explicación.</small></div></div>
+      <div><span class="status direct">Utilizado</span></div>
+      <div><p>Origen social → degradación → decisión de Catherine → regreso → propiedades → interpretación.</p><small>Bloque 4.</small></div>
+      <button class="pattern-link" data-pattern="08">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">09</span><div><strong>Evidencia y ejemplificación</strong><small>Sostener las afirmaciones.</small></div></div>
+      <div><span class="status direct">Utilizado</span></div>
+      <div><p>La lectura romántica y la evidencia que la tensiona se construyen mediante hechos concretos de la novela.</p><small>Bloques 2 y 3.</small></div>
+      <button class="pattern-link" data-pattern="09">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">10</span><div><strong>Recompensas parciales</strong><small>Entregar valor antes del cierre.</small></div></div>
+      <div><span class="status notused">No necesario</span></div>
+      <div><p>El guion no lo identifica como patrón aplicado. No se agrega una función que el documento no establece.</p><small>Se conserva la distinción metodológica.</small></div>
+      <button class="pattern-link" data-pattern="10">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">11</span><div><strong>Progreso visible</strong><small>Hacer perceptible el avance.</small></div></div>
+      <div><span class="status notused">No necesario</span></div>
+      <div><p>No aparece como patrón aplicado en el guion.</p><small>No se fuerza una visualización de progreso.</small></div>
+      <button class="pattern-link" data-pattern="11">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">12</span><div><strong>Arquitectura de retención</strong><small>Sostener la incertidumbre.</small></div></div>
+      <div><span class="status notused">No necesario</span></div>
+      <div><p>No aparece identificado como patrón aplicado en este guion.</p><small>La continuidad ya está resuelta mediante 05.</small></div>
+      <button class="pattern-link" data-pattern="12">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">13</span><div><strong>Gestión de la complejidad</strong><small>Distribuir información compleja.</small></div></div>
+      <div><span class="status notused">No necesario</span></div>
+      <div><p>No aparece identificado como patrón aplicado en el documento fuente.</p><small>No se añade una justificación posterior.</small></div>
+      <button class="pattern-link" data-pattern="13">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">14</span><div><strong>Recursos visuales</strong><small>Apoyar la comprensión visualmente.</small></div></div>
+      <div><span class="status conditional">Condicional</span></div>
+      <div><p>Puede utilizarse un árbol genealógico simplificado de Earnshaw / Linton antes del Bloque 4.</p><small>La decisión queda para edición según necesidad.</small></div>
+      <button class="pattern-link" data-pattern="14">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">15</span><div><strong>Guía del recorrido</strong><small>Hacer visible cómo avanzará.</small></div></div>
+      <div><span class="status notused">No necesario</span></div>
+      <div><p>No aparece identificado como patrón aplicado en el guion.</p><small>No se inventa una aplicación.</small></div>
+      <button class="pattern-link" data-pattern="15">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">16</span><div><strong>Valor creciente</strong><small>Aumentar el peso interpretativo.</small></div></div>
+      <div><span class="status direct">Utilizado</span></div>
+      <div><p>El Bloque 5 reutiliza la evidencia anterior y le da su nuevo significado más potente.</p><small>Es el momento de mayor peso interpretativo.</small></div>
+      <button class="pattern-link" data-pattern="16">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">17</span><div><strong>Economía narrativa</strong><small>Eliminar lo que no sostiene el recorrido.</small></div></div>
+      <div><span class="status direct">Utilizado</span></div>
+      <div><p>En el Bloque 2 filtra la evidencia romántica; transversalmente elimina estructura narrativa que no sostenga la reinterpretación.</p><small>El documento lo señala explícitamente como capa transversal.</small></div>
+      <button class="pattern-link" data-pattern="17">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">18</span><div><strong>Transformación personal</strong><small>Cambiar la percepción del analista.</small></div></div>
+      <div><span class="status notused">No necesario</span></div>
+      <div><p>No aparece identificado como patrón aplicado en el guion.</p><small>El cambio buscado es interpretativo en la audiencia.</small></div>
+      <button class="pattern-link" data-pattern="18">Ver aplicación →</button>
+    </div>
+
+    <div class="pattern-row">
+      <div class="pattern-name"><span class="pattern-id">19</span><div><strong>Del conocimiento a la acción</strong><small>Convertir comprensión en acción.</small></div></div>
+      <div><span class="status unused">No utilizado</span></div>
+      <div><p>Forzar “ve y relee el libro” sería artificial. El cierre transformador ya es la resolución completa.</p><small>Descartado deliberadamente.</small></div>
+      <button class="pattern-link" data-pattern="19">Ver aplicación →</button>
+    </div>
+  </div>
+</section>
+
+<section class="hallazgo">
+  <div class="wrap">
+    <div class="kicker">Resultado del Caso 03</div>
+    <h2>Evaluar → Comparar → Interpretar</h2>
+    <p class="lead">
+      El tercer caso vuelve a cambiar el mecanismo de la experiencia.
+      Ya no necesitamos construir un veredicto sobre un objeto ni
+      mantener abierto el balance entre dos versiones. Necesitamos
+      construir una explicación que gane capacidad interpretativa
+      a medida que aparecen nuevas evidencias.
+    </p>
+
+    <div class="finding">
+      <div class="finding-card">
+        <h3>Caso 01 · Quicksilver</h3>
+        <strong>Evaluación progresiva.</strong>
+        <p>Los patrones ayudan a construir criterio y avanzar hacia una decisión sobre un objeto.</p>
+      </div>
+      <div class="finding-card">
+        <h3>Caso 02 · Hartung</h3>
+        <strong>Comparación con resultado abierto.</strong>
+        <p>Los patrones ayudan a observar cómo cambia el balance entre dos versiones hasta llegar a una conclusión.</p>
+      </div>
+      <div class="finding-card accent">
+        <h3>Caso 03 · Cumbres borrascosas</h3>
+        <strong>Interpretación progresiva.</strong>
+        <p>
+          Los patrones ayudan a construir una explicación:
+          una lectura inicial se fortalece, se tensiona y finalmente
+          puede ser reemplazada por una interpretación con mayor
+          capacidad para explicar la evidencia.
+        </p>
+      </div>
+    </div>
+
+    <div class="principle">
+      <strong>Hallazgo provisional H3:</strong>
+      la función de un patrón puede depender del mecanismo que sostiene
+      la incertidumbre del recorrido. En una evaluación, la incertidumbre
+      está en el veredicto. En una comparación, está en el balance entre
+      versiones. En una interpretación, está en cuál explicación conseguirá
+      organizar mejor la evidencia.
+    </div>
+  </div>
+</section>
+
+<section class="bridge">
+  <div class="wrap">
+    <div class="kicker" style="color:#aaa5e8">Resultado de la prueba</div>
+    <h2>Evaluar → Comparar → Interpretar</h2>
+    <p>
+      Tres experiencias diferentes.<br><br>
+      Los 19 patrones continúan siendo utilizables, pero su función concreta
+      cambia con el mecanismo narrativo que estamos construyendo.<br><br>
+      El Caso 03 nos permite comprobar si el sistema puede producir una
+      experiencia que no dependa de un ganador ni de una respuesta inmediata,
+      sino de la construcción progresiva de una comprensión.<br><br>
+      Y eso nos acerca a la pregunta que realmente importa:
+      <strong>¿qué decisiones permanecen cuando cambia por completo
+      la experiencia que queremos construir?</strong>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<div class="pattern-modal" id="patternModal" aria-hidden="true">
+  <div class="pattern-modal-backdrop" data-close-modal></div>
+  <div class="pattern-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="patternModalTitle">
+    <button class="pattern-modal-close" type="button" aria-label="Cerrar" data-close-modal>×</button>
+    <div class="pattern-modal-kicker" id="patternModalKicker">PATRÓN</div>
+    <h2 id="patternModalTitle">Aplicación del patrón</h2>
+
+    <div class="modal-field"><h4>FUNCIÓN</h4><p id="patternModalFunction"></p></div>
+    <div class="modal-field"><h4>DECISIÓN EN ESTE CASO</h4><p id="patternModalDecision"></p></div>
+
+    <div class="modal-application">
+      <h4>APLICACIÓN EN CUMBRES BORRASCOSAS</h4>
+      <p id="patternModalApplication"></p>
+    </div>
+
+    <div class="modal-field"><h4>POR QUÉ SE TOMÓ ESTA DECISIÓN</h4><p id="patternModalWhy"></p></div>
+    <div class="modal-field"><h4>RESULTADO</h4><span class="modal-result" id="patternModalResult"></span></div>
+  </div>
+</div>
+
+<script>
+const patternData={
+"01":{name:"Promesa inicial",function:"Abrir una razón para continuar.",decision:"Reconocer la lectura romántica sin convertir la posición de Vero en una conclusión inmediata.",application:"El inicio presenta Cumbres borrascosas como una historia de amor trágico reconocible y después plantea qué deja fuera esa lectura.",why:"La audiencia entra con una interpretación que reconoce y acepta la pregunta como algo que todavía debe resolverse.",result:"Utilizado · Bloque 1."},
+"02":{name:"Pregunta central",function:"Organizar el recorrido alrededor de una pregunta.",decision:"Mantener una única pregunta como filtro para decidir qué evidencia entra.",application:"¿Qué estamos dejando fuera cuando leemos Cumbres borrascosas principalmente como una historia de amor?",why:"Evita que el video se convierta en una defensa de una opinión y establece el criterio de relevancia del recorrido.",result:"Utilizado · Bloque 1."},
+"03":{name:"Revelación progresiva",function:"Dosificar la interpretación.",decision:"Guardar la pieza interpretativa que reencuadra la evidencia hasta que el espectador necesite una nueva explicación.",application:"La frase de Catherine sobre que sería 'degradante' casarse con Heathcliff aparece en el Bloque 4, después de haber mostrado la lectura romántica y su insuficiencia.",why:"En ese momento la frase cambia el significado de lo visto anteriormente en lugar de funcionar como una conclusión anticipada.",result:"Utilizado · Bloque 4."},
+"04":{name:"Organización en bloques",function:"Dividir el recorrido en unidades funcionales.",decision:"No atribuirle una aplicación específica porque el guion no lo identifica como patrón aplicado.",application:"La página mantiene bloques porque el guion está organizado así, pero no presenta una decisión de patrón 04 que no esté en la fuente.",why:"La investigación necesita distinguir estructura general de aplicación demostrada de un patrón.",result:"No necesario en este guion."},
+"05":{name:"Cadena de expectativas",function:"Hacer que una parte genere la necesidad de la siguiente.",decision:"Convertir la insuficiencia de una explicación en la pregunta que abre el siguiente bloque.",application:"Después de construir la lectura romántica: '¿por qué nada de lo que rodea a esta relación se comporta como amor?'. Después de mostrar la evidencia problemática: '¿qué es exactamente lo que estamos viendo?'.",why:"Las transiciones nacen de la evidencia anterior y no de una interrupción artificial.",result:"Utilizado · Transiciones a Bloques 3 y 4."},
+"06":{name:"Cierre transformador",function:"Resolver una pregunta modificando la comprensión.",decision:"Cerrar sin convertir la lectura inicial en una falsedad binaria.",application:"El cierre reconoce el vínculo amoroso, pero muestra que leer la novela solo desde él deja fuera clase, poder y ciclo de venganza.",why:"La resolución es más compleja que 'amor versus venganza'.",result:"Utilizado · Bloque 6."},
+"07":{name:"Cambio de estado",function:"Modificar el estado interpretativo del espectador.",decision:"Hacer visible el paso de una explicación inicialmente suficiente a una explicación más amplia.",application:"La audiencia pasa de 'historia de amor' a una lectura que incorpora exclusión de clase, deformación, repetición y ciclo entre generaciones.",why:"Es el mecanismo específico que diferencia este caso de los anteriores: cambia una interpretación.",result:"Utilizado · Bloques 3, 5 y 6."},
+"08":{name:"Construcción de comprensión",function:"Conectar piezas para formar una explicación.",decision:"Construir la interpretación alternativa paso a paso.",application:"Origen social de Heathcliff → degradación → decisión de Catherine → regreso → adquisición de las propiedades → lectura de poder y venganza.",why:"La nueva lectura no aparece como opinión; emerge de relaciones entre evidencias.",result:"Utilizado · Bloque 4."},
+"09":{name:"Evidencia y ejemplificación",function:"Sostener las afirmaciones con hechos concretos.",decision:"Mostrar momentos concretos de la novela en lugar de utilizar adjetivos o afirmaciones abstractas.",application:"'Yo soy Heathcliff', el entierro, Isabella, Linton y Hareton funcionan como evidencia para las distintas etapas.",why:"La interpretación necesita demostrar qué está viendo el espectador y por qué importa.",result:"Utilizado · Bloques 2 y 3."},
+"10":{name:"Recompensas parciales",function:"Entregar comprensión antes de la resolución final.",decision:"El guion no identifica este patrón como aplicado.",application:"No se inventa una aplicación adicional. La progresión de comprensión se mantiene mediante los patrones explícitamente documentados.",why:"La tabla debe registrar la investigación real, no completar artificialmente los 19 patrones.",result:"No necesario en este guion."},
+"11":{name:"Progreso visible",function:"Hacer perceptible el avance.",decision:"No identificado como decisión de patrón en el guion.",application:"No se añade un marcador o visual de progreso como si hubiera sido parte de la decisión original.",why:"No hay base en el documento para afirmar que se utilizó.",result:"No necesario en este guion."},
+"12":{name:"Arquitectura de retención",function:"Sostener la incertidumbre del recorrido.",decision:"No identificado como patrón aplicado; la continuidad documentada se resuelve mediante 05.",application:"No se atribuye a 12 una función adicional.",why:"Evita solapar retrospectivamente patrones que el guion no seleccionó.",result:"No necesario en este guion."},
+"13":{name:"Gestión de la complejidad",function:"Distribuir información compleja.",decision:"No identificado como patrón aplicado en el documento.",application:"No se crea una aplicación específica para este patrón.",why:"La fuente no lo presenta como decisión seleccionada para el caso.",result:"No necesario en este guion."},
+"14":{name:"Recursos visuales",function:"Apoyar la comprensión mediante recursos visuales.",decision:"Evaluar un apoyo visual solo si realmente facilita entender herencias y relaciones.",application:"Podría utilizarse un árbol genealógico simplificado de las familias Earnshaw / Linton antes del Bloque 4.",why:"El argumento depende de quién pertenece a qué familia y qué propiedades están en juego, pero la fuente deja la decisión para edición.",result:"Condicional · Decisión de edición."},
+"15":{name:"Guía del recorrido",function:"Hacer visible cómo avanzará la experiencia.",decision:"No identificado como patrón aplicado en el guion.",application:"No se agrega una aplicación retrospectiva.",why:"El guion no lo selecciona como patrón y la pregunta central ya cumple una función explícita de orientación.",result:"No necesario en este guion."},
+"16":{name:"Valor creciente",function:"Aumentar progresivamente el peso de la comprensión.",decision:"Reservar el mayor peso interpretativo para el momento en que la evidencia anterior puede adquirir un nuevo significado.",application:"El Bloque 5 vuelve al entierro y a Isabella, Linton y Hareton y los reinterpreta como parte de un ciclo.",why:"No introduce evidencia nueva; aumenta el valor de la evidencia ya vista mediante una explicación más potente.",result:"Utilizado · Bloque 5."},
+"17":{name:"Economía narrativa",function:"Eliminar lo que no sostiene el recorrido.",decision:"Seleccionar solo los momentos que sostienen o tensionan la interpretación y excluir explicaciones de estructura literaria que no contribuyan.",application:"En el Bloque 2 evita resumir toda la relación; transversalmente excluye la explicación de Lockwood/Nelly Dean y la cronología si no sostienen la reinterpretación.",why:"El objetivo no es hacer un resumen exhaustivo de la novela, sino construir una experiencia interpretativa.",result:"Utilizado · Bloque 2 + capa transversal."},
+"18":{name:"Transformación personal",function:"Mostrar un cambio real en la percepción del analista.",decision:"No identificado como patrón aplicado en el guion.",application:"El cambio buscado es el de la interpretación que construye la audiencia, no una transformación personal de Vero.",why:"La fuente no selecciona este patrón y no debemos inventar una confesión personal para forzarlo.",result:"No necesario en este guion."},
+"19":{name:"Del conocimiento a la acción",function:"Convertir comprensión en una acción posterior.",decision:"Descartarlo deliberadamente.",application:"No se añade una recomendación artificial como 've y relee el libro'.",why:"El cierre transformador ya constituye la resolución completa del caso; una llamada a la acción sería artificial.",result:"No utilizado · Descartado deliberadamente."}
+};
+
+const modal=document.getElementById("patternModal");
+const title=document.getElementById("patternModalTitle");
+const kicker=document.getElementById("patternModalKicker");
+const fn=document.getElementById("patternModalFunction");
+const decision=document.getElementById("patternModalDecision");
+const application=document.getElementById("patternModalApplication");
+const why=document.getElementById("patternModalWhy");
+const result=document.getElementById("patternModalResult");
+
+function openPatternModal(id){
+  const p=patternData[id];
+  if(!p)return;
+  kicker.textContent=id+" · PATRÓN";
+  title.textContent=p.name;
+  fn.textContent=p.function;
+  decision.textContent=p.decision;
+  application.textContent=p.application;
+  why.textContent=p.why;
+  result.textContent=p.result;
+  result.classList.toggle("unused",id==="19");
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden","false");
+  document.body.classList.add("modal-open");
+}
+
+function closePatternModal(){
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden","true");
+  document.body.classList.remove("modal-open");
+}
+
+document.querySelectorAll(".pattern-link").forEach(button=>{
+  button.addEventListener("click",()=>openPatternModal(button.dataset.pattern));
+});
+
+modal.querySelectorAll("[data-close-modal]").forEach(el=>{
+  el.addEventListener("click",closePatternModal);
+});
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape" && modal.classList.contains("is-open")) closePatternModal();
+});
+</script>
+</body>
+</html>
